@@ -209,7 +209,7 @@ public class Main extends Activity {
 		//this.initBadgeView();
 		this.initFrameButton();
 	}
-	
+	public String test;
     @Override
     protected void onResume() {
     	super.onResume();
