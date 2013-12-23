@@ -21,7 +21,7 @@ import android.util.Xml;
  */
 public class HuatiList extends Entity{
 
-	public final static int CATALOG_ASK = 1;
+	public final static int CATALOG_CENTER = 1;
 	public final static int CATALOG_SHARE = 2;
 	public final static int CATALOG_OTHER = 3;
 	public final static int CATALOG_JOB = 4;
