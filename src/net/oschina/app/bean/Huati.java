@@ -20,29 +20,34 @@ import android.util.Xml;
  * @created 2013-12-23
  */
 public class Huati extends Entity{
-
+	
+	/* XML文件的标签名 */
 	public final static String NODE_ID = "id";
 	public final static String NODE_TITLE = "title";
 	public final static String NODE_URL = "url";
-	public final static String NODE_FACE = "portrait";
+	public final static String NODE_IMG = "img";
+	public final static String NODE_INTRODUCE = "introduce";//导语
+	public final static String NODE_TITLE_H2 = "h2";//导语
+	public final static String NODE_TITLE_H3 = "h3";//导语
 	public final static String NODE_BODY = "body";
-	public final static String NODE_AUTHORID = "authorid";
+	//public final static String NODE_AUTHORID = "authorid";
 	public final static String NODE_AUTHOR = "author";
 	public final static String NODE_PUBDATE = "pubDate";
-	public final static String NODE_ANSWERCOUNT = "answerCount";
-	public final static String NODE_VIEWCOUNT = "viewCount";
-	public final static String NODE_FAVORITE = "favorite";
-	public final static String NODE_START = "huati";
-
-	public final static int CATALOG_ASK = 1;
-	public final static int CATALOG_SHARE = 2;
-	public final static int CATALOG_OTHER = 3;
-	public final static int CATALOG_JOB = 4;
-	public final static int CATALOG_SITE = 5;
+	//public final static String NODE_ANSWERCOUNT = "answerCount";
+	//public final static String NODE_VIEWCOUNT = "viewCount";
+	//public final static String NODE_FAVORITE = "favorite";
+	public final static String NODE_START = "huati"; //XML中某一个话题对应的标签名
 	
+	/* 话题类型 */
+	//public final static int CATALOG_CENTRE = 0;	//话题中心（暂时不需要）
+	public final static int CATALOG_SIXIANG = 1;	//思想
+	public final static int CATALOG_ZHENGJING = 2;	//政经
+	public final static int CATALOG_WENSHI = 3;		//文史
+	
+	/* 话题实体字段  */
 	private String title;
 	private String url;
-	private String face;
+	private String img;
 	private String body;
 	private String author;
 	private int authorId;
@@ -115,11 +120,11 @@ public class Huati extends Entity{
 	public void setAuthorId(int authorId) {
 		this.authorId = authorId;
 	}
-	public String getFace() {
-		return face;
+	public String getImg() {
+		return img;
 	}
-	public void setFace(String face) {
-		this.face = face;
+	public void setImg(String img) {
+		this.img = img;
 	}
 	public int getAnswerCount() {
 		return answerCount;
@@ -165,9 +170,9 @@ public class Huati extends Entity{
 				            {			            	
 				            	huati.setUrl(xmlParser.nextText());
 				            }
-				            else if(tag.equalsIgnoreCase(NODE_FACE))
+				            else if(tag.equalsIgnoreCase(NODE_IMG))
 				            {			            	
-				            	huati.setFace(xmlParser.nextText());
+				            	huati.setImg(xmlParser.nextText());
 				            }
 				            else if(tag.equalsIgnoreCase(NODE_BODY))
 				            {			            	
@@ -177,7 +182,7 @@ public class Huati extends Entity{
 				            {			            	
 				            	huati.setAuthor(xmlParser.nextText());		            	
 				            }
-				            else if(tag.equalsIgnoreCase(NODE_AUTHORID))
+				            /*else if(tag.equalsIgnoreCase(NODE_AUTHORID))
 				            {			            	
 				            	huati.setAuthorId(StringUtils.toInt(xmlParser.nextText(),0));		            	
 				            }
@@ -188,15 +193,15 @@ public class Huati extends Entity{
 				            else if(tag.equalsIgnoreCase(NODE_VIEWCOUNT))
 				            {			            	
 				            	huati.setViewCount(StringUtils.toInt(xmlParser.nextText(),0));			            	
-				            }
+				            }*/
 				            else if(tag.equalsIgnoreCase(NODE_PUBDATE))
 				            {			            	
 				            	huati.setPubDate(xmlParser.nextText());
 				            }
-				            else if(tag.equalsIgnoreCase(NODE_FAVORITE))
+				            /*else if(tag.equalsIgnoreCase(NODE_FAVORITE))
 				            {			            	
 				            	huati.setFavorite(StringUtils.toInt(xmlParser.nextText(),0));		            	
-				            }
+				            }*/
 				            //标签
 				            else if(tag.equalsIgnoreCase("tags"))
 				            {

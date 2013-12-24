@@ -21,11 +21,10 @@ import android.util.Xml;
  */
 public class HuatiList extends Entity{
 
-	public final static int CATALOG_CENTER = 1;
-	public final static int CATALOG_SHARE = 2;
-	public final static int CATALOG_OTHER = 3;
-	public final static int CATALOG_JOB = 4;
-	public final static int CATALOG_SITE = 5;
+	//public final static int CATALOG_CENTER = 1;
+	public final static int CATALOG_SIXIANG = 1;
+	public final static int CATALOG_ZHENGJING = 2;
+	public final static int CATALOG_WENSHI = 3;
 	
 	private int pageSize;
 	private int huatiCount;
@@ -77,11 +76,11 @@ public class HuatiList extends Entity{
 				            {			            	
 				            	huati.setTitle(xmlParser.nextText());
 				            }
-				            else if(tag.equalsIgnoreCase(Huati.NODE_FACE))
+				            else if(tag.equalsIgnoreCase(Huati.NODE_IMG))
 				            {			            	
 				            	huati.setFace(xmlParser.nextText());
 				            }
-				            else if(tag.equalsIgnoreCase(Huati.NODE_AUTHOR))
+				           /* else if(tag.equalsIgnoreCase(Huati.NODE_AUTHOR))
 				            {			            	
 				            	huati.setAuthor(xmlParser.nextText());		            	
 				            }
@@ -96,7 +95,7 @@ public class HuatiList extends Entity{
 				            else if(tag.equalsIgnoreCase(Huati.NODE_VIEWCOUNT))
 				            {			            	
 				            	huati.setViewCount(StringUtils.toInt(xmlParser.nextText(),0));			            	
-				            }
+				            }*/
 				            else if(tag.equalsIgnoreCase(Huati.NODE_PUBDATE))
 				            {			            	
 				            	huati.setPubDate(xmlParser.nextText());         	
