@@ -741,7 +741,7 @@ public class AppContext extends Application {
 	public PostList getPostList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
 		PostList list = null;
 		String key = "postlist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
-		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {		
+		if(isNetworkConnected()) {		
 			try{
 				list = ApiClient.getPostList(this, catalog, pageIndex, PAGE_SIZE);
 				if(list != null && pageIndex == 0){

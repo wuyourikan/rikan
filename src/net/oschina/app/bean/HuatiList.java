@@ -78,7 +78,7 @@ public class HuatiList extends Entity{
 				            }
 				            else if(tag.equalsIgnoreCase(Huati.NODE_IMG))
 				            {			            	
-				            	huati.setFace(xmlParser.nextText());
+				            	huati.setImg(xmlParser.nextText());
 				            }
 				           /* else if(tag.equalsIgnoreCase(Huati.NODE_AUTHOR))
 				            {			            	
