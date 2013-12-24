@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.UUID;
@@ -741,7 +742,7 @@ public class AppContext extends Application {
 	public PostList getPostList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
 		PostList list = null;
 		String key = "postlist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
-		if(isNetworkConnected()) {		
+		if(isNetworkConnected() && (isNeedUpdate(key) || isRefresh)) {		
 			try{
 				list = ApiClient.getPostList(this, catalog, pageIndex, PAGE_SIZE);
 				if(list != null && pageIndex == 0){
@@ -1439,6 +1440,48 @@ public class AppContext extends Application {
 	private boolean isReadDataCache(String cachefile)
 	{
 		return readObject(cachefile) != null;
+	}
+	
+	/**
+	 * 判断有网状态是否应该更新
+	 * @param key
+	 * @return boolean
+	 */
+	private boolean isNeedUpdate(String cachefile)
+	{
+		if(false == isReadDataCache(cachefile))
+			return true; //无缓存文件则更新
+		int netWorkType = getNetworkType();
+		long time_diff = System.currentTimeMillis() - getFileStreamPath(cachefile).lastModified();//获取时间差
+		if(netWorkType == 0)
+			return false; //无网时不更新
+		else{
+			if(time_diff > getUpdateDelay(netWorkType,cachefile) )
+				return true; //时间间隔超过规定时延则更新
+			else 
+				return false;	
+		}
+	}
+	
+	/**
+	 * 根据网络类型和文件类型返回不同的更新时延(需设计策略)
+	 * TODO:策略需要考虑：1.文档类型，新闻列表时延短，专题话题时延长  2.无图模式时延可短
+	 * @param netWorkType
+	 * @return long 
+	 */
+	private long getUpdateDelay(int netWorkType,String cachefile)
+	{
+		String type = cachefile.split("_")[0];
+		boolean isLoadimage = StringUtils.toBool(getProperty(AppConfig.CONF_LOAD_IMAGE)); //是否允许加载图片
+		
+		switch(getNetworkType()){
+		case 1: //wifi
+			return 60*1000L; //1min
+		case 2: //2：WAP网络    3：NET网络
+		case 3:
+			return 60*60*1000L;//1hour
+		}
+		return Long.MAX_VALUE;
 	}
 	
 	/**

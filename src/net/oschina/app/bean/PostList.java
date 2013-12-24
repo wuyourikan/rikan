@@ -3,6 +3,7 @@ package net.oschina.app.bean;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.oschina.app.AppException;
@@ -29,6 +30,7 @@ public class PostList extends Entity{
 	
 	private int pageSize;
 	private int postCount;
+	public Date updateTime; //postlist的获取时间
 	private List<Post> postlist = new ArrayList<Post>();
 	
 	public int getPageSize() {
@@ -43,6 +45,7 @@ public class PostList extends Entity{
 
 	public static PostList parse(InputStream inputStream) throws IOException, AppException {
 		PostList postlist = new PostList();
+		postlist.updateTime = new Date(System.currentTimeMillis());//获取当前时间
 		Post post = null;
         //获得XmlPullParser解析器
         XmlPullParser xmlParser = Xml.newPullParser();
