@@ -10,7 +10,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.UUID;
@@ -138,6 +137,7 @@ public class AppContext extends Application {
 
 	/**
 	 * 获取当前网络类型
+	 * TODO:识别3G和2G
 	 * @return 0：没有网络   1：WIFI网络   2：WAP网络    3：NET网络
 	 */
 	public int getNetworkType() {
@@ -1479,7 +1479,7 @@ public class AppContext extends Application {
 			return 60*1000L; //1min
 		case 2: //2：WAP网络    3：NET网络
 		case 3:
-			return 60*60*1000L;//1hour
+			return 10*1000L;//1hour
 		}
 		return Long.MAX_VALUE;
 	}

@@ -25,7 +25,7 @@ public class HuatiList extends Entity{
 	public final static int CATALOG_SIXIANG = 1;
 	public final static int CATALOG_ZHENGJING = 2;
 	public final static int CATALOG_WENSHI = 3;
-	
+
 	private int pageSize;
 	private int huatiCount;
 	private List<Huati> huatilist = new ArrayList<Huati>();

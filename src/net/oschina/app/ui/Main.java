@@ -2062,7 +2062,7 @@ public class Main extends BaseActivity {
 				}
 				msg.arg1 = action;
 				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_POST;
-				if (curQuestionCatalog == catalog)
+				if (curQuestionCatalog == catalog) 
 					handler.sendMessage(msg);
 			}
 		}.start();
