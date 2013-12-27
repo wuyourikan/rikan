@@ -19,7 +19,7 @@ import net.oschina.app.bean.Notice;
 import net.oschina.app.bean.Result;
 import net.oschina.app.bean.URLs;
 import net.oschina.app.ui.About;
-import net.oschina.app.ui.BlogDetail;
+import net.oschina.app.ui.ZatanDetail;
 import net.oschina.app.ui.CommentPub;
 import net.oschina.app.ui.FeedBack;
 import net.oschina.app.ui.ImageDialog;
@@ -88,8 +88,9 @@ public class UIHelper {
 	public final static int LISTVIEW_DATATYPE_NEWS = 0x01;
 	public final static int LISTVIEW_DATATYPE_ZATAN = 0x02;
 	public final static int LISTVIEW_DATATYPE_RECOMMEND = 0x03;
-	public final static int LISTVIEW_DATATYPE_HUATI = 0x04;                                                                                //次数有改动
-	public final static int LISTVIEW_DATATYPE_ZHUANTI = 0x05;
+	public final static int LISTVIEW_DATATYPE_ALL = 0x04;
+	public final static int LISTVIEW_DATATYPE_HUATI = 0x05;                                                                                //次数有改动
+	public final static int LISTVIEW_DATATYPE_ZHUANTI = 0x06;
 	public final static int LISTVIEW_DATATYPE_COMMENT = 0x07;
 	
 	public final static int REQUEST_CODE_FOR_RESULT = 0x01;
@@ -152,14 +153,14 @@ public class UIHelper {
 	}
 	
 	/**
-	 * 显示博客详情
+	 * 显示杂谈详情
 	 * @param context
 	 * @param blogId
 	 */
-	public static void showBlogDetail(Context context, int blogId)
+	public static void showZatanDetail(Context context, int zatanId)
 	{
-		Intent intent = new Intent(context, BlogDetail.class);
-		intent.putExtra("blog_id", blogId);
+		Intent intent = new Intent(context, ZatanDetail.class);
+		intent.putExtra("zatan_id", zatanId);
 		context.startActivity(intent);
 	}
 	
@@ -177,14 +178,14 @@ public class UIHelper {
 		if(StringUtils.isEmpty(url)) {
 			int newsId = news.getId();
 			int newsType = news.getNewType().type;
-			//String objId = news.getNewType().attachment;                                                                              //此处有改动
+			String objId = news.getNewType().attachment;                                                                              //此处有改动
 			switch (newsType) {
 				case News.NEWSTYPE_NEWS:
 					showNewsDetail(context, newsId);
 					break;
-				//case News.NEWSTYPE_BLOG:
-					//showBlogDetail(context, StringUtils.toInt(objId));
-					//break;
+				case News.NEWSTYPE_ZATAN:
+					showZatanDetail(context, StringUtils.toInt(objId));
+					break;
 			}
 		} else {
 			showUrlRedirect(context, url);
@@ -639,11 +640,14 @@ public class UIHelper {
 			case URLs.URL_OBJ_TYPE_NEWS:
 				showNewsDetail(context, objId);//读取这片资讯
 				break;
+			case URLs.URL_OBJ_TYPE_RECOMMEND:
+				showRecommendDetail(context, objId);
+				break;
 			case URLs.URL_OBJ_TYPE_ZONE:
 				showUserCenter(context, objId, objKey);
 				break;
-			case URLs.URL_OBJ_TYPE_BLOG:
-				showBlogDetail(context, objId);
+			case URLs.URL_OBJ_TYPE_ZATAN:
+				showZatanDetail(context, objId);
 				break;
 			case URLs.URL_OBJ_TYPE_OTHER:
 				openBrowser(context, objKey);

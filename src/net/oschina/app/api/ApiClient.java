@@ -113,7 +113,7 @@ public class ApiClient {
 		GetMethod httpGet = new GetMethod(url);//链接待连接地址
 		// 设置 请求超时时间
 		httpGet.getParams().setSoTimeout(TIMEOUT_SOCKET);
-		httpGet.setRequestHeader("Host", URLs.HOST);
+		httpGet.setRequestHeader("Host", URLs.HOST);//www.wyzxwk.com
 		httpGet.setRequestHeader("Connection","Keep-Alive");
 		httpGet.setRequestHeader("Cookie", cookie);
 		httpGet.setRequestHeader("User-Agent", userAgent);
@@ -140,7 +140,7 @@ public class ApiClient {
 			url.append('&');
 			url.append(name);
 			url.append('=');
-			url.append(String.valueOf(params.get(name)));
+			url.append(String.valueOf(params.get(name)));//params.get(name)获取name的值             valueof 讲值转换为字符串类型
 			//不做URLEncoder处理
 			//url.append(URLEncoder.encode(String.valueOf(params.get(name)), UTF_8));
 		}
@@ -168,11 +168,11 @@ public class ApiClient {
 			{
 				httpClient = getHttpClient();
 				httpGet = getHttpGet(url, cookie, userAgent);			
-				int statusCode = httpClient.executeMethod(httpGet);
+				int statusCode = httpClient.executeMethod(httpGet);//
 				if (statusCode != HttpStatus.SC_OK) {
 					throw AppException.http(statusCode);
 				}
-				responseBody = httpGet.getResponseBodyAsString();
+				responseBody = httpGet.getResponseBodyAsString();                                       //返回一个字符串 （获得请求之后）
 				//System.out.println("XMLDATA=====>"+responseBody);
 				break;				
 			} catch (HttpException e) {
@@ -216,7 +216,7 @@ public class ApiClient {
 				e.printStackTrace();
 			}			
 		}
-		return new ByteArrayInputStream(responseBody.getBytes());
+		return new ByteArrayInputStream(responseBody.getBytes());//responseBody.getBytes()是将字符串转换成字符节 bytearrayinputstream是将字符节转换成输入流
 	}
 	
 	/**
@@ -651,15 +651,36 @@ public class ApiClient {
 	 * @return
 	 * @throws AppException
 	 */
-	public static RecommendList getRecommendList(AppContext appContext, final String type, final int pageIndex, final int pageSize) throws AppException {
+	public static RecommendList getRecommendList(AppContext appContext, final int catalog, final int pageIndex, final int pageSize) throws AppException {
 		String newUrl = _MakeURL(URLs.RECOMMEND_LIST, new HashMap<String, Object>(){{
-			put("type", type);
+			put("catalog", catalog);
 			put("pageIndex", pageIndex);
 			put("pageSize", pageSize);
 		}});
 
 		try{
 			return RecommendList.parse(http_get(appContext, newUrl));		
+		}catch(Exception e){
+			if(e instanceof AppException)
+				throw (AppException)e;
+			throw AppException.network(e);
+		}
+	}
+	
+	/**
+	 * 获取推荐的详情
+	 * @param url
+	 * @param recommend_id
+	 * @return
+	 * @throws AppException
+	 */
+	public static Recommend getRecommendDetail(AppContext appContext, final int recommend_id) throws AppException {
+		String newUrl = _MakeURL(URLs.RECOMMEND_DETAIL, new HashMap<String, Object>(){{
+			put("id", recommend_id);
+		}});
+		
+		try{
+			return Recommend.parse(http_get(appContext, newUrl));			
 		}catch(Exception e){
 			if(e instanceof AppException)
 				throw (AppException)e;
@@ -695,16 +716,16 @@ public class ApiClient {
 	}
 	
 	/**
-	 * 获取博客列表
+	 * 获取杂谈列表
 	 * @param type 推荐：recommend 最新：latest
 	 * @param pageIndex
 	 * @param pageSize
 	 * @return
 	 * @throws AppException
 	 */
-	public static ZatanList getZatanList(AppContext appContext, final String type, final int pageIndex, final int pageSize) throws AppException {
+	public static ZatanList getZatanList(AppContext appContext, final int catalog, final int pageIndex, final int pageSize) throws AppException {
 		String newUrl = _MakeURL(URLs.ZATAN_LIST, new HashMap<String, Object>(){{
-			put("type", type);
+			put("catalog", catalog);
 			put("pageIndex", pageIndex);
 			put("pageSize", pageSize);
 		}});
@@ -742,13 +763,13 @@ public class ApiClient {
 	}
 	
 	/**
-	 * 获取博客详情
+	 * 获取杂谈详情
 	 * @param blog_id
 	 * @return
 	 * @throws AppException
 	 */
 	public static Zatan getBlogDetail(AppContext appContext, final int blog_id) throws AppException {
-		String newUrl = _MakeURL(URLs.BLOG_DETAIL, new HashMap<String, Object>(){{
+		String newUrl = _MakeURL(URLs.ZATAN_DETAIL, new HashMap<String, Object>(){{
 			put("id", blog_id);
 		}});
 		

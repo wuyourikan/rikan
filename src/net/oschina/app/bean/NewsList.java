@@ -21,7 +21,7 @@ import android.util.Xml;
  */
 public class NewsList extends Entity{
 
-	public final static int CATALOG_ALL = 1;
+	public final static int CATALOG_ALLN = 1;
 	public final static int CATALOG_INTEGRATION = 2;
 	public final static int CATALOG_SOFTWARE = 3;
 	
@@ -107,10 +107,10 @@ public class NewsList extends Entity{
 				            {	
 				            	news.getNewType().type = StringUtils.toInt(xmlParser.nextText(),0); 
 				            }
-				            //else if(tag.equalsIgnoreCase(News.NODE_ATTACHMENT))//attachment
-				            //{			            	
-				            	//news.getNewType().attachment = xmlParser.nextText(); 	
-				            //}
+				            else if(tag.equalsIgnoreCase(News.NODE_ATTACHMENT))//attachment
+				            {			            	
+				            	news.getNewType().attachment = xmlParser.nextText(); 	
+				            }
 				            //else if(tag.equalsIgnoreCase(News.NODE_AUTHORUID2))//authorid2
 				            //{			            	
 				            	//news.getNewType().authoruid2 = StringUtils.toInt(xmlParser.nextText(),0); 

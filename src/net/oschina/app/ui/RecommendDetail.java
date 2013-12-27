@@ -11,9 +11,9 @@ import net.oschina.app.AppManager;
 import net.oschina.app.R;
 //import net.oschina.app.adapter.ListViewCommentAdapter;
 import net.oschina.app.bean.FavoriteList;
-import net.oschina.app.bean.News;
+import net.oschina.app.bean.Recommend;
 import net.oschina.app.bean.Result;
-import net.oschina.app.bean.News.Relative;
+import net.oschina.app.bean.Recommend.Relative;
 import net.oschina.app.bean.Notice;
 import net.oschina.app.common.StringUtils;
 import net.oschina.app.common.UIHelper;
@@ -47,19 +47,19 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 /**
- * 新闻详情
+ * 推荐详情详情
  * @author liux (http://my.oschina.net/liux)
  * @version 1.0
  * @created 2012-3-21
  */
 public class RecommendDetail extends Activity {
 
-	private FrameLayout mHeader;
+	//private FrameLayout mHeader;
 	private LinearLayout mFooter;
 	private ImageView mHome;
 	private ImageView mFavorite;
-	private ImageView mRefresh;
-	private TextView mHeadTitle;
+	//private ImageView mRefresh;
+	//private TextView mHeadTitle;
 	private ProgressBar mProgressbar;
 	private ScrollView mScrollView;
     private ViewSwitcher mViewSwitcher;
@@ -76,24 +76,24 @@ public class RecommendDetail extends Activity {
 	
 	private WebView mWebView;
     private Handler mHandler;
-    private News newsDetail;
-    private int newsId;
+    private Recommend recommendDetail;
+    private int recommendId;
 	
 	private final static int VIEWSWITCH_TYPE_DETAIL = 0x001;
-	private final static int VIEWSWITCH_TYPE_COMMENTS = 0x002;
+	//private final static int VIEWSWITCH_TYPE_COMMENTS = 0x002;
 	
 	private final static int DATA_LOAD_ING = 0x001;
 	private final static int DATA_LOAD_COMPLETE = 0x002;
 	private final static int DATA_LOAD_FAIL = 0x003;
 	
-	private PullToRefreshListView mLvComment;
+	//private PullToRefreshListView mLvComment;
 	//private ListViewCommentAdapter lvCommentAdapter;
 	//private List<Comment> lvCommentData = new ArrayList<Comment>();
-	private View lvComment_footer;
-	private TextView lvComment_foot_more;
-	private ProgressBar lvComment_foot_progress;
-    private Handler mCommentHandler;
-    private int lvSumData;
+	//private View lvComment_footer;
+	//private TextView lvComment_foot_more;
+	//private ProgressBar lvComment_foot_progress;
+    //private Handler mCommentHandler;
+    //private int lvSumData;
     
     private int curId;
 	private int curCatalog;	
@@ -104,7 +104,7 @@ public class RecommendDetail extends Activity {
 	//private ImageView mFootEditebox;
 	//private EditText mFootEditer;
 	//private Button mFootPubcomment;	
-	private ProgressDialog mProgress;
+	//private ProgressDialog mProgress;
 	private InputMethodManager imm;
 	private String tempCommentKey = AppConfig.TEMP_COMMENT;
 	
@@ -120,7 +120,7 @@ public class RecommendDetail extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.news_detail);
+        setContentView(R.layout.recommend_detail);
         
         AppManager.getAppManager().addActivity(this);
         
@@ -138,32 +138,32 @@ public class RecommendDetail extends Activity {
     //初始化视图控件
     private void initView()
     {
-		newsId = getIntent().getIntExtra("news_id", 0);
+		recommendId = getIntent().getIntExtra("recommend_id", 0);
 		
-		if(newsId > 0) tempCommentKey = AppConfig.TEMP_COMMENT + "_" /*+ CommentList.CATALOG_NEWS*/+ "_" + newsId;
+		if(recommendId > 0) tempCommentKey = AppConfig.TEMP_COMMENT + "_" /*+ CommentList.CATALOG_NEWS*/+ "_" + recommendId;
     	
     	//mHeader = (FrameLayout)findViewById(R.id.news_detail_header);
-    	mFooter = (LinearLayout)findViewById(R.id.news_detail_footer);
-    	mHome = (ImageView)findViewById(R.id.news_datail_footbar_home);
+    	mFooter = (LinearLayout)findViewById(R.id.recommend_detail_footer);
+    	mHome = (ImageView)findViewById(R.id.recommend_datail_footbar_home);
     	//mRefresh = (ImageView)findViewById(R.id.news_detail_refresh);
     	//mHeadTitle = (TextView)findViewById(R.id.news_detail_head_title);
     	//mProgressbar = (ProgressBar)findViewById(R.id.news_detail_head_progress);
-    	mViewSwitcher = (ViewSwitcher)findViewById(R.id.news_detail_viewswitcher);
-    	mScrollView = (ScrollView)findViewById(R.id.news_detail_scrollview);
+    	mViewSwitcher = (ViewSwitcher)findViewById(R.id.recommend_detail_viewswitcher);
+    	mScrollView = (ScrollView)findViewById(R.id.recommend_detail_scrollview);
     	
-    	mDetail = (ImageView)findViewById(R.id.news_detail_footbar_detail);
+    	mDetail = (ImageView)findViewById(R.id.recommend_detail_footbar_detail);
     	//mCommentList = (ImageView)findViewById(R.id.news_detail_footbar_commentlist);
-    	mShare = (ImageView)findViewById(R.id.news_detail_footbar_share);
-    	mFavorite = (ImageView)findViewById(R.id.news_detail_footbar_favorite);
+    	mShare = (ImageView)findViewById(R.id.recommend_detail_footbar_share);
+    	mFavorite = (ImageView)findViewById(R.id.recommend_detail_footbar_favorite);
     	
-    	mTitle = (TextView)findViewById(R.id.news_detail_title);
-    	mAuthor = (TextView)findViewById(R.id.news_detail_author);
-    	mPubDate = (TextView)findViewById(R.id.news_detail_date);
+    	mTitle = (TextView)findViewById(R.id.recommend_detail_title);
+    	mAuthor = (TextView)findViewById(R.id.recommend_detail_author);
+    	mPubDate = (TextView)findViewById(R.id.recommend_detail_date);
     	//mCommentCount = (TextView)findViewById(R.id.news_detail_commentcount);
     	
     	mDetail.setEnabled(false);
     	
-    	mWebView = (WebView)findViewById(R.id.news_detail_webview);
+    	mWebView = (WebView)findViewById(R.id.recommend_detail_webview);
     	mWebView.getSettings().setJavaScriptEnabled(false);
     	mWebView.getSettings().setSupportZoom(true);
     	mWebView.getSettings().setBuiltInZoomControls(true);
@@ -186,7 +186,7 @@ public class RecommendDetail extends Activity {
     	
     	imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
     	
-    	mFootViewSwitcher = (ViewSwitcher)findViewById(R.id.news_detail_foot_viewswitcher);
+    	mFootViewSwitcher = (ViewSwitcher)findViewById(R.id.recommend_detail_foot_viewswitcher);
     	//mFootPubcomment = (Button)findViewById(R.id.news_detail_foot_pubcomment);
     	//mFootPubcomment.setOnClickListener(commentpubClickListener);
     	//mFootEditebox = (ImageView)findViewById(R.id.news_detail_footbar_editebox);
@@ -240,13 +240,13 @@ public class RecommendDetail extends Activity {
 				{	
 					headButtonSwitch(DATA_LOAD_COMPLETE);					
 					
-					mTitle.setText(newsDetail.getTitle());
-					mAuthor.setText(newsDetail.getAuthor());
-					mPubDate.setText(StringUtils.friendly_time(newsDetail.getPubDate()));
+					mTitle.setText(recommendDetail.getTitle());
+					mAuthor.setText(recommendDetail.getAuthor());
+					mPubDate.setText(StringUtils.friendly_time(recommendDetail.getPubDate()));
 					//mCommentCount.setText(String.valueOf(newsDetail.getCommentCount()));
 					
 					//是否收藏
-					if(newsDetail.getFavorite() == 1)
+					if(recommendDetail.getFavorite() == 1)
 						mFavorite.setImageResource(R.drawable.widget_bar_favorite2);
 					else
 						mFavorite.setImageResource(R.drawable.widget_bar_favorite);
@@ -260,7 +260,7 @@ public class RecommendDetail extends Activity {
 						bv_comment.hide();
 					}*/
 					
-					String body = UIHelper.WEB_STYLE + newsDetail.getBody();					
+					String body = UIHelper.WEB_STYLE + recommendDetail.getBody();					
 					//读取用户设置：是否加载文章图片--默认有wifi下始终加载图片
 					boolean isLoadImage;
 					AppContext ac = (AppContext)getApplication();
@@ -284,14 +284,14 @@ public class RecommendDetail extends Activity {
 					//if(!StringUtils.isEmpty(softwareName) && !StringUtils.isEmpty(softwareLink))
 						//body += String.format("<div id='oschina_software' style='margin-top:8px;color:#FF0000;font-weight:bold'>更多关于:&nbsp;<a href='%s'>%s</a>&nbsp;的详细信息</div>", softwareLink, softwareName);
 					
-					//相关新闻
-					if(newsDetail.getRelatives().size() > 0)
+					//相关推荐
+					if(recommendDetail.getRelatives().size() > 0)
 					{
 						String strRelative = "";
-						for(Relative relative : newsDetail.getRelatives()){
-							strRelative += String.format("<a href='%s' style='text-decoration:none'>%s</a><p/>", relative.url, relative.title);
+						for(Relative relative : recommendDetail.getRelatives()){
+							strRelative += String.format("<a href='%s' style='text-decoration:none'>%s</a><p/>", relative.rurl, relative.rtitle);
 						}
-						body += String.format("<p/><hr/><b>相关资讯</b><div><p/>%s</div>", strRelative);
+						body += String.format("<p/><hr/><b>相关推荐</b><div><p/>%s</div>", strRelative);
 					}
 					
 					body += "<div style='margin-bottom: 80px'/>";					
@@ -319,10 +319,10 @@ public class RecommendDetail extends Activity {
 			}
 		};
 		
-		initData(newsId, false);
+		initData(recommendId, false);
 	}
 	
-    private void initData(final int news_id, final boolean isRefresh)
+    private void initData(final int recommend_id, final boolean isRefresh)
     {		
     	headButtonSwitch(DATA_LOAD_ING);
     	
@@ -330,9 +330,9 @@ public class RecommendDetail extends Activity {
 			public void run() {
                 Message msg = new Message();
 				try {
-					newsDetail = ((AppContext)getApplication()).getNews(news_id, isRefresh);
-	                msg.what = (newsDetail!=null && newsDetail.getId()>0) ? 1 : 0;
-	                msg.obj = (newsDetail!=null) ? newsDetail.getNotice() : null;//通知信息
+					recommendDetail = ((AppContext)getApplication()).getRecommend(recommend_id, isRefresh);
+	                msg.what = (recommendDetail!=null && recommendDetail.getId()>0) ? 1 : 0;
+	                msg.obj = (recommendDetail!=null) ? recommendDetail.getNotice() : null;//通知信息
 	            } catch (AppException e) {
 	                e.printStackTrace();
 	            	msg.what = -1;
@@ -352,7 +352,7 @@ public class RecommendDetail extends Activity {
 		case VIEWSWITCH_TYPE_DETAIL:
 			mDetail.setEnabled(false);
 			//mCommentList.setEnabled(true);
-			mHeadTitle.setText(R.string.news_detail_head_title);
+			//mHeadTitle.setText(R.string.news_detail_head_title);
 			mViewSwitcher.setDisplayedChild(0);			
 			break;
 		/*case VIEWSWITCH_TYPE_COMMENTS:
@@ -372,18 +372,18 @@ public class RecommendDetail extends Activity {
     	switch (type) {
 		case DATA_LOAD_ING:
 			mScrollView.setVisibility(View.GONE);
-			mProgressbar.setVisibility(View.VISIBLE);
-			mRefresh.setVisibility(View.GONE);
+			//mProgressbar.setVisibility(View.VISIBLE);
+			//mRefresh.setVisibility(View.GONE);
 			break;
 		case DATA_LOAD_COMPLETE:
 			mScrollView.setVisibility(View.VISIBLE);
-			mProgressbar.setVisibility(View.GONE);
-			mRefresh.setVisibility(View.VISIBLE);
+			//mProgressbar.setVisibility(View.GONE);
+			//mRefresh.setVisibility(View.VISIBLE);
 			break;
 		case DATA_LOAD_FAIL:
 			mScrollView.setVisibility(View.GONE);
-			mProgressbar.setVisibility(View.GONE);
-			mRefresh.setVisibility(View.VISIBLE);
+			//mProgressbar.setVisibility(View.GONE);
+			//mRefresh.setVisibility(View.VISIBLE);
 			break;
 		}
     }
@@ -409,18 +409,18 @@ public class RecommendDetail extends Activity {
 	
 	private View.OnClickListener shareClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			if(newsDetail == null){
+			if(recommendDetail == null){
 				UIHelper.ToastMessage(v.getContext(), R.string.msg_read_detail_fail);
 				return;
 			}
 			//分享到
-			UIHelper.showShareDialog(RecommendDetail.this, newsDetail.getTitle(), newsDetail.getUrl());
+			UIHelper.showShareDialog(RecommendDetail.this, recommendDetail.getTitle(), recommendDetail.getUrl());
 		}
 	};
 	
 	private View.OnClickListener detailClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			if(newsId == 0){
+			if(recommendId == 0){
 				return;
 			}
 			//切换到详情
@@ -440,7 +440,7 @@ public class RecommendDetail extends Activity {
 	
 	private View.OnClickListener favoriteClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			if(newsId == 0 || newsDetail == null){
+			if(recommendId == 0 || recommendDetail == null){
 				return;
 			}
 			
@@ -456,11 +456,11 @@ public class RecommendDetail extends Activity {
 					if(msg.what == 1){
 						Result res = (Result)msg.obj;
 						if(res.OK()){
-							if(newsDetail.getFavorite() == 1){
-								newsDetail.setFavorite(0);
+							if(recommendDetail.getFavorite() == 1){
+								recommendDetail.setFavorite(0);
 								mFavorite.setImageResource(R.drawable.widget_bar_favorite);
 							}else{
-								newsDetail.setFavorite(1);
+								recommendDetail.setFavorite(1);
 								mFavorite.setImageResource(R.drawable.widget_bar_favorite2);
 							}	
 						}
@@ -475,10 +475,10 @@ public class RecommendDetail extends Activity {
 					Message msg = new Message();
 					Result res = null;
 					try {
-						if(newsDetail.getFavorite() == 1){
-							res = ac.delFavorite(newsId, FavoriteList.TYPE_NEWS);
+						if(recommendDetail.getFavorite() == 1){
+							res = ac.delFavorite(recommendId, FavoriteList.TYPE_RECOMMEND);
 						}else{
-							res = ac.addFavorite(newsId, FavoriteList.TYPE_NEWS);
+							res = ac.addFavorite(recommendId, FavoriteList.TYPE_RECOMMEND);
 						}
 						msg.what = 1;
 						msg.obj = res;
@@ -864,14 +864,14 @@ public class RecommendDetail extends Activity {
                     params.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);   
                     getWindow().setAttributes(params);   
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);  
-                    mHeader.setVisibility(View.VISIBLE);
+                    //mHeader.setVisibility(View.VISIBLE);
                     mFooter.setVisibility(View.VISIBLE);
                 } else {    
                     WindowManager.LayoutParams params = getWindow().getAttributes();   
                     params.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;   
                     getWindow().setAttributes(params);   
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);   
-                    mHeader.setVisibility(View.GONE);
+                    //mHeader.setVisibility(View.GONE);
                     mFooter.setVisibility(View.GONE);
                 }
 				return true;

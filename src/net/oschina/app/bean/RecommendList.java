@@ -14,31 +14,28 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.util.Xml;
 
 /**
- * 博客列表实体类
+ * 新闻列表实体类
  * @author liux (http://my.oschina.net/liux)
  * @version 1.0
  * @created 2012-3-21
  */
 public class RecommendList extends Entity{
+
+	public final static int CATALOG_RECOMMEND = 3;
 	
-	public static final int CATALOG_USER = 1;//用户博客
-	public static final int CATALOG_LATEST = 2;//最新博客
-	public static final int CATALOG_RECOMMEND = 3;//推荐博客
-	public static final int CATALOG_ALL = 4;//全部文章
-	
-	public static final String TYPE_LATEST = "latest";
-	public static final String TYPE_RECOMMEND = "recommend";
-	public static final String TYPE_ALL = "all";
-	
-	private int recommendsCount;
-	private int pageSize;
+	private int catalog;//类别
+	private int pageSize;//页数
+	private int recommendCount;
 	private List<Recommend> recommendlist = new ArrayList<Recommend>();
 	
-	public int getRecommendsCount() {
-		return recommendsCount;
+	public int getCatalog() {
+		return catalog;
 	}
 	public int getPageSize() {
 		return pageSize;
+	}
+	public int getRecommendCount() {
+		return recommendCount;
 	}
 	public List<Recommend> getRecommendlist() {
 		return recommendlist;
@@ -55,54 +52,66 @@ public class RecommendList extends Entity{
             int evtType=xmlParser.getEventType();
 			//一直循环，直到文档结束    
 			while(evtType!=XmlPullParser.END_DOCUMENT){ 
-	    		String tag = xmlParser.getName(); 
+	    		String tag = xmlParser.getName(); //获得标签名
 			    switch(evtType){ 
 			    	case XmlPullParser.START_TAG:
-			    		if(tag.equalsIgnoreCase("recommendsCount")) 
+			    		if(tag.equalsIgnoreCase("catalog")) 
 			    		{
-			    			recommendlist.recommendsCount = StringUtils.toInt(xmlParser.nextText(),0);
+			    			recommendlist.catalog = StringUtils.toInt(xmlParser.nextText(),0);
 			    		}
 			    		else if(tag.equalsIgnoreCase("pageSize")) 
 			    		{
 			    			recommendlist.pageSize = StringUtils.toInt(xmlParser.nextText(),0);
 			    		}
-			    		else if (tag.equalsIgnoreCase("recommend")) 
+			    		else if(tag.equalsIgnoreCase("newsCount")) 
+			    		{
+			    			recommendlist.recommendCount = StringUtils.toInt(xmlParser.nextText(),0);
+			    		}
+			    		else if (tag.equalsIgnoreCase(Recommend.NODE_START)) //news
 			    		{ 
 			    			recommend = new Recommend();
 			    		}
 			    		else if(recommend != null)
 			    		{	
-				            if(tag.equalsIgnoreCase("id"))
+				            if(tag.equalsIgnoreCase(Recommend.NODE_ID))//id
 				            {			      
 				            	recommend.id = StringUtils.toInt(xmlParser.nextText(),0);
 				            }
-				            else if(tag.equalsIgnoreCase("title"))
+				            else if(tag.equalsIgnoreCase(Recommend.NODE_TITLE))//title
 				            {			            	
 				            	recommend.setTitle(xmlParser.nextText());
 				            }
-				            else if(tag.equalsIgnoreCase("url"))
+				            else if(tag.equalsIgnoreCase(Recommend.NODE_URL))//url
 				            {			            	
 				            	recommend.setUrl(xmlParser.nextText());
 				            }
-				            else if(tag.equalsIgnoreCase("pubDate"))
+				            else if(tag.equalsIgnoreCase(Recommend.NODE_AUTHOR))//author
 				            {			            	
-				            	recommend.setPubDate(xmlParser.nextText());
+				            	recommend.setAuthor(xmlParser.nextText());		            	
 				            }
-				            //else if(tag.equalsIgnoreCase("authoruid"))
+				            //else if(tag.equalsIgnoreCase(News.NODE_AUTHORID))//authorid
 				            //{			            	
-				            	//zatan.setAuthorId(StringUtils.toInt(xmlParser.nextText(),0));
+				            	//news.setAuthorId(StringUtils.toInt(xmlParser.nextText(),0));		            	
 				            //}
-				            else if(tag.equalsIgnoreCase("author"))
+				            //else if(tag.equalsIgnoreCase(News.NODE_COMMENTCOUNT))//commentcount
+				            //{			            	
+				            	//news.setCommentCount(StringUtils.toInt(xmlParser.nextText(),0));			            	
+				            //}
+				            else if(tag.equalsIgnoreCase(Recommend.NODE_PUBDATE))//pubDate
 				            {			            	
-				            	recommend.setAuthor(xmlParser.nextText());
+				            	recommend.setPubDate(xmlParser.nextText());	
 				            }
-				            //else if(tag.equalsIgnoreCase("documentType"))
-				            //{			            	
-				            	//recommend.setDocumentType(StringUtils.toInt(xmlParser.nextText(),0));
+				            //else if(tag.equalsIgnoreCase(Recommend.NODE_TYPE))//type
+				            //{	
+				            	//news.getNewType().type = StringUtils.toInt(xmlParser.nextText(),0); 
 				            //}
-				            //else if(tag.equalsIgnoreCase("commentCount"))
+				            //else if(tag.equalsIgnoreCase(Recommend.NODE_ATTACHMENT))//attachment
 				            //{			            	
-				            	//zatan.setCommentCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            	//news.getNewType().attachment = xmlParser.nextText(); 	
+				            //}
+				            //else if(tag.equalsIgnoreCase(News.NODE_AUTHORUID2))//authorid2
+				            //{			            	
+				            	//news.getNewType().authoruid2 = StringUtils.toInt(xmlParser.nextText(),0); 
 				            //}
 			    		}
 			            //通知信息
@@ -132,16 +141,18 @@ public class RecommendList extends Entity{
 			    		break;
 			    	case XmlPullParser.END_TAG:	
 					   	//如果遇到标签结束，则把对象添加进集合中
-				       	if (tag.equalsIgnoreCase("recommend") && recommend != null) { 
-				       		recommendlist.getRecommendlist().add(recommend); 
-				       		recommend = null; 
+				       	if (tag.equalsIgnoreCase("news") && recommend != null) { 
+				    	   recommendlist.getRecommendlist().add(recommend); 
+				           recommend = null; 
 				       	}
 				       	break; 
 			    }
 			    //如果xml没有结束，则导航到下一个节点
-			    evtType=xmlParser.next();
+			    int a =xmlParser.next();
+			    evtType=a;
 			}		
         } catch (XmlPullParserException e) {
+        	e.printStackTrace();
 			throw AppException.xml(e);
         } finally {
         	inputStream.close();	

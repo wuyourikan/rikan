@@ -38,13 +38,13 @@ public class News extends Entity{
 	
 	public final static String NODE_NEWSTYPE = "newstype";
 	public final static String NODE_TYPE = "type";
-	//public final static String NODE_ATTACHMENT = "attachment";
+	public final static String NODE_ATTACHMENT = "attachment";
 	//public final static String NODE_AUTHORUID2 = "authoruid2";
 	
 	public final static int NEWSTYPE_NEWS = 0x00;//0 新闻
-	public final static int NEWSTYPE_SOFTWARE = 0x01;//1 软件
-	public final static int NEWSTYPE_POST = 0x02;//2 帖子
-	public final static int NEWSTYPE_BLOG = 0x03;//3 博客
+	//public final static int NEWSTYPE_SOFTWARE = 0x01;//1 软件
+	//public final static int NEWSTYPE_POST = 0x02;//2 帖子
+	public final static int NEWSTYPE_ZATAN = 0x03;//3 博客
 
 	private String title;
 	private String url;
@@ -66,7 +66,7 @@ public class News extends Entity{
 	
 	public class NewsType implements Serializable{
 		public int type;
-		//public String attachment;
+		public String attachment;
 		//public int authoruid2;
 	} 
 	
@@ -216,10 +216,10 @@ public class News extends Entity{
 				            {	
 				            	news.getNewType().type = StringUtils.toInt(xmlParser.nextText(),0); 
 				            }
-				            //else if(tag.equalsIgnoreCase(NODE_ATTACHMENT))
-				            //{			            	
-				            	//news.getNewType().attachment = xmlParser.nextText(); 	
-				            //}
+				            else if(tag.equalsIgnoreCase(NODE_ATTACHMENT))
+				            {			            	
+				            	news.getNewType().attachment = xmlParser.nextText(); 	
+				            }
 				            //else if(tag.equalsIgnoreCase(NODE_AUTHORUID2))
 				            //{			            	
 				            	//news.getNewType().authoruid2 = StringUtils.toInt(xmlParser.nextText(),0); 

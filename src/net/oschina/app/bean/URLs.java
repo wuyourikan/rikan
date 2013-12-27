@@ -49,11 +49,12 @@ public class URLs implements Serializable {
 	public final static String USERBLOG_LIST = URL_API_HOST+"action/api/userblog_list";
 	public final static String USERBLOG_DELETE = URL_API_HOST+"action/api/userblog_delete";
 	public final static String ZATAN_LIST = URL_API_HOST+"action/api/zatan_list.xml";//www.wyzxwk.com/article.xml //action/api/blog_list //杂谈列表
-	public final static String BLOG_DETAIL = URL_API_HOST+"action/api/blog_detail";
+	public final static String ZATAN_DETAIL = URL_API_HOST+"action/api/blog_detail";
 	public final static String BLOGCOMMENT_LIST = URL_API_HOST+"action/api/blogcomment_list";
 	public final static String BLOGCOMMENT_PUB = URL_API_HOST+"action/api/blogcomment_pub";
 	public final static String BLOGCOMMENT_DELETE = URL_API_HOST+"action/api/blogcomment_delete";
 	public final static String RECOMMEND_LIST = URL_API_HOST+"action/api/recommend_list.xml";
+	public final static String RECOMMEND_DETAIL = URL_API_HOST+"action/api/recommend_detail";
 	public final static String MY_INFORMATION = URL_API_HOST+"action/api/my_information";
 	public final static String USER_INFORMATION = URL_API_HOST+"action/api/user_information";
 	public final static String USER_UPDATERELATION = URL_API_HOST+"action/api/user_updaterelation";
@@ -72,19 +73,19 @@ public class URLs implements Serializable {
 	private final static String URL_MY_HOST = "my."+URL_HOST;//my.oschina.net
 	
 	private final static String URL_TYPE_NEWS = URL_WWW_HOST + URL_SPLITTER + "news" + URL_SPLITTER;//www.oschina.net/news/
-	private final static String URL_TYPE_SOFTWARE = URL_WWW_HOST + URL_SPLITTER + "p" + URL_SPLITTER;//www.oschina.net/p/
+	private final static String URL_TYPE_RECOMMEND = /*URL_WWW_HOST + */URL_SPLITTER + "recommend" + URL_SPLITTER;//www.oschina.net/p/ //www.wyzxwk.com/recommend/
 	private final static String URL_TYPE_QUESTION = URL_WWW_HOST + URL_SPLITTER + "question" + URL_SPLITTER;//www.oschina.net/question/
-	private final static String URL_TYPE_BLOG = URL_SPLITTER + "blog" + URL_SPLITTER;///blog/
+	private final static String URL_TYPE_ZATAN = URL_SPLITTER + "zatan" + URL_SPLITTER;///blog/ //改过
 	private final static String URL_TYPE_TWEET = URL_SPLITTER + "tweet" + URL_SPLITTER;///tweet/
 	private final static String URL_TYPE_ZONE = URL_MY_HOST + URL_SPLITTER + "u" + URL_SPLITTER;//my.oschina.net/u/
 	private final static String URL_TYPE_QUESTION_TAG = URL_TYPE_QUESTION + "tag" + URL_SPLITTER;//www.oschina.net/question/tag/
 	
 	public final static int URL_OBJ_TYPE_OTHER = 0x000;
 	public final static int URL_OBJ_TYPE_NEWS = 0x001;
-	public final static int URL_OBJ_TYPE_SOFTWARE = 0x002;
+	public final static int URL_OBJ_TYPE_RECOMMEND = 0x002;
 	public final static int URL_OBJ_TYPE_QUESTION = 0x003;
 	public final static int URL_OBJ_TYPE_ZONE = 0x004;
-	public final static int URL_OBJ_TYPE_BLOG = 0x005;
+	public final static int URL_OBJ_TYPE_ZATAN = 0x005;
 	public final static int URL_OBJ_TYPE_TWEET = 0x006;
 	public final static int URL_OBJ_TYPE_QUESTION_TAG = 0x007;
 	
@@ -135,9 +136,11 @@ public class URLs implements Serializable {
 						urls.setObjType(URL_OBJ_TYPE_NEWS);
 					}
 					//软件  www.oschina.net/p/jx
-					else if(path.contains(URL_TYPE_SOFTWARE)){
-						urls.setObjKey(parseObjKey(path, URL_TYPE_SOFTWARE));
-						urls.setObjType(URL_OBJ_TYPE_SOFTWARE);
+					else if(path.contains(URL_TYPE_RECOMMEND)){
+						objId = parseObjId(path, URL_TYPE_RECOMMEND);
+						urls.setObjId(StringUtils.toInt(objId));
+						urls.setObjKey(parseObjKey(path, URL_TYPE_RECOMMEND));
+						urls.setObjType(URL_OBJ_TYPE_RECOMMEND);
 					}
 					//问答
 					else if(path.contains(URL_TYPE_QUESTION)){
@@ -163,10 +166,10 @@ public class URLs implements Serializable {
 				//my
 				else if(path.contains(URL_MY_HOST)){					
 					//博客  my.oschina.net/szpengvictor/blog/50879
-					if(path.contains(URL_TYPE_BLOG)){
-						objId = parseObjId(path, URL_TYPE_BLOG);//此时objId为字符串
+					if(path.contains(URL_TYPE_ZATAN)){
+						objId = parseObjId(path, URL_TYPE_ZATAN);//此时objId为字符串
 						urls.setObjId(StringUtils.toInt(objId));
-						urls.setObjType(URL_OBJ_TYPE_BLOG);
+						urls.setObjType(URL_OBJ_TYPE_ZATAN);
 					}
 					//动弹  my.oschina.net/dong706/tweet/612947
 					else if(path.contains(URL_TYPE_TWEET)){

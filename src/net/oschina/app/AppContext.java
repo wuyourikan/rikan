@@ -408,17 +408,18 @@ public class AppContext extends Application {
 	
 	/**
 	 * 推荐列表
-	 * @param type 推荐：recommend 最新：latest
+	 * @param catalog
 	 * @param pageIndex
+	 * @param pageSize
 	 * @return
-	 * @throws AppException
+	 * @throws ApiException
 	 */
-	public RecommendList getRecommendList(String type, int pageIndex, boolean isRefresh) throws AppException {
+	public RecommendList getRecommendList(int catalog, int pageIndex, boolean isRefresh) throws AppException {                                  //此处注意
 		RecommendList list = null;
-		String key = "recommendlist_"+type+"_"+pageIndex+"_"+PAGE_SIZE;
+		String key = "recommendlist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
 		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
 			try{
-				list = ApiClient.getRecommendList(this, type, pageIndex, PAGE_SIZE);
+				list = ApiClient.getRecommendList(this, catalog, pageIndex, PAGE_SIZE);
 				if(list != null && pageIndex == 0){
 					Notice notice = list.getNotice();
 					list.setNotice(null);
@@ -429,13 +430,44 @@ public class AppContext extends Application {
 				list = (RecommendList)readObject(key);
 				if(list == null)
 					throw e;
-			}
+			}		
 		} else {
 			list = (RecommendList)readObject(key);
 			if(list == null)
 				list = new RecommendList();
 		}
 		return list;
+	}
+	
+	/**
+	 * 推荐详情
+	 * @param news_id
+	 * @return
+	 * @throws ApiException
+	 */
+	public Recommend getRecommend(int recommend_id, boolean isRefresh) throws AppException {		
+		Recommend recommend = null;
+		String key = "recommend_"+recommend_id;
+		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
+			try{
+				recommend = ApiClient.getRecommendDetail(this, recommend_id);
+				if(recommend != null){
+					Notice notice = recommend.getNotice();
+					recommend.setNotice(null);
+					saveObject(recommend, key);
+					recommend.setNotice(notice);
+				}
+			}catch(AppException e){
+				recommend = (Recommend)readObject(key);
+				if(recommend == null)
+					throw e;
+			}
+		} else {
+			recommend = (Recommend)readObject(key);
+			if(recommend == null)
+				recommend = new Recommend();
+		}
+		return recommend;		
 	}
 	
 	/**
@@ -536,17 +568,17 @@ public class AppContext extends Application {
 	
 	/**
 	 * 博客列表
-	 * @param type 推荐：recommend 最新：latest
+	 * @param type 全部：all 最新：latest
 	 * @param pageIndex
 	 * @return
 	 * @throws AppException
 	 */
-	public ZatanList getZatanList(String type, int pageIndex, boolean isRefresh) throws AppException {
+	public ZatanList getZatanList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
 		ZatanList list = null;
-		String key = "zatanlist_"+type+"_"+pageIndex+"_"+PAGE_SIZE;
+		String key = "zatanlist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
 		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
 			try{
-				list = ApiClient.getZatanList(this, type, pageIndex, PAGE_SIZE);
+				list = ApiClient.getZatanList(this, catalog, pageIndex, PAGE_SIZE);
 				if(list != null && pageIndex == 0){
 					Notice notice = list.getNotice();
 					list.setNotice(null);
@@ -1172,7 +1204,7 @@ public class AppContext extends Application {
 	 * @param cachefile
 	 * @return
 	 */
-	private boolean isExistDataCache(String cachefile)
+	private boolean isExistDataCache(String cachefile)                   //手机上的缓存文件
 	{
 		boolean exist = false;
 		File data = getFileStreamPath(cachefile);

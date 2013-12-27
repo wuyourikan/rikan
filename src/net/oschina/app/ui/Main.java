@@ -97,7 +97,7 @@ public class Main extends Activity {
 	//private ImageButton mHeadPub_huati;
 	//private ImageButton mHeadPub_tweet;
 	
-	private int curNewsCatalog = NewsList.CATALOG_ALL;
+	private int curNewsCatalog = NewsList.CATALOG_ALLN;
 	private int curHuatiCatalog = HuatiList.CATALOG_HISTORY;
 	private int curZhuantiCatalog = ZhuantiList.CATALOG_COMMON;
 	//private int curActiveCatalog = ActiveList.CATALOG_LASTEST;
@@ -114,6 +114,7 @@ public class Main extends Activity {
 	private ListViewNewsAdapter lvNewsAdapter;
 	private ListViewZatanAdapter lvZatanAdapter;
 	private ListViewRecommendAdapter lvRecommendAdapter;
+	private ListViewAllAdapter lvAllAdapter;
 	private ListViewHuatiAdapter lvHuatiAdapter;
 	private ListViewZhuantiAdapter lvZhuantiAdapter;
 	//private ListViewActiveAdapter lvActiveAdapter;
@@ -122,6 +123,7 @@ public class Main extends Activity {
 	private List<News> lvNewsData = new ArrayList<News>();
 	private List<Zatan> lvZatanData = new ArrayList<Zatan>();
 	private List<Recommend> lvRecommendData = new ArrayList<Recommend>();
+	private List<All> lvAllData = new ArrayList<All>();
 	private List<Huati> lvHuatiData = new ArrayList<Huati>();
 	private List<Zhuanti> lvZhuantiData = new ArrayList<Zhuanti>();
 	//private List<Active> lvActiveData = new ArrayList<Active>();
@@ -130,6 +132,7 @@ public class Main extends Activity {
 	private Handler lvNewsHandler;
 	private Handler lvZatanHandler;
 	private Handler lvRecommendHandler;
+	private Handler lvAllHandler;
 	private Handler lvHuatiHandler;
 	private Handler lvZhuantiHandler;
 	//private Handler lvActiveHandler;
@@ -138,6 +141,7 @@ public class Main extends Activity {
 	private int lvNewsSumData;
 	private int lvZatanSumData;
 	private int lvRecommendSumData;
+	private int lvAllSumData;
 	private int lvHuatiSumData;
 	private int lvZhuantiSumData;
 	//private int lvActiveSumData;
@@ -164,6 +168,7 @@ public class Main extends Activity {
 	private View lvNews_footer;
 	private View lvZatan_footer;
 	private View lvRecommend_footer;
+	private View lvAll_footer;
 	private View lvHuati_footer;
 	private View lvZhuanti_footer;
 	//private View lvActive_footer;
@@ -172,6 +177,7 @@ public class Main extends Activity {
 	private TextView lvNews_foot_more;
 	private TextView lvZatan_foot_more;
 	private TextView lvRecommend_foot_more;
+	private TextView lvAll_foot_more;
 	private TextView lvHuati_foot_more;
 	private TextView lvZhuanti_foot_more;
 	//private TextView lvActive_foot_more;
@@ -180,6 +186,7 @@ public class Main extends Activity {
 	private ProgressBar lvNews_foot_progress;
 	private ProgressBar lvZatan_foot_progress;
 	private ProgressBar lvRecommend_foot_progress;
+	private ProgressBar lvAll_foot_progress;
 	private ProgressBar lvHuati_foot_progress;
 	private ProgressBar lvZhuanti_foot_progress;
 	//private ProgressBar lvActive_foot_progress;
@@ -209,7 +216,7 @@ public class Main extends Activity {
 		//this.initBadgeView();
 		this.initFrameButton();
 	}
-	public String test;
+	
     @Override
     protected void onResume() {
     	super.onResume();
@@ -275,6 +282,7 @@ public class Main extends Activity {
 		this.initNewsListView();
 		this.initZatanListView();
 		this.initRecommendListView();
+		this.initAllListView();
 		this.initHuatiListView();
 		this.initZhuantiListView();
 		//this.initActiveListView();
@@ -292,6 +300,7 @@ public class Main extends Activity {
         lvNewsHandler = this.getLvHandler(lvNews, lvNewsAdapter, lvNews_foot_more, lvNews_foot_progress, AppContext.PAGE_SIZE);
         lvZatanHandler = this.getLvHandler(lvZatan, lvZatanAdapter, lvZatan_foot_more, lvZatan_foot_progress, AppContext.PAGE_SIZE);
         lvRecommendHandler = this.getLvHandler(lvRecommend, lvRecommendAdapter, lvRecommend_foot_more, lvRecommend_foot_progress, AppContext.PAGE_SIZE);
+        lvAllHandler = this.getLvHandler(lvAll, lvAlladapter, lvAll_foot_more, lvAll_foot_progress, AppContext.PAGE_SIZE);
         lvHuatiHandler = this.getLvHandler(lvHuati, lvHuatiAdapter, lvHuati_foot_more, lvHuati_foot_progress, AppContext.PAGE_SIZE);  
         lvZhuantiHandler = this.getLvHandler(lvZhuanti, lvZhuantiAdapter, lvZhuanti_foot_more, lvZhuanti_foot_progress, AppContext.PAGE_SIZE);  
         //lvActiveHandler = this.getLvHandler(lvActive, lvActiveAdapter, lvActive_foot_more, lvActive_foot_progress, AppContext.PAGE_SIZE); 
@@ -308,7 +317,7 @@ public class Main extends Activity {
      */
 	private void initRecommendListView()
     {
-        lvRecommendAdapter = new ListViewRecommendAdapter(this, RecommendList.CATALOG_LATEST, lvRecommendData, R.layout.recommend_listitem);        
+        lvRecommendAdapter = new ListViewRecommendAdapter(this, lvRecommendData, R.layout.recommend_listitem);        
         lvRecommend_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
         lvRecommend_foot_more = (TextView)lvRecommend_footer.findViewById(R.id.listview_foot_more);
         lvRecommend_foot_progress = (ProgressBar)lvRecommend_footer.findViewById(R.id.listview_foot_progress);
@@ -331,7 +340,7 @@ public class Main extends Activity {
         		if(recommend == null) return;
         		
         		//跳转到博客详情
-        		//UIHelper.showRecommendRedirect(view.getContext(), recommend);                                                      //此处需要详细看
+        		UIHelper.showUrlRedirect(view.getContext(), recommend.getUrl());                                                      //此处需要详细看
         	}        	
 		});
         lvRecommend.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -358,7 +367,7 @@ public class Main extends Activity {
 					lvRecommend_foot_progress.setVisibility(View.VISIBLE);
 					//当前pageIndex
 					int pageIndex = lvRecommendSumData/AppContext.PAGE_SIZE;
-					loadLvZatanData(curNewsCatalog, pageIndex, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
+					loadLvRecommendData(curNewsCatalog, pageIndex, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
 				}
 			}
 			public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
@@ -367,7 +376,7 @@ public class Main extends Activity {
 		});
         lvRecommend.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
             public void onRefresh() {
-            	loadLvZatanData(curNewsCatalog, 0, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_REFRESH);
+            	loadLvRecommendData(curNewsCatalog, 0, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_REFRESH);
             }
         });					
     }
@@ -510,6 +519,75 @@ public class Main extends Activity {
         });					
     }
     
+	/**
+     * 初始化全部列表
+     */
+	private void initAllListView()
+    {
+        lvAllAdapter = new ListViewRecommendAdapter(this, lvAllData, R.layout.All_listitem);        
+        lvAll_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
+        lvAll_foot_more = (TextView)lvAll_footer.findViewById(R.id.listview_foot_more);
+        lvAll_foot_progress = (ProgressBar)lvAll_footer.findViewById(R.id.listview_foot_progress);
+        lvAll = (PullToRefreshListView)findViewById(R.id.frame_listview_All);
+        lvAll.addFooterView(lvAll_footer);//添加底部视图  必须在setAdapter前
+        lvAll.setAdapter(lvAllAdapter); 
+        lvAll.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        		//点击头部、底部栏无效
+        		if(position == 0 || view == lvAll_footer) return;
+        		
+        		All all = null;        		
+        		//判断是否是TextView
+        		if(view instanceof TextView){
+        			all = (All)view.getTag();
+        		}else{
+        			TextView tv = (TextView)view.findViewById(R.id.All_listitem_title);
+        			all = (All)tv.getTag();
+        		}
+        		if(all == null) return;
+        		
+        		//跳转到博客详情
+        		UIHelper.showUrlRedirect(view.getContext(), all.getUrl());                                                      //此处需要详细看
+        	}        	
+		});
+        lvAll.setOnScrollListener(new AbsListView.OnScrollListener() {
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				lvAll.onScrollStateChanged(view, scrollState);
+				
+				//数据为空--不用继续下面代码了
+				if(lvAllData.isEmpty()) return;
+				
+				//判断是否滚动到底部
+				boolean scrollEnd = false;
+				try {
+					if(view.getPositionForView(lvAll_footer) == view.getLastVisiblePosition())
+						scrollEnd = true;
+				} catch (Exception e) {
+					scrollEnd = false;
+				}
+				
+				int lvDataState = StringUtils.toInt(lvAll.getTag());
+				if(scrollEnd && lvDataState==UIHelper.LISTVIEW_DATA_MORE)
+				{
+					lvAll.setTag(UIHelper.LISTVIEW_DATA_LOADING);
+					lvAll_foot_more.setText(R.string.load_ing);
+					lvAll_foot_progress.setVisibility(View.VISIBLE);
+					//当前pageIndex
+					int pageIndex = lvAllSumData/AppContext.PAGE_SIZE;
+					loadLvRecommendData(curNewsCatalog, pageIndex, lvAllHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
+				}
+			}
+			public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
+				lvAll.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+			}
+		});
+        lvAll.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
+            public void onRefresh() {
+            	loadLvRecommendData(curNewsCatalog, 0, lvAllHandler, UIHelper.LISTVIEW_ACTION_REFRESH);
+            }
+        });					
+    }
+	
     /**
      * 初始化话题列表
      */
@@ -578,6 +656,9 @@ public class Main extends Activity {
         });			
     }
 	
+    /**
+     * 初始化专题列表
+     */
     private void initZhuantiListView()
     {
     	 lvZhuantiAdapter = new ListViewZhuantiAdapter(this, lvZhuantiData, R.layout.zhuanti_listitem);        
@@ -712,10 +793,14 @@ public class Main extends Activity {
 	    			if(mCurSel == pos) {
 		    			switch (pos) {
 						case 0://资讯+杂谈
-							if(lvNews.getVisibility() == View.VISIBLE)
+							if(lvRecommend.getVisibility() == View.VISIBLE)
+								lvRecommend.clickRefresh();
+							else if(lvNews.getVisibility() == View.VISIBLE)
 								lvNews.clickRefresh();
-							else
+							else if(lvZatan.getVisibility() == View.VISIBLE)
 								lvZatan.clickRefresh();
+							else
+								lvAll.clickRefresh();
 							break;	
 						case 1://话题
 							lvHuati.clickRefresh();
@@ -746,8 +831,8 @@ public class Main extends Activity {
 				//切换列表视图-如果列表数据为空：加载数据
 				switch (viewIndex) {
 				case 0://资讯
-					if(lvNewsData.isEmpty()) {
-						loadLvNewsData(curNewsCatalog, 0, lvNewsHandler, UIHelper.LISTVIEW_ACTION_INIT);
+					if(lvRecommendData.isEmpty()) {
+						loadLvRecommendData(curNewsCatalog, 0, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_INIT);    //由资讯改为推荐
 					}
 					break;	
 				case 1://话题
@@ -801,11 +886,11 @@ public class Main extends Activity {
     	}
     	else if(index == 1){
     		mHeadLogo.setBackgroundResource(R.drawable.frame_logo_news_p);
-    		//mHeadPub_huati.setVisibility(View.VISIBLE);
+    		mHead_search.setVisibility(View.VISIBLE);
     	}
     	else if(index == 2){
     		mHeadLogo.setBackgroundResource(R.drawable.frame_logo_news_p);
-    		//mHeadPub_tweet.setVisibility(View.VISIBLE);
+    		mHead_search.setVisibility(View.VISIBLE);
     	}
     }
       
@@ -838,10 +923,10 @@ public class Main extends Activity {
     	framebtn_Zhuanti_common.setEnabled(false);
     	//framebtn_Active_lastest.setEnabled(false);
     	//资讯+杂谈
-    	framebtn_News_recommend.setOnClickListener(frameNewsBtnClick(framebtn_News_recommend,ZatanList.CATALOG_RECOMMEND));
+    	framebtn_News_recommend.setOnClickListener(frameNewsBtnClick(framebtn_News_recommend,RecommendList.CATALOG_RECOMMEND));
     	framebtn_News_zatan.setOnClickListener(frameNewsBtnClick(framebtn_News_zatan,ZatanList.CATALOG_LATEST));
-    	framebtn_News_lastest.setOnClickListener(frameNewsBtnClick(framebtn_News_lastest,NewsList.CATALOG_ALL));
-    	framebtn_News_all.setOnClickListener(frameNewsBtnClick(framebtn_News_all,ZatanList.CATALOG_ALL));
+    	framebtn_News_lastest.setOnClickListener(frameNewsBtnClick(framebtn_News_lastest,NewsList.CATALOG_ALLN));
+    	framebtn_News_all.setOnClickListener(frameNewsBtnClick(framebtn_News_all,AllList.CATALOG_ALL));
     	//话题
     	framebtn_Huati_history.setOnClickListener(frameHuatiBtnClick(framebtn_Huati_history,HuatiList.CATALOG_HISTORY));
     	framebtn_Huati_think.setOnClickListener(frameHuatiBtnClick(framebtn_Huati_think,HuatiList.CATALOG_THINK));
@@ -877,7 +962,7 @@ public class Main extends Activity {
     	//特殊处理
     	//framebtn_Active_atme.setText("@"+getString(R.string.frame_title_active_atme));
     }
-    private View.OnClickListener frameNewsBtnClick(final Button btn,final int catalog){
+    private View.OnClickListener frameNewsBtnClick(final Button btn,final int catalog){//catalog 此类别来自于上面点击哪个按钮
     	return new View.OnClickListener() {
 			public void onClick(View v) {
 				if(btn == framebtn_News_recommend){
@@ -901,19 +986,20 @@ public class Main extends Activity {
 		    		framebtn_News_all.setEnabled(true);
 		    	}
 		    	
-		    	curNewsCatalog = catalog;
+		    	curNewsCatalog = catalog;                                                                 //在此切换类别
 		    	
-				//非新闻列表
+				//非新闻列表 原来是用来判断是不是点到资讯按钮了，要是没有点到资讯按钮，就可以根据catalog的类别去加载是推荐还是博客
 		    	if(btn == framebtn_News_recommend)
 		    	{
 		    		lvRecommend.setVisibility(View.VISIBLE);
 		    		lvNews.setVisibility(View.GONE);
 		    		lvZatan.setVisibility(View.GONE);
+		    		lvAll.setVisibility(View.GONE);
 		    		
 		    		lvRecommend_foot_more.setText(R.string.load_more);
 					lvRecommend_foot_progress.setVisibility(View.GONE);
 					
-					//loadLvRecommendData(curNewsCatalog, 0, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
+					loadLvRecommendData(curNewsCatalog, 0, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
 		    	}
 		    	
 		    	else if(btn == framebtn_News_lastest)
@@ -921,28 +1007,40 @@ public class Main extends Activity {
 		    		lvRecommend.setVisibility(View.GONE);
 		    		lvNews.setVisibility(View.VISIBLE);
 		    		lvZatan.setVisibility(View.GONE);
+		    		lvAll.setVisibility(View.GONE);
 		    		
 		    		lvNews_foot_more.setText(R.string.load_more);
 					lvNews_foot_progress.setVisibility(View.GONE);
 					
-					loadLvNewsData(curNewsCatalog, 0, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
+					loadLvNewsData(curNewsCatalog, 0, lvNewsHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
 		    	}
-		    	else if(btn == framebtn_News_zatan)
+		    	else if(btn == frambtn_News_Zatan)
 		    	{
 		    		lvRecommend.setVisibility(View.GONE);
 		    		lvNews.setVisibility(View.GONE);
 		    		lvZatan.setVisibility(View.VISIBLE);
+		    		lvAll.setVisibility(View.GONE);
 		    		
 		    		if(lvZatanData.size() > 0){
 		    			lvZatan_foot_more.setText(R.string.load_more);
 		    			lvZatan_foot_progress.setVisibility(View.GONE);		    			
 		    		}
 		    		
-	    			loadLvZatanData(curNewsCatalog, 0, lvZatanHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
+	    			loadLvZatanData(curNewsCatalog, 0, lvZatanHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);//此常量是为了区别这次不是加载能更多和刷新
 		    	}
 		    	else
 		    	{
+		    		lvRecommend.setVisibility(View.GONE);
+		    		lvNews.setVisibility(View.GONE);
+		    		lvZatan.setVisibility(View.GONE);
+		    		lvAll.setVisibility(View.VISIBLE);
 		    		
+		    		if(lvAllData.size() > 0){
+		    			lvAll_foot_more.setText(R.string.load_more);
+		    			lvAll_foot_progress.setVisibility(View.GONE);		    			
+		    		}
+		    		
+	    			loadLvAllData(curNewsCatalog, 0, lvAllHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
 		    	}
 			}
 		};
@@ -1072,6 +1170,29 @@ public class Main extends Activity {
 			case UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG:
 				int newdata = 0;//新加载数据-只有刷新动作才会使用到
 				switch (objtype) {
+				    case UIHelper.LISTVIEW_DATATYPE_RECOMMEND:
+					    RecommendList rlist = (RecommendList)obj;
+					    notice = rlist.getNotice();
+					    lvRecommendSumData = what;
+					    if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
+						    if(lvRecommendData.size() > 0){
+							    for(Recommend recommend1 : rlist.getRecommendlist()){
+								    boolean b = false;
+								    for(Recommend recommend2 : lvRecommendData){
+									    if(recommend1.getId() == recommend2.getId()){
+										    b = true;
+										    break;
+									    }
+								    }
+								    if(!b) newdata++;
+							    }
+						    }else{
+							    newdata = what;
+						    }
+					    }
+					    lvRecommendData.clear();//先清除原有数据
+					    lvRecommendData.addAll(rlist.getRecommendlist());
+					    break;
 					case UIHelper.LISTVIEW_DATATYPE_NEWS:
 						NewsList nlist = (NewsList)obj;
 						notice = nlist.getNotice();
@@ -1117,6 +1238,29 @@ public class Main extends Activity {
 						}
 						lvZatanData.clear();//先清除原有数据
 						lvZatanData.addAll(blist.getZatanlist());
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_ALL:
+						AllList alist = (AllList)obj;
+						notice = alist.getNotice();
+						lvAllSumData = what;
+						if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
+							if(lvAllData.size() > 0){
+								for(All all1 : alist.getAlllist()){
+									boolean b = false;
+									for(All all2 : lvAllData){
+										if(all1.getId() == all2.getId()){
+											b = true;
+											break;
+										}
+									}
+									if(!b) newdata++;
+								}
+							}else{
+								newdata = what;
+							}
+						}
+						lvAllData.clear();//先清除原有数据
+						lvAllData.addAll(alist.getAlllist());
 						break;
 					case UIHelper.LISTVIEW_DATATYPE_HUATI:
 						HuatiList hlist = (HuatiList)obj;
@@ -1222,12 +1366,31 @@ public class Main extends Activity {
 				break;
 			case UIHelper.LISTVIEW_ACTION_SCROLL:
 				switch (objtype) {
+				    case UIHelper.LISTVIEW_DATATYPE_RECOMMEND:
+						RecommendList rlist = (RecommendList)obj;
+						notice = rlist.getNotice();
+						lvRecommendSumData += what;
+						if(lvRecommendData.size() > 0){
+							for(Recommend recommend1 : rlist.getRecommendlist()){
+								boolean b = false;
+								for(Recommend recommend2 : lvRecommendData){
+									if(recommend1.getId() == recommend2.getId()){
+										b = true;
+										break;
+									}
+								}
+								if(!b) lvRecommendData.add(recommend1);
+							}
+						}else{
+							lvRecommendData.addAll(rlist.getRecommendlist());
+						}
+						break;
 					case UIHelper.LISTVIEW_DATATYPE_NEWS:
-						NewsList list = (NewsList)obj;
-						notice = list.getNotice();
+						NewsList nlist = (NewsList)obj;
+						notice = nlist.getNotice();
 						lvNewsSumData += what;
 						if(lvNewsData.size() > 0){
-							for(News news1 : list.getNewslist()){
+							for(News news1 : nlist.getNewslist()){
 								boolean b = false;
 								for(News news2 : lvNewsData){
 									if(news1.getId() == news2.getId()){
@@ -1238,7 +1401,7 @@ public class Main extends Activity {
 								if(!b) lvNewsData.add(news1);
 							}
 						}else{
-							lvNewsData.addAll(list.getNewslist());
+							lvNewsData.addAll(nlist.getNewslist());
 						}
 						break;
 					case UIHelper.LISTVIEW_DATATYPE_ZATAN:
@@ -1258,6 +1421,25 @@ public class Main extends Activity {
 							}
 						}else{
 							lvZatanData.addAll(blist.getZatanlist());
+						}
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_ALL:
+						AllList alist = (AllList)obj;
+						notice = alist.getNotice();
+						lvAllSumData += what;
+						if(lvAllData.size() > 0){
+							for(All all1 : alist.getAlllist()){
+								boolean b = false;
+								for(All all2 : lvAllData){
+									if(all1.getId() == all2.getId()){
+										b = true;
+										break;
+									}
+								}
+								if(!b) lvAllData.add(all1);
+							}
+						}else{
+							lvAllData.addAll(alist.getAlllist());
 						}
 						break;
 					case UIHelper.LISTVIEW_DATATYPE_HUATI:
@@ -1280,11 +1462,11 @@ public class Main extends Activity {
 						}
 						break;
 					case UIHelper.LISTVIEW_DATATYPE_ZHUANTI:
-						ZhuantiList tlist = (ZhuantiList)obj;
-						notice = tlist.getNotice();
+						ZhuantiList zlist = (ZhuantiList)obj;
+						notice = zlist.getNotice();
 						lvZhuantiSumData += what;
 						if(lvZhuantiData.size() > 0){
-							for(Zhuanti zhuanti1 : tlist.getZhuantilist()){
+							for(Zhuanti zhuanti1 : zlist.getZhuantilist()){
 								boolean b = false;
 								for(Zhuanti zhuanti2 : lvZhuantiData){
 									if(zhuanti1.getId() == zhuanti2.getId()){
@@ -1295,7 +1477,7 @@ public class Main extends Activity {
 								if(!b) lvZhuantiData.add(zhuanti1);
 							}
 						}else{
-							lvZhuantiData.addAll(tlist.getZhuantilist());
+							lvZhuantiData.addAll(zlist.getZhuantilist());
 						}
 						break;
 					/*case UIHelper.LISTVIEW_DATATYPE_ACTIVE:
@@ -1343,6 +1525,38 @@ public class Main extends Activity {
     }
     
     /**
+     * 线程加载推荐数据
+     * @param catalog 分类
+     * @param pageIndex 当前页数
+     * @param handler 处理器
+     * @param action 动作标识
+     */
+	private void loadLvRecommendData(final int catalog,final int pageIndex,final Handler handler,final int action){ 
+		mHeadProgress.setVisibility(ProgressBar.VISIBLE);		
+		new Thread(){
+			public void run() {				
+				Message msg = new Message();
+				boolean isRefresh = false;
+				if(action == UIHelper.LISTVIEW_ACTION_REFRESH || action == UIHelper.LISTVIEW_ACTION_SCROLL)
+					isRefresh = true;
+				try {					
+					RecommendList list = appContext.getRecommendList(catalog, pageIndex, isRefresh);				
+					msg.what = list.getPageSize();
+					msg.obj = list;
+	            } catch (AppException e) {
+	            	e.printStackTrace();
+	            	msg.what = -1;
+	            	msg.obj = e;
+	            }
+				msg.arg1 = action;
+				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_RECOMMEND;
+                if(curNewsCatalog == catalog)
+                	handler.sendMessage(msg);
+			}
+		}.start();
+	}
+	
+    /**
      * 线程加载新闻数据
      * @param catalog 分类
      * @param pageIndex 当前页数
@@ -1389,17 +1603,17 @@ public class Main extends Activity {
 				boolean isRefresh = false;
 				if(action == UIHelper.LISTVIEW_ACTION_REFRESH || action == UIHelper.LISTVIEW_ACTION_SCROLL)
 					isRefresh = true;
-				String type = "";
+				/*String type = "";
 				switch (catalog) {
 				case ZatanList.CATALOG_LATEST:
 					type = ZatanList.TYPE_LATEST;
 					break;
-				case ZatanList.CATALOG_RECOMMEND:
-					type = ZatanList.TYPE_RECOMMEND;
+				case ZatanList.CATALOG_ALL:
+					type = ZatanList.TYPE_ALL;                                        //此处要注意修改将原来的recommend改为all
 					break;
-				}
+				}*/
 				try {
-					ZatanList list = appContext.getZatanList(type, pageIndex, isRefresh);				
+					ZatanList list = appContext.getZatanList(catalog, pageIndex, isRefresh);				
 					msg.what = list.getPageSize();
 					msg.obj = list;
 	            } catch (AppException e) {
@@ -1409,6 +1623,38 @@ public class Main extends Activity {
 	            }
 				msg.arg1 = action;
 				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_ZATAN;
+                if(curNewsCatalog == catalog)
+                	handler.sendMessage(msg);
+			}
+		}.start();
+	}
+	
+	/**
+     * 线程加载新闻数据
+     * @param catalog 分类
+     * @param pageIndex 当前页数
+     * @param handler 处理器
+     * @param action 动作标识
+     */
+	private void loadLvAllData(final int catalog,final int pageIndex,final Handler handler,final int action){ 
+		mHeadProgress.setVisibility(ProgressBar.VISIBLE);		
+		new Thread(){
+			public void run() {				
+				Message msg = new Message();
+				boolean isRefresh = false;
+				if(action == UIHelper.LISTVIEW_ACTION_REFRESH || action == UIHelper.LISTVIEW_ACTION_SCROLL)
+					isRefresh = true;
+				try {					
+					AllList list = appContext.getAllList(catalog, pageIndex, isRefresh);				
+					msg.what = list.getPageSize();
+					msg.obj = list;
+	            } catch (AppException e) {
+	            	e.printStackTrace();
+	            	msg.what = -1;
+	            	msg.obj = e;
+	            }
+				msg.arg1 = action;
+				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_ALL;
                 if(curNewsCatalog == catalog)
                 	handler.sendMessage(msg);
 			}

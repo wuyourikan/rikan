@@ -26,7 +26,7 @@
 			    android:id="@+id/news_datail_footbar_home"
 			    style="@style/main_footbar_image"
 			    android:clickable="true"
-			    android:background="@drawable/head_home"/>
+			    android:src="@drawable/head_home"/>
 			<ImageView
 				style="@style/main_footbar_cutline"
 				android:src="@drawable/widget_bar_cut_off"/>

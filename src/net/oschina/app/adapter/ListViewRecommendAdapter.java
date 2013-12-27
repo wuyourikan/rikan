@@ -41,12 +41,11 @@ public class ListViewRecommendAdapter extends BaseAdapter {
 	 * @param data
 	 * @param resource
 	 */
-	public ListViewRecommendAdapter(Context context, int recommendtype, List<Recommend> data, int resource) {
+	public ListViewRecommendAdapter(Context context, List<Recommend> data, int resource) {
 		this.context = context;			
 		this.listContainer = LayoutInflater.from(context);	//创建视图容器并设置上下文
 		this.itemViewResource = resource;
 		this.listItems = data;
-		this.recommendtype = recommendtype;
 	}
 	
 	public int getCount() {
@@ -99,12 +98,6 @@ public class ListViewRecommendAdapter extends BaseAdapter {
 			listItemView.flag.setVisibility(View.VISIBLE);
 		else
 			listItemView.flag.setVisibility(View.GONE);
-		
-		if(recommendtype == RecommendList.CATALOG_USER){
-			listItemView.author.setVisibility(View.GONE);
-		}else{
-			listItemView.author.setText(recommend.getAuthor()+"   发表于");
-		}
 		
 		return convertView;
 	}

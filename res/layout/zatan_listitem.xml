@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>  
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
-    
-    <ImageView
-        android:id="@+id/zatan_listitem_up"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:clickable="true"/> 
-    <LinearLayout
         android:orientation="vertical" 
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content"
@@ -84,5 +73,4 @@
                 android:textColor="@color/listitem_gray"/>-->
        	
         </LinearLayout>
-    </LinearLayout>
 </LinearLayout> 

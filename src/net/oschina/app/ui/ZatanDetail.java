@@ -16,6 +16,7 @@ import net.oschina.app.bean.Comment;
 import net.oschina.app.bean.FavoriteList;
 import net.oschina.app.bean.Notice;
 import net.oschina.app.bean.Result;
+import net.oschina.app.bean.Zatan.Relative;
 import net.oschina.app.common.StringUtils;
 import net.oschina.app.common.UIHelper;
 import net.oschina.app.widget.BadgeView;
@@ -53,21 +54,21 @@ import android.widget.ViewSwitcher;
  * @version 1.0
  * @created 2012-3-21
  */
-public class BlogDetail extends Activity {
+public class ZatanDetail extends Activity {
 	
-	private FrameLayout mHeader;
+	//private FrameLayout mHeader;
 	private LinearLayout mFooter;
 	private ImageView mBack;
 	private ImageView mFavorite;
-	private ImageView mRefresh;
-	private TextView mHeadTitle;
-	private ProgressBar mProgressbar;
+	//private ImageView mRefresh;
+	//private TextView mHeadTitle;
+	//private ProgressBar mProgressbar;
 	private ScrollView mScrollView;
     private ViewSwitcher mViewSwitcher;
 	
-	private BadgeView bv_comment;
+	//private BadgeView bv_comment;
 	private ImageView mDetail;
-	private ImageView mCommentList;
+	//private ImageView mCommentList;
 	private ImageView mShare;
     
 	private ImageView mDocTYpe;
@@ -78,11 +79,11 @@ public class BlogDetail extends Activity {
 	
 	private WebView mWebView;
     private Handler mHandler;
-    private Zatan blogDetail;
-    private int blogId;
+    private Zatan zatanDetail;
+    private int zatanId;
     
 	private final static int VIEWSWITCH_TYPE_DETAIL = 0x001;
-	private final static int VIEWSWITCH_TYPE_COMMENTS = 0x002;
+	//private final static int VIEWSWITCH_TYPE_COMMENTS = 0x002;
 	
 	private final static int DATA_LOAD_ING = 0x001;
 	private final static int DATA_LOAD_COMPLETE = 0x002;
@@ -102,11 +103,11 @@ public class BlogDetail extends Activity {
 	private int curLvDataState;
 	private int curLvPosition;//当前listview选中的item位置
 	
-	//private ViewSwitcher mFootViewSwitcher;
-	private ImageView mFootEditebox;
-	private EditText mFootEditer;
-	private Button mFootPubcomment;	
-	private ProgressDialog mProgress;
+	private ViewSwitcher mFootViewSwitcher;
+	//private ImageView mFootEditebox;
+	//private EditText mFootEditer;
+	//private Button mFootPubcomment;	
+	//private ProgressDialog mProgress;
 	private InputMethodManager imm;
 	private String tempCommentKey = AppConfig.TEMP_COMMENT;
 	
@@ -120,7 +121,7 @@ public class BlogDetail extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.blog_detail);
+        setContentView(R.layout.zatan_detail);
         
         AppManager.getAppManager().addActivity(this);
         
@@ -138,33 +139,33 @@ public class BlogDetail extends Activity {
     //初始化视图控件
     private void initView()
     {
-    	blogId = getIntent().getIntExtra("blog_id", 0);
+    	zatanId = getIntent().getIntExtra("zatan_id", 0);
     	
-    	if(blogId > 0) tempCommentKey = AppConfig.TEMP_COMMENT + "_" + CommentPub.CATALOG_BLOG + "_" + blogId;
+    	if(zatanId > 0) tempCommentKey = AppConfig.TEMP_COMMENT + "_" + CommentPub.CATALOG_BLOG + "_" + zatanId;
     	
-    	mHeader = (FrameLayout)findViewById(R.id.blog_detail_header);
-    	mFooter = (LinearLayout)findViewById(R.id.blog_detail_footer);
-    	mBack = (ImageView)findViewById(R.id.blog_detail_back);
-    	mRefresh = (ImageView)findViewById(R.id.blog_detail_refresh);
-    	mProgressbar = (ProgressBar)findViewById(R.id.blog_detail_head_progress);
-    	mHeadTitle = (TextView)findViewById(R.id.blog_detail_head_title);
-    	//mViewSwitcher = (ViewSwitcher)findViewById(R.id.blog_detail_viewswitcher);
-    	mScrollView = (ScrollView)findViewById(R.id.blog_detail_scrollview);
+    	//mHeader = (FrameLayout)findViewById(R.id.blog_detail_header);
+    	mFooter = (LinearLayout)findViewById(R.id.zatan_detail_footer);
+    	mBack = (ImageView)findViewById(R.id.zatan_detail_back);
+    	//mRefresh = (ImageView)findViewById(R.id.blog_detail_refresh);
+    	//mProgressbar = (ProgressBar)findViewById(R.id.blog_detail_head_progress);
+    	//mHeadTitle = (TextView)findViewById(R.id.blog_detail_head_title);
+    	//mViewSwitcher = (ViewSwitcher)findViewById(R.id.zatan_detail_viewswitcher);
+    	mScrollView = (ScrollView)findViewById(R.id.zatan_detail_scrollview);
     	
-    	mDetail = (ImageView)findViewById(R.id.blog_detail_footbar_detail);
+    	mDetail = (ImageView)findViewById(R.id.zatan_detail_footbar_detail);
     	//mCommentList = (ImageView)findViewById(R.id.blog_detail_footbar_commentlist);
-    	mShare = (ImageView)findViewById(R.id.blog_detail_footbar_share);
-    	mFavorite = (ImageView)findViewById(R.id.blog_detail_footbar_favorite);
+    	mShare = (ImageView)findViewById(R.id.zatan_detail_footbar_share);
+    	mFavorite = (ImageView)findViewById(R.id.zatan_detail_footbar_favorite);
     	
-    	mDocTYpe = (ImageView)findViewById(R.id.blog_detail_documentType);
-    	mTitle = (TextView)findViewById(R.id.blog_detail_title);
-    	mAuthor = (TextView)findViewById(R.id.blog_detail_author);
-    	mPubDate = (TextView)findViewById(R.id.blog_detail_date);
+    	//mDocTYpe = (ImageView)findViewById(R.id.blog_detail_documentType);
+    	mTitle = (TextView)findViewById(R.id.zatan_detail_title);
+    	mAuthor = (TextView)findViewById(R.id.zatan_detail_author);
+    	mPubDate = (TextView)findViewById(R.id.zatan_detail_date);
     	//mCommentCount = (TextView)findViewById(R.id.blog_detail_commentcount);
     	
     	mDetail.setEnabled(false);
     	
-    	mWebView = (WebView)findViewById(R.id.blog_detail_webview);
+    	mWebView = (WebView)findViewById(R.id.zatan_detail_webview);
     	mWebView.getSettings().setJavaScriptEnabled(false);
     	mWebView.getSettings().setSupportZoom(true);
     	mWebView.getSettings().setBuiltInZoomControls(true);
@@ -172,18 +173,18 @@ public class BlogDetail extends Activity {
     	
     	mBack.setOnClickListener(UIHelper.finish(this));
     	mFavorite.setOnClickListener(favoriteClickListener);
-    	mRefresh.setOnClickListener(refreshClickListener);
+    	//mRefresh.setOnClickListener(refreshClickListener);
     	//mAuthor.setOnClickListener(authorClickListener);
     	mShare.setOnClickListener(shareClickListener);
     	mDetail.setOnClickListener(detailClickListener);
-    	mCommentList.setOnClickListener(commentlistClickListener);
+    	//mCommentList.setOnClickListener(commentlistClickListener);
     	
-    	bv_comment = new BadgeView(this, mCommentList);
-    	bv_comment.setBackgroundResource(R.drawable.widget_count_bg2);
-    	bv_comment.setIncludeFontPadding(false);
-    	bv_comment.setGravity(Gravity.CENTER);
-    	bv_comment.setTextSize(8f);
-    	bv_comment.setTextColor(Color.WHITE);
+    	//bv_comment = new BadgeView(this, mCommentList);
+    	//bv_comment.setBackgroundResource(R.drawable.widget_count_bg2);
+    	//bv_comment.setIncludeFontPadding(false);
+    	//bv_comment.setGravity(Gravity.CENTER);
+    	//bv_comment.setTextSize(8f);
+    	//bv_comment.setTextColor(Color.WHITE);
     	
     	imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
     	
@@ -224,10 +225,10 @@ public class BlogDetail extends Activity {
 			}
 		});*/
     	//编辑器添加文本监听
-    	mFootEditer.addTextChangedListener(UIHelper.getTextWatcher(this, tempCommentKey));
+    	//mFootEditer.addTextChangedListener(UIHelper.getTextWatcher(this, tempCommentKey));
     	
     	//显示临时编辑内容
-    	UIHelper.showTempEditContent(this, mFootEditer, tempCommentKey);
+    	//UIHelper.showTempEditContent(this, mFootEditer, tempCommentKey);
     }
     
     //初始化控件数据
@@ -241,20 +242,20 @@ public class BlogDetail extends Activity {
 				{					
 					headButtonSwitch(DATA_LOAD_COMPLETE);
 					
-					int docType = blogDetail.getDocumentType(); 
-					if(docType == Zatan.DOC_TYPE_ORIGINAL){
-						mDocTYpe.setImageResource(R.drawable.widget_original_icon);
-					}else if(docType == Zatan.DOC_TYPE_REPASTE){
-						mDocTYpe.setImageResource(R.drawable.widget_repaste_icon);
-					}
+					//int docType = zatanDetail.getDocumentType(); 
+					//if(docType == Zatan.DOC_TYPE_ORIGINAL){
+						//mDocTYpe.setImageResource(R.drawable.widget_original_icon);
+					//}else if(docType == Zatan.DOC_TYPE_REPASTE){
+						//mDocTYpe.setImageResource(R.drawable.widget_repaste_icon);
+					//}
 					
-					mTitle.setText(blogDetail.getTitle());
-					mAuthor.setText(blogDetail.getAuthor());
-					mPubDate.setText(StringUtils.friendly_time(blogDetail.getPubDate()));
+					mTitle.setText(zatanDetail.getTitle());
+					mAuthor.setText(zatanDetail.getAuthor());
+					mPubDate.setText(StringUtils.friendly_time(zatanDetail.getPubDate()));
 					//mCommentCount.setText(String.valueOf(blogDetail.getCommentCount()));
 					
 					//是否收藏
-					if(blogDetail.getFavorite() == 1)
+					if(zatanDetail.getFavorite() == 1)
 						mFavorite.setImageResource(R.drawable.widget_bar_favorite2);
 					else
 						mFavorite.setImageResource(R.drawable.widget_bar_favorite);
@@ -268,7 +269,7 @@ public class BlogDetail extends Activity {
 						bv_comment.hide();
 					}*/
 					
-					String body = UIHelper.WEB_STYLE + blogDetail.getBody() + "<div style=\"margin-bottom: 80px\" />";
+					String body = UIHelper.WEB_STYLE + zatanDetail.getBody() + "<div style=\"margin-bottom: 80px\" />";
 					//读取用户设置：是否加载文章图片--默认有wifi下始终加载图片
 					boolean isLoadImage;
 					AppContext ac = (AppContext)getApplication();
@@ -283,31 +284,43 @@ public class BlogDetail extends Activity {
 					}else{
 						body = body.replaceAll("<\\s*img\\s+([^>]*)\\s*>","");
 					}
+					
+					//相关新闻
+					if(zatanDetail.getRelatives().size() > 0)                                                      //很重要
+					{
+						String strRelative = "";
+						for(Relative relative : zatanDetail.getRelatives()){
+							strRelative += String.format("<a href='%s' style='text-decoration:none'>%s</a><p/>", relative.rurl, relative.rtitle);
+						}
+						body += String.format("<p/><hr/><b>相关杂谈</b><div><p/>%s</div>", strRelative);
+					}
+					
+					body += "<div style='margin-bottom: 80px'/>";
 
 					mWebView.loadDataWithBaseURL(null, body, "text/html", "utf-8",null);
 					mWebView.setWebViewClient(UIHelper.getWebViewClient());
 					
 					//发送通知广播
 					if(msg.obj != null){
-						UIHelper.sendBroadCast(BlogDetail.this, (Notice)msg.obj);
+						UIHelper.sendBroadCast(ZatanDetail.this, (Notice)msg.obj);
 					}
 				}
-				else if(msg.what == 0)
+				else if(msg.what == 0)                                                             //此处注意
 				{
 					headButtonSwitch(DATA_LOAD_FAIL);
 					
-					UIHelper.ToastMessage(BlogDetail.this, R.string.msg_load_is_null);
+					UIHelper.ToastMessage(ZatanDetail.this, R.string.msg_load_is_null);
 				}
 				else if(msg.what == -1 && msg.obj != null)
 				{
 					headButtonSwitch(DATA_LOAD_FAIL);
 					
-					((AppException)msg.obj).makeToast(BlogDetail.this);
+					((AppException)msg.obj).makeToast(ZatanDetail.this);
 				}
 			}
 		};
 		
-		initData(blogId, false);
+		initData(zatanId, false);
 	}
 	
     private void initData(final int blog_id, final boolean isRefresh)
@@ -318,9 +331,9 @@ public class BlogDetail extends Activity {
 			public void run() {
                 Message msg = new Message();
 				try {
-					blogDetail = ((AppContext)getApplication()).getBlog(blog_id, isRefresh);
-	                msg.what = (blogDetail!=null && blogDetail.getId()>0) ? 1 : 0;
-	                msg.obj = (blogDetail!=null) ? blogDetail.getNotice() : null;
+					zatanDetail = ((AppContext)getApplication()).getBlog(blog_id, isRefresh);
+	                msg.what = (zatanDetail!=null && zatanDetail.getId()>0) ? 1 : 0;
+	                msg.obj = (zatanDetail!=null) ? zatanDetail.getNotice() : null;
 	            } catch (AppException e) {
 	                e.printStackTrace();
 	            	msg.what = -1;
@@ -339,8 +352,8 @@ public class BlogDetail extends Activity {
     	switch (type) {
 		case VIEWSWITCH_TYPE_DETAIL:
 			mDetail.setEnabled(false);
-			mCommentList.setEnabled(true);
-			mHeadTitle.setText(R.string.blog_detail_head_title);
+			//mCommentList.setEnabled(true);
+			//mHeadTitle.setText(R.string.blog_detail_head_title);
 			mViewSwitcher.setDisplayedChild(0);			
 			break;
 		/*case VIEWSWITCH_TYPE_COMMENTS:
@@ -360,25 +373,25 @@ public class BlogDetail extends Activity {
     	switch (type) {
 		case DATA_LOAD_ING:
 			mScrollView.setVisibility(View.GONE);
-			mProgressbar.setVisibility(View.VISIBLE);
-			mRefresh.setVisibility(View.GONE);
+			//mProgressbar.setVisibility(View.VISIBLE);
+			//mRefresh.setVisibility(View.GONE);
 			break;
 		case DATA_LOAD_COMPLETE:
 			mScrollView.setVisibility(View.VISIBLE);
-			mProgressbar.setVisibility(View.GONE);
-			mRefresh.setVisibility(View.VISIBLE);
+			//mProgressbar.setVisibility(View.GONE);
+			//mRefresh.setVisibility(View.VISIBLE);
 			break;
 		case DATA_LOAD_FAIL:
 			mScrollView.setVisibility(View.GONE);
-			mProgressbar.setVisibility(View.GONE);
-			mRefresh.setVisibility(View.VISIBLE);
+			//mProgressbar.setVisibility(View.GONE);
+			//mRefresh.setVisibility(View.VISIBLE);
 			break;
 		}
     }
 	
     private View.OnClickListener refreshClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			initData(blogId, true);
+			initData(zatanId, true);
 			//loadLvCommentData(curId,0,mCommentHandler,UIHelper.LISTVIEW_ACTION_REFRESH);
 		}
 	};
@@ -391,18 +404,18 @@ public class BlogDetail extends Activity {
 	
 	private View.OnClickListener shareClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			if(blogDetail == null){
+			if(zatanDetail == null){
 				UIHelper.ToastMessage(v.getContext(), R.string.msg_read_detail_fail);
 				return;
 			}
 			//分享到
-			UIHelper.showShareDialog(BlogDetail.this, blogDetail.getTitle(), blogDetail.getUrl());
+			UIHelper.showShareDialog(ZatanDetail.this, zatanDetail.getTitle(), zatanDetail.getUrl());
 		}
 	};
 	
 	private View.OnClickListener detailClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			if(blogId == 0){
+			if(zatanId == 0){
 				return;
 			}
 			//切换到详情
@@ -412,17 +425,17 @@ public class BlogDetail extends Activity {
 	
 	private View.OnClickListener commentlistClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			if(blogId == 0){
+			if(zatanId == 0){
 				return;
 			}
 			//切换到评论
-			viewSwitch(VIEWSWITCH_TYPE_COMMENTS);
+			//viewSwitch(VIEWSWITCH_TYPE_COMMENTS);
 		}
 	};
 	
 	private View.OnClickListener favoriteClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			if(blogId == 0 || blogDetail == null){
+			if(zatanId == 0 || zatanDetail == null){
 				return;
 			}
 			
@@ -438,17 +451,17 @@ public class BlogDetail extends Activity {
 					if(msg.what == 1){
 						Result res = (Result)msg.obj;
 						if(res.OK()){
-							if(blogDetail.getFavorite() == 1){
-								blogDetail.setFavorite(0);
+							if(zatanDetail.getFavorite() == 1){
+								zatanDetail.setFavorite(0);
 								mFavorite.setImageResource(R.drawable.widget_bar_favorite);
 							}else{
-								blogDetail.setFavorite(1);
+								zatanDetail.setFavorite(1);
 								mFavorite.setImageResource(R.drawable.widget_bar_favorite2);
 							}	
 						}
-						UIHelper.ToastMessage(BlogDetail.this, res.getErrorMessage());
+						UIHelper.ToastMessage(ZatanDetail.this, res.getErrorMessage());
 					}else{
-						((AppException)msg.obj).makeToast(BlogDetail.this);
+						((AppException)msg.obj).makeToast(ZatanDetail.this);
 					}
 				}        			
     		};
@@ -457,10 +470,10 @@ public class BlogDetail extends Activity {
 					Message msg = new Message();
 					Result res = null;
 					try {
-						if(blogDetail.getFavorite() == 1){
-							res = ac.delFavorite(blogId, FavoriteList.TYPE_BLOG);
+						if(zatanDetail.getFavorite() == 1){
+							res = ac.delFavorite(zatanId, FavoriteList.TYPE_BLOG);
 						}else{
-							res = ac.addFavorite(blogId, FavoriteList.TYPE_BLOG);
+							res = ac.addFavorite(zatanId, FavoriteList.TYPE_BLOG);
 						}
 						msg.what = 1;
 						msg.obj = res;
@@ -840,14 +853,14 @@ public class BlogDetail extends Activity {
                     params.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);   
                     getWindow().setAttributes(params);   
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);  
-                    mHeader.setVisibility(View.VISIBLE);
+                    //mHeader.setVisibility(View.VISIBLE);
                     mFooter.setVisibility(View.VISIBLE);
                 } else {    
                     WindowManager.LayoutParams params = getWindow().getAttributes();   
                     params.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;   
                     getWindow().setAttributes(params);   
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);   
-                    mHeader.setVisibility(View.GONE);
+                    //mHeader.setVisibility(View.GONE);
                     mFooter.setVisibility(View.GONE);
                 }
 				return true;

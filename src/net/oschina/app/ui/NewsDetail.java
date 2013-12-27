@@ -80,20 +80,20 @@ public class NewsDetail extends Activity {
     private int newsId;
 	
 	private final static int VIEWSWITCH_TYPE_DETAIL = 0x001;
-	private final static int VIEWSWITCH_TYPE_COMMENTS = 0x002;
+	//private final static int VIEWSWITCH_TYPE_COMMENTS = 0x002;
 	
 	private final static int DATA_LOAD_ING = 0x001;
 	private final static int DATA_LOAD_COMPLETE = 0x002;
 	private final static int DATA_LOAD_FAIL = 0x003;
 	
-	private PullToRefreshListView mLvComment;
+	//private PullToRefreshListView mLvComment;
 	//private ListViewCommentAdapter lvCommentAdapter;
 	//private List<Comment> lvCommentData = new ArrayList<Comment>();
-	private View lvComment_footer;
-	private TextView lvComment_foot_more;
-	private ProgressBar lvComment_foot_progress;
-    private Handler mCommentHandler;
-    private int lvSumData;
+	//private View lvComment_footer;
+	//private TextView lvComment_foot_more;
+	//private ProgressBar lvComment_foot_progress;
+    //private Handler mCommentHandler;
+    //private int lvSumData;
     
     private int curId;
 	private int curCatalog;	
@@ -104,7 +104,7 @@ public class NewsDetail extends Activity {
 	//private ImageView mFootEditebox;
 	//private EditText mFootEditer;
 	//private Button mFootPubcomment;	
-	private ProgressDialog mProgress;
+	//private ProgressDialog mProgress;
 	private InputMethodManager imm;
 	private String tempCommentKey = AppConfig.TEMP_COMMENT;
 	
@@ -140,12 +140,12 @@ public class NewsDetail extends Activity {
     {
 		newsId = getIntent().getIntExtra("news_id", 0);
 		
-		if(newsId > 0) tempCommentKey = AppConfig.TEMP_COMMENT + "_" /*+ CommentList.CATALOG_NEWS*/+ "_" + newsId;
+		//if(newsId > 0) tempCommentKey = AppConfig.TEMP_COMMENT + "_" /*+ CommentList.CATALOG_NEWS*/+ "_" + newsId;
     	
     	//mHeader = (FrameLayout)findViewById(R.id.news_detail_header);
     	mFooter = (LinearLayout)findViewById(R.id.news_detail_footer);
     	mHome = (ImageView)findViewById(R.id.news_datail_footbar_home);
-    	//mRefresh = (ImageView)findViewById(R.id.news_detail_refresh);
+    	//mRefresh = (ImageView)findViewById(R.id.news_detail_refresh);                         //刷新按钮
     	//mHeadTitle = (TextView)findViewById(R.id.news_detail_head_title);
     	//mProgressbar = (ProgressBar)findViewById(R.id.news_detail_head_progress);
     	mViewSwitcher = (ViewSwitcher)findViewById(R.id.news_detail_viewswitcher);
@@ -171,7 +171,7 @@ public class NewsDetail extends Activity {
     	
     	mHome.setOnClickListener(homeClickListener);
     	mFavorite.setOnClickListener(favoriteClickListener);
-    	//mRefresh.setOnClickListener(refreshClickListener);
+    	//mRefresh.setOnClickListener(refreshClickListener);                                  //刷新按钮动作
     	//mAuthor.setOnClickListener(authorClickListener);
     	mShare.setOnClickListener(shareClickListener);
     	mDetail.setOnClickListener(detailClickListener);
@@ -285,7 +285,7 @@ public class NewsDetail extends Activity {
 						//body += String.format("<div id='oschina_software' style='margin-top:8px;color:#FF0000;font-weight:bold'>更多关于:&nbsp;<a href='%s'>%s</a>&nbsp;的详细信息</div>", softwareLink, softwareName);
 					
 					//相关新闻
-					if(newsDetail.getRelatives().size() > 0)
+					if(newsDetail.getRelatives().size() > 0)                                                      //很重要
 					{
 						String strRelative = "";
 						for(Relative relative : newsDetail.getRelatives()){

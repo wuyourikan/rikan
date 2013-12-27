@@ -95,14 +95,14 @@ public class UserFavorite extends Activity {
     	favorite_catalog_blog = (Button)findViewById(R.id.favorite_catalog_blog);
     	favorite_catalog_news = (Button)findViewById(R.id.favorite_catalog_news);
     	
-    	favorite_catalog_software.setOnClickListener(this.favoriteBtnClick(favorite_catalog_software,FavoriteList.TYPE_SOFTWARE));
+    	favorite_catalog_software.setOnClickListener(this.favoriteBtnClick(favorite_catalog_software,FavoriteList.TYPE_RECOMMEND));
     	favorite_catalog_post.setOnClickListener(this.favoriteBtnClick(favorite_catalog_post,FavoriteList.TYPE_POST));
     	favorite_catalog_code.setOnClickListener(this.favoriteBtnClick(favorite_catalog_code,FavoriteList.TYPE_CODE));
     	favorite_catalog_blog.setOnClickListener(this.favoriteBtnClick(favorite_catalog_blog,FavoriteList.TYPE_BLOG));
     	favorite_catalog_news.setOnClickListener(this.favoriteBtnClick(favorite_catalog_news,FavoriteList.TYPE_NEWS));
     	
     	favorite_catalog_software.setEnabled(false);
-    	curFavoriteCatalog = FavoriteList.TYPE_SOFTWARE;
+    	curFavoriteCatalog = FavoriteList.TYPE_RECOMMEND;
     	
     	lvFavorite_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
     	lvFavorite_foot_more = (TextView)lvFavorite_footer.findViewById(R.id.listview_foot_more);

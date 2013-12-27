@@ -2,8 +2,13 @@ package net.oschina.app.bean;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.oschina.app.AppException;
+import net.oschina.app.bean.News.NewsType;
+import net.oschina.app.bean.News.Relative;
 import net.oschina.app.common.StringUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -19,8 +24,8 @@ import android.util.Xml;
  */
 public class Zatan extends Entity {
 
-	public final static int DOC_TYPE_REPASTE = 0;//转帖
-	public final static int DOC_TYPE_ORIGINAL = 1;//原创
+	//public final static int DOC_TYPE_REPASTE = 0;//转帖
+	//public final static int DOC_TYPE_ORIGINAL = 1;//原创
 	
 	private String title;
 	//private String where;
@@ -32,6 +37,16 @@ public class Zatan extends Entity {
 	private int favorite;
 	//private int commentCount;
 	private String url;
+	private List<Relative> relatives;
+	
+	public Zatan(){
+		this.relatives = new ArrayList<Relative>();
+	}
+	
+	public static class Relative implements Serializable{
+		public String rtitle;
+		public String rurl;
+	} 
 	
 	//public int getCommentCount() {
 		//return commentCount;
@@ -39,6 +54,12 @@ public class Zatan extends Entity {
 	//public void setCommentCount(int commentCount) {
 		//this.commentCount = commentCount;
 	//}
+	public List<Relative> getRelatives() {
+		return relatives;
+	}
+	public void setRelatives(List<Relative> relatives) {
+		this.relatives = relatives;
+	}
 	public String getUrl() {
 		return url;
 	}
@@ -87,15 +108,16 @@ public class Zatan extends Entity {
 	//public void setAuthorId(int authorId) {
 		//this.authorId = authorId;
 	//}
-	public int getDocumentType() {
-		return documentType;
-	}
-	public void setDocumentType(int documentType) {
-		this.documentType = documentType;
-	}
+	//public int getDocumentType() {
+		//return documentType;
+	//}
+	//public void setDocumentType(int documentType) {
+		//this.documentType = documentType;
+	//}
 	
 	public static Zatan parse(InputStream inputStream) throws IOException, AppException {
 		Zatan zatan = null;
+		Relative relative = null;
         //获得XmlPullParser解析器
         XmlPullParser xmlParser = Xml.newPullParser();
         try {        	
@@ -137,10 +159,10 @@ public class Zatan extends Entity {
 				            //{			            	
 				            	//blog.setAuthorId(StringUtils.toInt(xmlParser.nextText(),0));		            	
 				            //}
-				            else if(tag.equalsIgnoreCase("documentType"))
-				            {			            	
-				            	zatan.setDocumentType(StringUtils.toInt(xmlParser.nextText(),0));		            	
-				            }
+				            //else if(tag.equalsIgnoreCase("documentType"))
+				            //{			            	
+				            	//zatan.setDocumentType(StringUtils.toInt(xmlParser.nextText(),0));		            	
+				            //}
 				            else if(tag.equalsIgnoreCase("pubDate"))
 				            {			            	
 				            	zatan.setPubDate(xmlParser.nextText());            	
@@ -156,6 +178,21 @@ public class Zatan extends Entity {
 				            else if(tag.equalsIgnoreCase("url"))
 				            {			            	
 				            	zatan.setUrl(xmlParser.nextText());
+				            }
+				            else if(tag.equalsIgnoreCase("relative"))
+				            {			            	
+				            	relative = new Relative();
+				            }
+				            else if(relative != null)
+				            {			            	
+				            	if(tag.equalsIgnoreCase("rtitle"))
+				            	{
+				            		relative.rtitle = xmlParser.nextText(); 	
+				            	}
+				            	else if(tag.equalsIgnoreCase("rurl"))
+				            	{
+				            		relative.rurl = xmlParser.nextText(); 	
+				            	}
 				            }
 				            //通知信息
 				            else if(tag.equalsIgnoreCase("notice"))
@@ -183,7 +220,11 @@ public class Zatan extends Entity {
 				    		}
 			    		}
 			    		break;
-			    	case XmlPullParser.END_TAG:		    		
+			    	case XmlPullParser.END_TAG:
+			    		if (tag.equalsIgnoreCase("relative") && zatan!=null && relative!=null) { 
+				       		zatan.getRelatives().add(relative);
+				       		relative = null; 
+				       	}
 				       	break; 
 			    }
 			    //如果xml没有结束，则导航到下一个节点

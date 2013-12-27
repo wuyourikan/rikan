@@ -23,12 +23,11 @@ public class ZatanList extends Entity{
 	
 	public static final int CATALOG_USER = 1;//用户博客
 	public static final int CATALOG_LATEST = 2;//最新博客
-	public static final int CATALOG_RECOMMEND = 3;//推荐博客
-	public static final int CATALOG_ALL = 4;//全部文章
+	//public static final int CATALOG_ALL = 3;//全部文章
 	
 	public static final String TYPE_LATEST = "latest";
-	public static final String TYPE_RECOMMEND = "recommend";
-	public static final String TYPE_ALL = "all";
+	//public static final String TYPE_RECOMMEND = "recommend";
+	//public static final String TYPE_ALL = "all";
 	
 	private int zatansCount;
 	private int pageSize;
