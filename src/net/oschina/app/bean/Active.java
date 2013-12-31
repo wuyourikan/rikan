@@ -22,7 +22,7 @@ public class Active extends Entity {
 
 	public final static int CATALOG_OTHER = 0;//其他
 	public final static int CATALOG_NEWS = 1;//新闻
-	public final static int CATALOG_POST = 2;//帖子
+	public final static int CATALOG_HUATI = 2;//帖子
 	public final static int CATALOG_TWEET = 3;//动弹
 	public final static int CATALOG_BLOG = 4;//博客
 	

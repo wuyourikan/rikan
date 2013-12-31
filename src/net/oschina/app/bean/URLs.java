@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 
 import net.oschina.app.common.StringUtils;
 
@@ -15,7 +16,7 @@ import net.oschina.app.common.StringUtils;
  */
 public class URLs implements Serializable {
 	
-	public final static String HOST = "www.oschina.net";//192.168.1.213  www.oschina.net
+	public final static String HOST = "www.oschina.net"; //192.168.1.213  www.oschina.net
 	public final static String HTTP = "http://";
 	public final static String HTTPS = "https://";
 	
@@ -27,9 +28,9 @@ public class URLs implements Serializable {
 	public final static String LOGIN_VALIDATE_HTTPS = HTTPS + HOST + URL_SPLITTER + "action/api/login_validate";
 	public final static String NEWS_LIST = URL_API_HOST+"action/api/news_list";
 	public final static String NEWS_DETAIL = URL_API_HOST+"action/api/news_detail";
-	public final static String POST_LIST = URL_API_HOST+"action/api/post_list";
-	public final static String POST_DETAIL = URL_API_HOST+"action/api/post_detail";
-	public final static String POST_PUB = URL_API_HOST+"action/api/post_pub";
+	public final static String HUATI_LIST = URL_API_HOST+"action/api/huati_list";
+	public final static String HUATI_DETAIL = URL_API_HOST+"action/api/huati_detail";
+	public final static String HUATI_PUB = URL_API_HOST+"action/api/huati_pub";
 	public final static String TWEET_LIST = URL_API_HOST+"action/api/tweet_list";
 	public final static String TWEET_DETAIL = URL_API_HOST+"action/api/tweet_detail";
 	public final static String TWEET_PUB = URL_API_HOST+"action/api/tweet_pub";
@@ -72,20 +73,20 @@ public class URLs implements Serializable {
 	
 	private final static String URL_TYPE_NEWS = URL_WWW_HOST + URL_SPLITTER + "news" + URL_SPLITTER;
 	private final static String URL_TYPE_SOFTWARE = URL_WWW_HOST + URL_SPLITTER + "p" + URL_SPLITTER;
-	private final static String URL_TYPE_QUESTION = URL_WWW_HOST + URL_SPLITTER + "question" + URL_SPLITTER;
+	private final static String URL_TYPE_HUATI = URL_WWW_HOST + URL_SPLITTER + "question" + URL_SPLITTER;
 	private final static String URL_TYPE_BLOG = URL_SPLITTER + "blog" + URL_SPLITTER;
 	private final static String URL_TYPE_TWEET = URL_SPLITTER + "tweet" + URL_SPLITTER;
 	private final static String URL_TYPE_ZONE = URL_MY_HOST + URL_SPLITTER + "u" + URL_SPLITTER;
-	private final static String URL_TYPE_QUESTION_TAG = URL_TYPE_QUESTION + "tag" + URL_SPLITTER;
+	private final static String URL_TYPE_HUATI_TAG = URL_TYPE_HUATI + "tag" + URL_SPLITTER;
 	
 	public final static int URL_OBJ_TYPE_OTHER = 0x000;
 	public final static int URL_OBJ_TYPE_NEWS = 0x001;
 	public final static int URL_OBJ_TYPE_SOFTWARE = 0x002;
-	public final static int URL_OBJ_TYPE_QUESTION = 0x003;
+	public final static int URL_OBJ_TYPE_HUATI = 0x003;
 	public final static int URL_OBJ_TYPE_ZONE = 0x004;
 	public final static int URL_OBJ_TYPE_BLOG = 0x005;
 	public final static int URL_OBJ_TYPE_TWEET = 0x006;
-	public final static int URL_OBJ_TYPE_QUESTION_TAG = 0x007;
+	public final static int URL_OBJ_TYPE_HUATI_TAG = 0x007;
 	
 	private int objId;
 	private String objKey = "";
@@ -139,18 +140,19 @@ public class URLs implements Serializable {
 						urls.setObjType(URL_OBJ_TYPE_SOFTWARE);
 					}
 					//问答
-					else if(path.contains(URL_TYPE_QUESTION)){
+					else if(path.contains(URL_TYPE_HUATI)){
 						//问答-标签  http://www.oschina.net/question/tag/python
-						if(path.contains(URL_TYPE_QUESTION_TAG)){
-							urls.setObjKey(parseObjKey(path, URL_TYPE_QUESTION_TAG));
-							urls.setObjType(URL_OBJ_TYPE_QUESTION_TAG);
+						if(path.contains(URL_TYPE_HUATI_TAG)){
+							urls.setObjKey(parseObjKey(path, URL_TYPE_HUATI_TAG));
+							urls.setObjType(URL_OBJ_TYPE_HUATI_TAG);
 						}
 						//问答  www.oschina.net/question/12_45738
 						else{
-							objId = parseObjId(path, URL_TYPE_QUESTION);
+							objId = parseObjId(path, URL_TYPE_HUATI);
+							//去掉‘_’前面的数字
 							String[] _tmp = objId.split(URL_UNDERLINE);
 							urls.setObjId(StringUtils.toInt(_tmp[1]));
-							urls.setObjType(URL_OBJ_TYPE_QUESTION);
+							urls.setObjType(URL_OBJ_TYPE_HUATI);
 						}
 					}
 					//other

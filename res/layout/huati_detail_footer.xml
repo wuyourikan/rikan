@@ -32,10 +32,10 @@
 			<ImageView
 				style="@style/main_footbar_cutline"
 				android:src="@drawable/widget_bar_cut_off"/>
-			<ImageView 
+			<!-- <ImageView 
 				android:id="@+id/huati_detail_footbar_commentlist"
 				style="@style/main_footbar_image"
-				android:src="@drawable/widget_bar_comment"/>
+				android:src="@drawable/widget_bar_comment"/> -->
 			<ImageView
 				style="@style/main_footbar_cutline"
 				android:src="@drawable/widget_bar_cut_off"/>

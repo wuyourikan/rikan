@@ -24,7 +24,7 @@ import android.util.Xml;
 public class CommentList extends Entity{
 
 	public final static int CATALOG_NEWS = 1;
-	public final static int CATALOG_POST = 2;
+	public final static int CATALOG_HUATI = 2;
 	public final static int CATALOG_TWEET = 3;
 	public final static int CATALOG_ACTIVE = 4;
 	public final static int CATALOG_MESSAGE = 4;//动态与留言都属于消息中心

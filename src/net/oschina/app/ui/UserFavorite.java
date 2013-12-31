@@ -36,7 +36,7 @@ public class UserFavorite extends BaseActivity {
 	private ImageView mBack;
 	private ProgressBar mProgressbar;
 	private Button favorite_catalog_software;
-	private Button favorite_catalog_post;
+	private Button favorite_catalog_huati;
 	private Button favorite_catalog_code;
 	private Button favorite_catalog_blog;
 	private Button favorite_catalog_news;
@@ -88,14 +88,14 @@ public class UserFavorite extends BaseActivity {
     	mBack.setOnClickListener(UIHelper.finish(this));
     	mProgressbar = (ProgressBar)findViewById(R.id.favorite_head_progress);
     	
-    	favorite_catalog_software = (Button)findViewById(R.id.favorite_catalog_software);
-    	favorite_catalog_post = (Button)findViewById(R.id.favorite_catalog_post);
-    	favorite_catalog_code = (Button)findViewById(R.id.favorite_catalog_code);
-    	favorite_catalog_blog = (Button)findViewById(R.id.favorite_catalog_blog);
-    	favorite_catalog_news = (Button)findViewById(R.id.favorite_catalog_news);
+    	favorite_catalog_software = (Button)findViewById(R.id.favorite_catalog_news);
+    	favorite_catalog_huati = (Button)findViewById(R.id.favorite_catalog_zhuanti);
+    	favorite_catalog_code = (Button)findViewById(R.id.favorite_catalog_huati);
+    	favorite_catalog_blog = (Button)findViewById(R.id.favorite_catalog_old);
+    	favorite_catalog_news = (Button)findViewById(R.id.favorite_catalog_center);
     	
     	favorite_catalog_software.setOnClickListener(this.favoriteBtnClick(favorite_catalog_software,FavoriteList.TYPE_SOFTWARE));
-    	favorite_catalog_post.setOnClickListener(this.favoriteBtnClick(favorite_catalog_post,FavoriteList.TYPE_POST));
+    	favorite_catalog_huati.setOnClickListener(this.favoriteBtnClick(favorite_catalog_huati,FavoriteList.TYPE_HUATI));
     	favorite_catalog_code.setOnClickListener(this.favoriteBtnClick(favorite_catalog_code,FavoriteList.TYPE_CODE));
     	favorite_catalog_blog.setOnClickListener(this.favoriteBtnClick(favorite_catalog_blog,FavoriteList.TYPE_BLOG));
     	favorite_catalog_news.setOnClickListener(this.favoriteBtnClick(favorite_catalog_news,FavoriteList.TYPE_NEWS));
@@ -346,10 +346,10 @@ public class UserFavorite extends BaseActivity {
 		    		favorite_catalog_news.setEnabled(false);
 		    	else
 		    		favorite_catalog_news.setEnabled(true);
-		    	if(btn == favorite_catalog_post)
-		    		favorite_catalog_post.setEnabled(false);
+		    	if(btn == favorite_catalog_huati)
+		    		favorite_catalog_huati.setEnabled(false);
 		    	else
-		    		favorite_catalog_post.setEnabled(true);
+		    		favorite_catalog_huati.setEnabled(true);
 		    	if(btn == favorite_catalog_software)
 		    		favorite_catalog_software.setEnabled(false);
 		    	else

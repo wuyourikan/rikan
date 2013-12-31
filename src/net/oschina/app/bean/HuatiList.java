@@ -21,14 +21,14 @@ import android.util.Xml;
  */
 public class HuatiList extends Entity{
 
-	//public final static int CATALOG_CENTER = 1;
+	//public final static int CATALOG_CENTER = 0;
 	public final static int CATALOG_SIXIANG = 1;
 	public final static int CATALOG_ZHENGJING = 2;
 	public final static int CATALOG_WENSHI = 3;
 
-	private int pageSize;
-	private int huatiCount;
-	private List<Huati> huatilist = new ArrayList<Huati>();
+	private int pageSize;	//分页参数，一页有多少个话题
+	private int huatiCount; //貌似是无用字段，因为get方法从未被调用
+	private List<Huati> huatilist = new ArrayList<Huati>();	//话题List
 	
 	public int getPageSize() {
 		return pageSize;
@@ -80,6 +80,14 @@ public class HuatiList extends Entity{
 				            {			            	
 				            	huati.setImg(xmlParser.nextText());
 				            }
+				            else if(tag.equalsIgnoreCase(Huati.NODE_INTRO))
+				            {			            	
+				            	huati.setIntro(xmlParser.nextText());
+				            }
+				            else if(tag.equalsIgnoreCase(Huati.NODE_PUBDATE))
+				            {			            	
+				            	huati.setPubDate(xmlParser.nextText());         	
+				            }
 				           /* else if(tag.equalsIgnoreCase(Huati.NODE_AUTHOR))
 				            {			            	
 				            	huati.setAuthor(xmlParser.nextText());		            	
@@ -96,10 +104,6 @@ public class HuatiList extends Entity{
 				            {			            	
 				            	huati.setViewCount(StringUtils.toInt(xmlParser.nextText(),0));			            	
 				            }*/
-				            else if(tag.equalsIgnoreCase(Huati.NODE_PUBDATE))
-				            {			            	
-				            	huati.setPubDate(xmlParser.nextText());         	
-				            }
 			    		}
 			            //通知信息
 			            else if(tag.equalsIgnoreCase("notice"))

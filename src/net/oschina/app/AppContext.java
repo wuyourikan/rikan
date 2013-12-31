@@ -22,13 +22,14 @@ import net.oschina.app.bean.BlogList;
 import net.oschina.app.bean.CommentList;
 import net.oschina.app.bean.FavoriteList;
 import net.oschina.app.bean.FriendList;
+import net.oschina.app.bean.HuatiList;
 import net.oschina.app.bean.MessageList;
 import net.oschina.app.bean.MyInformation;
 import net.oschina.app.bean.News;
 import net.oschina.app.bean.NewsList;
 import net.oschina.app.bean.Notice;
-import net.oschina.app.bean.Post;
-import net.oschina.app.bean.PostList;
+import net.oschina.app.bean.Huati;
+import net.oschina.app.bean.HuatiList;
 import net.oschina.app.bean.Result;
 import net.oschina.app.bean.SearchList;
 import net.oschina.app.bean.Software;
@@ -733,18 +734,18 @@ public class AppContext extends Application {
 	}
 	
 	/**
-	 * 帖子列表
+	 * 话题列表
 	 * @param catalog
 	 * @param pageIndex
 	 * @return
 	 * @throws ApiException
 	 */
-	public PostList getPostList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
-		PostList list = null;
-		String key = "postlist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
+	public HuatiList getHuatiList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
+		HuatiList list = null;
+		String key = "huatilist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
 		if(isNetworkConnected() && (isNeedUpdate(key) || isRefresh)) {		
 			try{
-				list = ApiClient.getPostList(this, catalog, pageIndex, PAGE_SIZE);
+				list = ApiClient.getHuatiList(this, catalog, pageIndex, PAGE_SIZE);
 				if(list != null && pageIndex == 0){
 					Notice notice = list.getNotice();
 					list.setNotice(null);
@@ -753,31 +754,32 @@ public class AppContext extends Application {
 					list.setNotice(notice);
 				}
 			}catch(AppException e){
-				list = (PostList)readObject(key);
+				list = (HuatiList)readObject(key);
 				if(list == null)
 					throw e;
 			}
 		} else {
-			list = (PostList)readObject(key);
+			list = (HuatiList)readObject(key);
 			if(list == null)
-				list = new PostList();
+				list = new HuatiList();
 		}
 		return list;
 	}
 	
+	
 	/**
-	 * Tag相关帖子列表
+	 * Tag相关话题列表
 	 * @param tag
 	 * @param pageIndex
 	 * @return
 	 * @throws ApiException
 	 */
-	public PostList getPostListByTag(String tag, int pageIndex, boolean isRefresh) throws AppException {
-		PostList list = null;
-		String key = "postlist_"+(URLEncoder.encode(tag))+"_"+pageIndex+"_"+PAGE_SIZE;
+	public HuatiList getHuatiListByTag(String tag, int pageIndex, boolean isRefresh) throws AppException {
+		HuatiList list = null;
+		String key = "huatilist_"+(URLEncoder.encode(tag))+"_"+pageIndex+"_"+PAGE_SIZE;
 		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {		
 			try{
-				list = ApiClient.getPostListByTag(this, tag, pageIndex, PAGE_SIZE);
+				list = ApiClient.getHuatiListByTag(this, tag, pageIndex, PAGE_SIZE);
 				if(list != null && pageIndex == 0){
 					Notice notice = list.getNotice();
 					list.setNotice(null);
@@ -786,48 +788,48 @@ public class AppContext extends Application {
 					list.setNotice(notice);
 				}
 			}catch(AppException e){
-				list = (PostList)readObject(key);
+				list = (HuatiList)readObject(key);
 				if(list == null)
 					throw e;
 			}
 		} else {
-			list = (PostList)readObject(key);
+			list = (HuatiList)readObject(key);
 			if(list == null)
-				list = new PostList();
+				list = new HuatiList();
 		}
 		return list;
 	}
 	
 	/**
-	 * 读取帖子详情
-	 * @param post_id
+	 * 读取话题详情
+	 * @param huati_id
 	 * @return
 	 * @throws ApiException
 	 */
-	public Post getPost(int post_id, boolean isRefresh) throws AppException {		
-		Post post = null;
-		String key = "post_"+post_id;
+	public Huati getHuati(int huati_id, boolean isRefresh) throws AppException {		
+		Huati huati = null;
+		String key = "huati_"+huati_id;
 		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {	
 			try{
-				post = ApiClient.getPostDetail(this, post_id);
-				if(post != null){
-					Notice notice = post.getNotice();
-					post.setNotice(null);
-					post.setCacheKey(key);
-					saveObject(post, key);
-					post.setNotice(notice);
+				huati = ApiClient.getHuatiDetail(this, huati_id);
+				if(huati != null){
+					Notice notice = huati.getNotice();
+					huati.setNotice(null);
+					huati.setCacheKey(key);
+					saveObject(huati, key);
+					huati.setNotice(notice);
 				}
 			}catch(AppException e){
-				post = (Post)readObject(key);
-				if(post == null)
+				huati = (Huati)readObject(key);
+				if(huati == null)
 					throw e;
 			}
 		} else {
-			post = (Post)readObject(key);
-			if(post == null)
-				post = new Post();
+			huati = (Huati)readObject(key);
+			if(huati == null)
+				huati = new Huati();
 		}
-		return post;		
+		return huati;		
 	}
 	
 	/**
@@ -996,8 +998,8 @@ public class AppContext extends Application {
 	
 	/**
 	 * 评论列表
-	 * @param catalog 1新闻 2帖子 3动弹 4动态
-	 * @param id 某条新闻，帖子，动弹的id 或者某条留言的friendid
+	 * @param catalog 1新闻 2话题 3动弹 4动态
+	 * @param id 某条新闻，话题，动弹的id 或者某条留言的friendid
 	 * @param pageIndex
 	 * @return
 	 * @throws AppException
@@ -1030,7 +1032,7 @@ public class AppContext extends Application {
 	
 	/**
 	 * 获取搜索列表
-	 * @param catalog 全部:all 新闻:news  问答:post 软件:software 博客:blog 代码:code
+	 * @param catalog 全部:all 新闻:news  问答:huati 软件:software 博客:blog 代码:code
 	 * @param content 搜索的内容
 	 * @param pageIndex
 	 * @param pageSize
@@ -1042,14 +1044,14 @@ public class AppContext extends Application {
 	}
 	
 	/**
-	 * 发帖子
-	 * @param post （uid、title、catalog、content、isNoticeMe）
+	 * 发话题
+	 * @param huati （uid、title、catalog、content、isNoticeMe）
 	 * @return
 	 * @throws AppException
 	 */
-	public Result pubPost(Post post) throws AppException {
-		return ApiClient.pubPost(this, post);
-	}
+	/*public Result pubHuati(Huati huati) throws AppException {
+		return ApiClient.pubHuati(this, huati);
+	}*/
 	
 	/**
 	 * 发动弹
@@ -1109,22 +1111,22 @@ public class AppContext extends Application {
 	
 	/**
 	 * 发表评论
-	 * @param catalog 1新闻  2帖子  3动弹  4动态
-	 * @param id 某条新闻，帖子，动弹的id
+	 * @param catalog 1新闻  2话题  3动弹  4动态
+	 * @param id 某条新闻，话题，动弹的id
 	 * @param uid 用户uid
 	 * @param content 发表评论的内容
-	 * @param isPostToMyZone 是否转发到我的空间  0不转发  1转发
+	 * @param isHuatiToMyZone 是否转发到我的空间  0不转发  1转发
 	 * @return
 	 * @throws AppException
 	 */
-	public Result pubComment(int catalog, int id, int uid, String content, int isPostToMyZone) throws AppException {
-		return ApiClient.pubComment(this, catalog, id, uid, content, isPostToMyZone);
+	public Result pubComment(int catalog, int id, int uid, String content, int isHuatiToMyZone) throws AppException {
+		return ApiClient.pubComment(this, catalog, id, uid, content, isHuatiToMyZone);
 	}
 	
 	/**
 	 * 
-	 * @param id 表示被评论的某条新闻，帖子，动弹的id 或者某条消息的 friendid 
-	 * @param catalog 表示该评论所属什么类型：1新闻  2帖子  3动弹  4动态
+	 * @param id 表示被评论的某条新闻，话题，动弹的id 或者某条消息的 friendid 
+	 * @param catalog 表示该评论所属什么类型：1新闻  2话题  3动弹  4动态
 	 * @param replyid 表示被回复的单个评论id
 	 * @param authorid 表示该评论的原始作者id
 	 * @param uid 用户uid 一般都是当前登录用户uid
@@ -1138,8 +1140,8 @@ public class AppContext extends Application {
 	
 	/**
 	 * 删除评论
-	 * @param id 表示被评论对应的某条新闻,帖子,动弹的id 或者某条消息的 friendid
-	 * @param catalog 表示该评论所属什么类型：1新闻  2帖子  3动弹  4动态&留言
+	 * @param id 表示被评论对应的某条新闻,话题,动弹的id 或者某条消息的 friendid
+	 * @param catalog 表示该评论所属什么类型：1新闻  2话题  3动弹  4动态&留言
 	 * @param replyid 表示被回复的单个评论id
 	 * @param authorid 表示该评论的原始作者id
 	 * @return
@@ -1479,7 +1481,7 @@ public class AppContext extends Application {
 			return 60*1000L; //1min
 		case 2: //2：WAP网络    3：NET网络
 		case 3:
-			return 10*1000L;//1hour
+			return 60*60*1000L;//1hour
 		}
 		return Long.MAX_VALUE;
 	}
@@ -1732,6 +1734,6 @@ public class AppContext extends Application {
 	 */
 	public void setSaveImagePath(String saveImagePath) {
 		this.saveImagePath = saveImagePath;
-	}	
+	}
 	
 }

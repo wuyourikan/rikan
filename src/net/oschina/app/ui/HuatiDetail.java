@@ -14,8 +14,9 @@ import net.oschina.app.bean.Comment;
 import net.oschina.app.bean.CommentList;
 import net.oschina.app.bean.FavoriteList;
 import net.oschina.app.bean.Notice;
-import net.oschina.app.bean.Post;
+import net.oschina.app.bean.Huati;
 import net.oschina.app.bean.Result;
+import net.oschina.app.bean.URLs;
 import net.oschina.app.common.StringUtils;
 import net.oschina.app.common.UIHelper;
 import net.oschina.app.widget.BadgeView;
@@ -48,11 +49,11 @@ import android.widget.ViewSwitcher;
 
 /**
  * 问答详情
- * @author liux (http://my.oschina.net/liux)
+ * @author wyf (http://my.oschina.net/zgtjwyftc)
  * @version 1.0
- * @created 2012-3-21
+ * @created 2013-12-27
  */
-public class QuestionDetail extends BaseActivity {
+public class HuatiDetail extends BaseActivity {
 
 	private FrameLayout mHeader;
 	private LinearLayout mFooter;
@@ -64,20 +65,20 @@ public class QuestionDetail extends BaseActivity {
 	private ScrollView mScrollView;
     private ViewSwitcher mViewSwitcher;
     
-	private BadgeView bv_comment;
+	//private BadgeView bv_comment;
 	private ImageView mDetail;
-	private ImageView mCommentList;
+	//private ImageView mCommentList;
 	private ImageView mShare;
 	
 	private TextView mTitle;
 	private TextView mAuthor;
 	private TextView mPubDate;
-	private TextView mCommentCount;
+	//private TextView mCommentCount;
 	
 	private WebView mWebView;
     private Handler mHandler;
-    private Post postDetail;
-    private int postId;
+    private Huati huatiDetail;
+    private int huatiId;
     
 	private final static int VIEWSWITCH_TYPE_DETAIL = 0x001;
 	private final static int VIEWSWITCH_TYPE_COMMENTS = 0x002;
@@ -112,7 +113,7 @@ public class QuestionDetail extends BaseActivity {
 	private int _id;
 	private int _uid;
 	private String _content;
-	private int _isPostToMyZone;
+	private int _isHuatiToMyZone;
 	
 	private GestureDetector gd;
 	private boolean isFullScreen;
@@ -120,14 +121,14 @@ public class QuestionDetail extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.question_detail);
+        setContentView(R.layout.huati_detail);
         
         this.initView();        
         this.initData();
         
     	//加载评论视图&数据
-    	this.initCommentView();
-    	this.initCommentData();
+    	//this.initCommentView();
+    	//this.initCommentData();
     	
     	//注册双击全屏事件
     	this.regOnDoubleEvent();
@@ -136,32 +137,32 @@ public class QuestionDetail extends BaseActivity {
     //初始化视图控件
     private void initView()
     {
-		postId = getIntent().getIntExtra("post_id", 0);
+		huatiId = getIntent().getIntExtra("huati_id", 0);
 		
-    	if(postId > 0) tempCommentKey = AppConfig.TEMP_COMMENT + "_" + CommentList.CATALOG_POST + "_" + postId;
+    	if(huatiId > 0) tempCommentKey = AppConfig.TEMP_COMMENT + "_" + CommentList.CATALOG_HUATI + "_" + huatiId;
     	
-    	mHeader = (FrameLayout)findViewById(R.id.question_detail_header);
-    	mFooter = (LinearLayout)findViewById(R.id.question_detail_footer);
-    	mBack = (ImageView)findViewById(R.id.question_detail_back);
-    	mRefresh = (ImageView)findViewById(R.id.question_detail_refresh);
-    	mHeadTitle = (TextView)findViewById(R.id.question_detail_head_title);
-    	mProgressbar = (ProgressBar)findViewById(R.id.question_detail_head_progress);
-    	mViewSwitcher = (ViewSwitcher)findViewById(R.id.question_detail_viewswitcher);
-    	mScrollView = (ScrollView)findViewById(R.id.question_detail_scrollview);
+    	mHeader = (FrameLayout)findViewById(R.id.huati_detail_header);
+    	mFooter = (LinearLayout)findViewById(R.id.huati_detail_footer);
+    	mBack = (ImageView)findViewById(R.id.huati_detail_back);
+    	mRefresh = (ImageView)findViewById(R.id.huati_detail_refresh);
+    	mHeadTitle = (TextView)findViewById(R.id.huati_detail_head_title);
+    	mProgressbar = (ProgressBar)findViewById(R.id.huati_detail_head_progress);
+    	mViewSwitcher = (ViewSwitcher)findViewById(R.id.huati_detail_viewswitcher);
+    	mScrollView = (ScrollView)findViewById(R.id.huati_detail_scrollview);
     	
-    	mDetail = (ImageView)findViewById(R.id.question_detail_footbar_detail);
-    	mCommentList = (ImageView)findViewById(R.id.question_detail_footbar_commentlist);
-    	mShare = (ImageView)findViewById(R.id.question_detail_footbar_share);
-    	mFavorite = (ImageView)findViewById(R.id.question_detail_footbar_favorite);
+    	mDetail = (ImageView)findViewById(R.id.huati_detail_footbar_detail);
+    	//mCommentList = (ImageView)findViewById(R.id.huati_detail_footbar_commentlist);
+    	mShare = (ImageView)findViewById(R.id.huati_detail_footbar_share);
+    	mFavorite = (ImageView)findViewById(R.id.huati_detail_footbar_favorite);
     	
-    	mTitle = (TextView)findViewById(R.id.question_detail_title);
-    	mAuthor = (TextView)findViewById(R.id.question_detail_author);
-    	mPubDate = (TextView)findViewById(R.id.question_detail_date);
-    	mCommentCount = (TextView)findViewById(R.id.question_detail_commentcount);
+    	mTitle = (TextView)findViewById(R.id.huati_detail_title);
+    	mAuthor = (TextView)findViewById(R.id.huati_detail_author);
+    	mPubDate = (TextView)findViewById(R.id.huati_detail_date);
+    	//mCommentCount = (TextView)findViewById(R.id.huati_detail_commentcount);
     	
     	mDetail.setEnabled(false);
     	
-    	mWebView = (WebView)findViewById(R.id.question_detail_webview);
+    	mWebView = (WebView)findViewById(R.id.huati_detail_webview);
     	mWebView.getSettings().setSupportZoom(true);
     	mWebView.getSettings().setBuiltInZoomControls(true);
     	mWebView.getSettings().setDefaultFontSize(15);    	
@@ -172,22 +173,22 @@ public class QuestionDetail extends BaseActivity {
     	mRefresh.setOnClickListener(refreshClickListener);
     	mShare.setOnClickListener(shareClickListener);
     	mDetail.setOnClickListener(detailClickListener);
-    	mCommentList.setOnClickListener(commentlistClickListener);
+    	//mCommentList.setOnClickListener(commentlistClickListener);
     	mAuthor.setOnClickListener(authorClickListener);
     	
-    	bv_comment = new BadgeView(this, mCommentList);
+/*    	bv_comment = new BadgeView(this, mCommentList);
     	bv_comment.setBackgroundResource(R.drawable.widget_count_bg2);
     	bv_comment.setIncludeFontPadding(false);
     	bv_comment.setGravity(Gravity.CENTER);
     	bv_comment.setTextSize(8f);
-    	bv_comment.setTextColor(Color.WHITE);
+    	bv_comment.setTextColor(Color.WHITE);*/
     	
     	imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
     	
-    	mFootViewSwitcher = (ViewSwitcher)findViewById(R.id.question_detail_foot_viewswitcher);
-    	mFootPubcomment = (Button)findViewById(R.id.question_detail_foot_pubcomment);
+    	mFootViewSwitcher = (ViewSwitcher)findViewById(R.id.huati_detail_foot_viewswitcher);
+    	mFootPubcomment = (Button)findViewById(R.id.huati_detail_foot_pubcomment);
     	mFootPubcomment.setOnClickListener(commentpubClickListener);
-    	mFootEditebox = (ImageView)findViewById(R.id.question_detail_footbar_editebox);
+    	mFootEditebox = (ImageView)findViewById(R.id.huati_detail_footbar_editebox);
     	mFootEditebox.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mFootViewSwitcher.showNext();
@@ -196,7 +197,7 @@ public class QuestionDetail extends BaseActivity {
 				mFootEditer.requestFocusFromTouch();
 			}
 		});
-    	mFootEditer = (EditText)findViewById(R.id.question_detail_foot_editer);
+    	mFootEditer = (EditText)findViewById(R.id.huati_detail_foot_editer);
     	mFootEditer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			public void onFocusChange(View v, boolean hasFocus) {
 				if(hasFocus){  
@@ -238,20 +239,21 @@ public class QuestionDetail extends BaseActivity {
 				
 				if(msg.what == 1)
 				{					
-					mTitle.setText(postDetail.getTitle());
-					mAuthor.setText(postDetail.getAuthor());
-					mPubDate.setText(StringUtils.friendly_time(postDetail.getPubDate()));
-					mCommentCount.setText(postDetail.getAnswerCount()+"回/"+postDetail.getViewCount()+"阅");
+					mTitle.setText(huatiDetail.getTitle());
+					mAuthor.setText(huatiDetail.getAuthor());
+					//mPubDate.setText(StringUtils.friendly_time(huatiDetail.getPubDate()));
+					mPubDate.setText(huatiDetail.getPubDate());
+					//mCommentCount.setText(huatiDetail.getAnswerCount()+"回/"+huatiDetail.getViewCount()+"阅");
 					
 					//是否收藏
-					if(postDetail.getFavorite() == 1)
+					if(huatiDetail.getFavorite() == 1)
 						mFavorite.setImageResource(R.drawable.widget_bar_favorite2);
 					else
 						mFavorite.setImageResource(R.drawable.widget_bar_favorite);
 					
 					//显示评论数
-					if(postDetail.getAnswerCount() > 0){
-						bv_comment.setText(postDetail.getAnswerCount()+"");
+/*					if(huatiDetail.getAnswerCount() > 0){
+						bv_comment.setText(huatiDetail.getAnswerCount()+"");
 						bv_comment.show();
 					}else{
 						bv_comment.setText("");
@@ -259,9 +261,13 @@ public class QuestionDetail extends BaseActivity {
 					}
 					
 					//显示标签
-					String tags = getPostTags(postDetail.getTags());
+					String tags = getHuatiTags(huatiDetail.getTags());	*/				
 					
-					String body = UIHelper.WEB_STYLE + postDetail.getBody() + tags + "<div style=\"margin-bottom: 80px\" />";
+					String body = UIHelper.WEB_STYLE + huatiDetail.getBody() + "<div style=\"margin-bottom: 80px\" />";
+					
+					//去掉<img>前面的<a>
+					body = body.replaceAll("(<a.*>)(<img.*/>)","$2");
+
 					//读取用户设置：是否加载文章图片--默认有wifi下始终加载图片
 					boolean isLoadImage;
 					AppContext ac = (AppContext)getApplication();
@@ -271,6 +277,7 @@ public class QuestionDetail extends BaseActivity {
 						isLoadImage = ac.isLoadImage();
 					}
 					if(isLoadImage){
+						//去掉所有<img>标签中的width和height属性
 						body = body.replaceAll("(<img[^>]*?)\\s+width\\s*=\\s*\\S+","$1");
 						body = body.replaceAll("(<img[^>]*?)\\s+height\\s*=\\s*\\S+","$1");
 						// 添加点击图片放大支持
@@ -279,34 +286,35 @@ public class QuestionDetail extends BaseActivity {
 					}else{
 						body = body.replaceAll("<\\s*img\\s+([^>]*)\\s*>","");
 					}
-
+					
 					mWebView.loadDataWithBaseURL(null, body, "text/html", "utf-8",null);
 					mWebView.setWebViewClient(UIHelper.getWebViewClient());	
+					mWebView.clearFocus();
 					
 					//发送通知广播
 					if(msg.obj != null){
-						UIHelper.sendBroadCast(QuestionDetail.this, (Notice)msg.obj);
+						UIHelper.sendBroadCast(HuatiDetail.this, (Notice)msg.obj);
 					}
 				}
 				else if(msg.what == 0)
 				{
 					headButtonSwitch(DATA_LOAD_FAIL);
 					
-					UIHelper.ToastMessage(QuestionDetail.this, R.string.msg_load_is_null);
+					UIHelper.ToastMessage(HuatiDetail.this, R.string.msg_load_is_null);
 				}
 				else if(msg.what == -1 && msg.obj != null)
 				{
 					headButtonSwitch(DATA_LOAD_FAIL);
 					
-					((AppException)msg.obj).makeToast(QuestionDetail.this);
+					((AppException)msg.obj).makeToast(HuatiDetail.this);
 				}
 			}
 		};
 		
-		initData(postId, false);
+		initData(huatiId, false);
 	}
 	
-    private void initData(final int post_id, final boolean isRefresh)
+    private void initData(final int huati_id, final boolean isRefresh)
     {
     	headButtonSwitch(DATA_LOAD_ING);
 		
@@ -314,9 +322,9 @@ public class QuestionDetail extends BaseActivity {
 			public void run() {
                 Message msg = new Message();
 				try {
-					postDetail = ((AppContext)getApplication()).getPost(post_id, isRefresh);
-	                msg.what = (postDetail!=null && postDetail.getId()>0) ? 1 : 0;
-	                msg.obj = (postDetail!=null) ? postDetail.getNotice() : null;
+					huatiDetail = ((AppContext)getApplication()).getHuati(huati_id, isRefresh);
+	                msg.what = (huatiDetail!=null && huatiDetail.getId()>0) ? 1 : 0;
+	                msg.obj = (huatiDetail!=null) ? huatiDetail.getNotice() : null;
 	            } catch (AppException e) {
 	                e.printStackTrace();
 	            	msg.what = -1;
@@ -327,15 +335,17 @@ public class QuestionDetail extends BaseActivity {
 		}.start();
     }
 	
-    private String getPostTags(List<String> taglist) {
+    //将taglist转化为HTML标签
+    /*private String getHuatiTags(List<String> taglist) {
     	if(taglist == null)
     		return "";
     	String tags = "";
     	for(String tag : taglist) {
-    		tags += String.format("<a class='tag' href='http://www.oschina.net/question/tag/%s' >&nbsp;%s&nbsp;</a>&nbsp;&nbsp;", URLEncoder.encode(tag), tag);
+    		tags += String.format("<a class='tag' href='http://www.oschina.net/huati/tag/%s' >&nbsp;%s&nbsp;</a>&nbsp;&nbsp;", URLEncoder.encode(tag), tag);
     	}
     	return String.format("<div style='margin-top:10px;'>%s</div>", tags);
-    }
+    }*/
+    
     
     /**
      * 底部栏切换
@@ -345,13 +355,13 @@ public class QuestionDetail extends BaseActivity {
     	switch (type) {
 		case VIEWSWITCH_TYPE_DETAIL:
 			mDetail.setEnabled(false);
-			mCommentList.setEnabled(true);
-			mHeadTitle.setText(R.string.question_detail_head_title);
+			//mCommentList.setEnabled(true);
+			mHeadTitle.setText(R.string.huati_detail_head_title);
 			mViewSwitcher.setDisplayedChild(0);			
 			break;
 		case VIEWSWITCH_TYPE_COMMENTS:
 			mDetail.setEnabled(true);
-			mCommentList.setEnabled(false);
+			//mCommentList.setEnabled(false);
 			mHeadTitle.setText(R.string.comment_list_head_title);
 			mViewSwitcher.setDisplayedChild(1);
 			break;
@@ -382,42 +392,47 @@ public class QuestionDetail extends BaseActivity {
 		}
     }
     
+    //点击右上角的“刷新”按钮
     private View.OnClickListener refreshClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			initData(postId, true);
-			loadLvCommentData(curId,curCatalog,0,mCommentHandler,UIHelper.LISTVIEW_ACTION_REFRESH);
-		}
-	};
-    
-	private View.OnClickListener authorClickListener = new View.OnClickListener() {
-		public void onClick(View v) {				
-			UIHelper.showUserCenter(v.getContext(), postDetail.getAuthorId(), postDetail.getAuthor());
+			initData(huatiId, true);
+			//loadLvCommentData(curId,curCatalog,0,mCommentHandler,UIHelper.LISTVIEW_ACTION_REFRESH);
 		}
 	};
 	
+    //点击“作者”，跳转到该作者的用户中心
+	private View.OnClickListener authorClickListener = new View.OnClickListener() {
+		public void onClick(View v) {				
+			//UIHelper.showUserCenter(v.getContext(), huatiDetail.getAuthorId(), huatiDetail.getAuthor());
+		}
+	};
+	
+	//点击下方“分享”按钮
 	private View.OnClickListener shareClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			if(postDetail == null){
+			if(huatiDetail == null){
 				UIHelper.ToastMessage(v.getContext(), R.string.msg_read_detail_fail);
 				return;
 			}
 			//分享到
-			UIHelper.showShareDialog(QuestionDetail.this, postDetail.getTitle(), postDetail.getUrl());
+			UIHelper.showShareDialog(HuatiDetail.this, huatiDetail.getTitle(), huatiDetail.getUrl());
 		}
 	};
 	
+	//点击下方“详细”按钮（默认选中），控件切换
 	private View.OnClickListener detailClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			if(postId == 0){
+			if(huatiId == 0){
 				return;
 			}
 			viewSwitch(VIEWSWITCH_TYPE_DETAIL);
 		}
 	};
 	
+	//点击下方“评论”按钮，控件切换
 	private View.OnClickListener commentlistClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			if(postId == 0){
+			if(huatiId == 0){
 				return;
 			}
 			//切换显示评论
@@ -425,15 +440,16 @@ public class QuestionDetail extends BaseActivity {
 		}
 	};
 	
+	//点击下方“收藏”按钮，检查登录，异步发送请求与服务器同步
 	private View.OnClickListener favoriteClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
-			if(postId == 0 || postDetail == null){
+			if(huatiId == 0 || huatiDetail == null){
 				return;
 			}
 			
 			final AppContext ac = (AppContext)getApplication();
 			if(!ac.isLogin()){
-				UIHelper.showLoginDialog(QuestionDetail.this);
+				UIHelper.showLoginDialog(HuatiDetail.this);
 				return;
 			}
 			final int uid = ac.getLoginUid();
@@ -443,19 +459,19 @@ public class QuestionDetail extends BaseActivity {
 					if(msg.what == 1){
 						Result res = (Result)msg.obj;
 						if(res.OK()){
-							if(postDetail.getFavorite() == 1){
-								postDetail.setFavorite(0);
+							if(huatiDetail.getFavorite() == 1){
+								huatiDetail.setFavorite(0);
 								mFavorite.setImageResource(R.drawable.widget_bar_favorite);
 							}else{
-								postDetail.setFavorite(1);
+								huatiDetail.setFavorite(1);
 								mFavorite.setImageResource(R.drawable.widget_bar_favorite2);
 							}
 							//重新保存缓存
-							ac.saveObject(postDetail, postDetail.getCacheKey());
+							ac.saveObject(huatiDetail, huatiDetail.getCacheKey());
 						}
-						UIHelper.ToastMessage(QuestionDetail.this, res.getErrorMessage());
+						UIHelper.ToastMessage(HuatiDetail.this, res.getErrorMessage());
 					}else{
-						((AppException)msg.obj).makeToast(QuestionDetail.this);
+						((AppException)msg.obj).makeToast(HuatiDetail.this);
 					}
 				}        			
     		};
@@ -464,10 +480,10 @@ public class QuestionDetail extends BaseActivity {
 					Message msg = new Message();
 					Result res = null;
 					try {
-						if(postDetail.getFavorite() == 1){
-							res = ac.delFavorite(uid, postId, FavoriteList.TYPE_POST);
+						if(huatiDetail.getFavorite() == 1){
+							res = ac.delFavorite(uid, huatiId, FavoriteList.TYPE_HUATI);
 						}else{
-							res = ac.addFavorite(uid, postId, FavoriteList.TYPE_POST);
+							res = ac.addFavorite(uid, huatiId, FavoriteList.TYPE_HUATI);
 						}
 						msg.what = 1;
 						msg.obj = res;
@@ -482,7 +498,7 @@ public class QuestionDetail extends BaseActivity {
 		}
 	};
 	
-	//初始化视图控件
+	//初始化“评论”视图控件
     private void initCommentView()
     {    	
     	lvComment_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
@@ -510,7 +526,7 @@ public class QuestionDetail extends BaseActivity {
         		if(com == null) return;
 
         		//跳转--回复评论界面
-        		UIHelper.showCommentReply(QuestionDetail.this,curId, curCatalog, com.getId(), com.getAuthorId(), com.getAuthor(), com.getContent());
+        		UIHelper.showCommentReply(HuatiDetail.this,curId, curCatalog, com.getId(), com.getAuthorId(), com.getAuthor(), com.getContent());
         	}
 		});
         mLvComment.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -574,14 +590,14 @@ public class QuestionDetail extends BaseActivity {
 								Result res = (Result)msg.obj;
 								if(res.OK()){
 									lvSumData--;
-									bv_comment.setText(lvSumData+"");
-						    		bv_comment.show();
+									/*bv_comment.setText(lvSumData+"");
+						    		bv_comment.show();*/
 									lvCommentData.remove(com);
 									lvCommentAdapter.notifyDataSetChanged();
 								}
-								UIHelper.ToastMessage(QuestionDetail.this, res.getErrorMessage());
+								UIHelper.ToastMessage(HuatiDetail.this, res.getErrorMessage());
 							}else{
-								((AppException)msg.obj).makeToast(QuestionDetail.this);
+								((AppException)msg.obj).makeToast(HuatiDetail.this);
 							}
 						}        			
 	        		};
@@ -600,11 +616,11 @@ public class QuestionDetail extends BaseActivity {
 			                handler.sendMessage(msg);
 						}        			
 	        		};
-	        		UIHelper.showCommentOptionDialog(QuestionDetail.this, curId, curCatalog, com, thread);
+	        		UIHelper.showCommentOptionDialog(HuatiDetail.this, curId, curCatalog, com, thread);
         		}
         		else
         		{
-        			UIHelper.showCommentOptionDialog(QuestionDetail.this, curId, curCatalog, com, null);
+        			UIHelper.showCommentOptionDialog(HuatiDetail.this, curId, curCatalog, com, null);
         		}
 				return true;
 			}        	
@@ -619,8 +635,8 @@ public class QuestionDetail extends BaseActivity {
     //初始化评论数据
 	private void initCommentData()
 	{
-		curId = postId;
-		curCatalog = CommentList.CATALOG_POST;
+		curId = huatiId;
+		curCatalog = CommentList.CATALOG_HUATI;
 		
     	mCommentHandler = new Handler()
 		{
@@ -657,11 +673,11 @@ public class QuestionDetail extends BaseActivity {
 					}	
 					
 					//评论数更新
-					if(postDetail != null && lvCommentData.size() > postDetail.getAnswerCount()){
-						postDetail.setAnswerCount(lvCommentData.size());
+					/*if(huatiDetail != null && lvCommentData.size() > huatiDetail.getAnswerCount()){
+						huatiDetail.setAnswerCount(lvCommentData.size());
 						bv_comment.setText(lvCommentData.size()+"");
 						bv_comment.show();
-					}
+					}*/
 					
 					if(msg.what < 20){
 						curLvDataState = UIHelper.LISTVIEW_DATA_FULL;
@@ -674,14 +690,14 @@ public class QuestionDetail extends BaseActivity {
 					}
 					//发送通知广播
 					if(notice != null){
-						UIHelper.sendBroadCast(QuestionDetail.this, notice);
+						UIHelper.sendBroadCast(HuatiDetail.this, notice);
 					}
 				}
 				else if(msg.what == -1){
 					//有异常--显示加载出错 & 弹出错误消息
 					curLvDataState = UIHelper.LISTVIEW_DATA_MORE;
 					lvComment_foot_more.setText(R.string.load_error);
-					((AppException)msg.obj).makeToast(QuestionDetail.this);
+					((AppException)msg.obj).makeToast(HuatiDetail.this);
 				}
 				if(lvCommentData.size()==0){
 					curLvDataState = UIHelper.LISTVIEW_DATA_EMPTY;
@@ -726,6 +742,7 @@ public class QuestionDetail extends BaseActivity {
 		}.start();
 	} 
 	
+	//只有回复评论，切换Activity后需要返回数据
 	@Override 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{ 	
@@ -741,10 +758,10 @@ public class QuestionDetail extends BaseActivity {
         	lvCommentAdapter.notifyDataSetChanged();
         	mLvComment.setSelection(0);
     		//显示评论数
-            int count = postDetail.getAnswerCount() + 1;
-            postDetail.setAnswerCount(count);
+            /*int count = huatiDetail.getAnswerCount() + 1;
+            huatiDetail.setAnswerCount(count);
     		bv_comment.setText(count+"");
-    		bv_comment.show();
+    		bv_comment.show();*/
         }
         else if (requestCode == UIHelper.REQUEST_CODE_FOR_REPLY)
         {
@@ -772,12 +789,12 @@ public class QuestionDetail extends BaseActivity {
 			
 			final AppContext ac = (AppContext)getApplication();
 			if(!ac.isLogin()){
-				UIHelper.showLoginDialog(QuestionDetail.this);
+				UIHelper.showLoginDialog(HuatiDetail.this);
 				return;
 			}
 			
 //			if(mZone.isChecked())
-//				_isPostToMyZone = 1;
+//				_isHuatiToMyZone = 1;
 				
 			_uid = ac.getLoginUid();
 			
@@ -790,11 +807,11 @@ public class QuestionDetail extends BaseActivity {
 					
 					if(msg.what == 1){
 						Result res = (Result)msg.obj;
-						UIHelper.ToastMessage(QuestionDetail.this, res.getErrorMessage());
+						UIHelper.ToastMessage(HuatiDetail.this, res.getErrorMessage());
 						if(res.OK()){
 							//发送通知广播
 							if(res.getNotice() != null){
-								UIHelper.sendBroadCast(QuestionDetail.this, res.getNotice());
+								UIHelper.sendBroadCast(HuatiDetail.this, res.getNotice());
 							}
 							//恢复初始底部栏
 							mFootViewSwitcher.setDisplayedChild(0);
@@ -807,17 +824,17 @@ public class QuestionDetail extends BaseActivity {
 					    	lvCommentData.add(0,res.getComment());
 					    	lvCommentAdapter.notifyDataSetChanged();
 					    	mLvComment.setSelection(0);        	
-							//显示评论数
-					        int count = postDetail.getAnswerCount() + 1;
-					        postDetail.setAnswerCount(count);
+							/*//显示评论数
+					        int count = huatiDetail.getAnswerCount() + 1;
+					        huatiDetail.setAnswerCount(count);
 							bv_comment.setText(count+"");
-							bv_comment.show();
+							bv_comment.show();*/
 							//清除之前保存的编辑内容
 							ac.removeProperty(tempCommentKey);
 						}
 					}
 					else {
-						((AppException)msg.obj).makeToast(QuestionDetail.this);
+						((AppException)msg.obj).makeToast(HuatiDetail.this);
 					}
 				}
 			};
@@ -827,7 +844,7 @@ public class QuestionDetail extends BaseActivity {
 					Result res = new Result();
 					try {
 						//发表评论
-						res = ac.pubComment(_catalog, _id, _uid, _content, _isPostToMyZone);
+						res = ac.pubComment(_catalog, _id, _uid, _content, _isHuatiToMyZone);
 						msg.what = 1;
 						msg.obj = res;
 		            } catch (AppException e) {

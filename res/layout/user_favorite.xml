@@ -23,7 +23,7 @@
 	   	<TextView 
 	   		style="@style/detail_head_title" 
 	   		android:layout_gravity="center"
-	   		android:text="我的收藏夹"/>
+	   		android:text="@string/user_favorite_title"/>
    	   	<ProgressBar 
 			android:id="@+id/favorite_head_progress" 
 			style="@style/loading_small"
@@ -41,29 +41,29 @@
 	   		android:orientation="horizontal" 
 	   		android:gravity="center_vertical">
 			<Button 
-				android:id="@+id/favorite_catalog_software"
-				style="@style/frame_button"
-	         	android:text="软件"/>
-			<ImageView android:layout_width="wrap_content" android:layout_height="fill_parent" android:background="@drawable/frame_button_cutline"/>
-			<Button 
-				android:id="@+id/favorite_catalog_post"
-				style="@style/frame_button"
-	         	android:text="话题"/>
-			<ImageView android:layout_width="wrap_content" android:layout_height="fill_parent" android:background="@drawable/frame_button_cutline"/>
-			<Button 
-				android:id="@+id/favorite_catalog_code"
-				style="@style/frame_button"
-	         	android:text="代码"/>
-			<ImageView android:layout_width="wrap_content" android:layout_height="fill_parent" android:background="@drawable/frame_button_cutline"/>
-			<Button 
-				android:id="@+id/favorite_catalog_blog"
-				style="@style/frame_button"
-	         	android:text="博客"/>
-			<ImageView android:layout_width="wrap_content" android:layout_height="fill_parent" android:background="@drawable/frame_button_cutline"/>
-			<Button 
 				android:id="@+id/favorite_catalog_news"
 				style="@style/frame_button"
-	         	android:text="资讯"/>
+	         	android:text="@string/user_favorite_news"/>
+			<ImageView android:layout_width="wrap_content" android:layout_height="fill_parent" android:background="@drawable/frame_button_cutline"/>
+			<Button 
+				android:id="@+id/favorite_catalog_zhuanti"
+				style="@style/frame_button"
+	         	android:text="@string/user_favorite_zhuanti"/>
+			<ImageView android:layout_width="wrap_content" android:layout_height="fill_parent" android:background="@drawable/frame_button_cutline"/>
+			<Button 
+				android:id="@+id/favorite_catalog_huati"
+				style="@style/frame_button"
+	         	android:text="@string/user_favorite_huati"/>
+			<ImageView android:layout_width="wrap_content" android:layout_height="fill_parent" android:background="@drawable/frame_button_cutline"/>
+			<Button 
+				android:id="@+id/favorite_catalog_old"
+				style="@style/frame_button"
+	         	android:text="@string/user_favorite_old"/>
+			<ImageView android:layout_width="wrap_content" android:layout_height="fill_parent" android:background="@drawable/frame_button_cutline"/>
+			<Button 
+				android:id="@+id/favorite_catalog_center"
+				style="@style/frame_button"
+	         	android:text="@string/user_favorite_center"/>
 		</LinearLayout>
 		
 		<net.oschina.app.widget.PullToRefreshListView

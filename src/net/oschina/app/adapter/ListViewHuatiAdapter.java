@@ -3,7 +3,7 @@ package net.oschina.app.adapter;
 import java.util.List;
 
 import net.oschina.app.R;
-import net.oschina.app.bean.Post;
+import net.oschina.app.bean.Huati;
 import net.oschina.app.common.BitmapManager;
 import net.oschina.app.common.StringUtils;
 import net.oschina.app.common.UIHelper;
@@ -17,25 +17,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * 问答Adapter类
- * @author liux (http://my.oschina.net/liux)
+ * 话题Adapter类
+ * @author wyf (http://my.oschina.net/zgtjwyftc)
  * @version 1.0
- * @created 2012-3-21
+ * @created 2012-12-28
  */
 public class ListViewHuatiAdapter extends BaseAdapter {
 	private Context 					context;//运行上下文
-	private List<Post> 					listItems;//数据集合
+	private List<Huati> 				listItems;//数据集合
 	private LayoutInflater 				listContainer;//视图容器
 	private int 						itemViewResource;//自定义项视图源 
 	private BitmapManager 				bmpManager;
 	
-	static class ListItemView{				//自定义控件集合  
-			public ImageView face;
+	static class ListItemView{				//HuatiListItem控件集合 ,用于setTag保存
+			public ImageView img;
 	        public TextView title;  
 	        public TextView intro;  
-		    public TextView author;
+		    //public TextView author;
 		    public TextView date;  
-		    public TextView count;
+		    //public TextView count;
 	 }  
 
 	/**
@@ -44,12 +44,12 @@ public class ListViewHuatiAdapter extends BaseAdapter {
 	 * @param data
 	 * @param resource
 	 */
-	public ListViewHuatiAdapter(Context context, List<Post> data,int resource) {
+	public ListViewHuatiAdapter(Context context, List<Huati> data,int resource) {
 		this.context = context;			
 		this.listContainer = LayoutInflater.from(context);	//创建视图容器并设置上下文
 		this.itemViewResource = resource;
 		this.listItems = data;
-		this.bmpManager = new BitmapManager(BitmapFactory.decodeResource(context.getResources(), R.drawable.widget_dface_loading));
+		this.bmpManager = new BitmapManager(BitmapFactory.decodeResource(context.getResources(), R.drawable.widget_dimg_loading));
 	}
 	
 	public int getCount() {
@@ -79,11 +79,12 @@ public class ListViewHuatiAdapter extends BaseAdapter {
 			
 			listItemView = new ListItemView();
 			//获取控件对象
-			listItemView.face = (ImageView)convertView.findViewById(R.id.question_listitem_userface);
-			listItemView.title = (TextView)convertView.findViewById(R.id.question_listitem_title);
-			listItemView.author = (TextView)convertView.findViewById(R.id.question_listitem_author);
-			listItemView.count= (TextView)convertView.findViewById(R.id.question_listitem_count);
-			listItemView.date= (TextView)convertView.findViewById(R.id.question_listitem_date);
+			listItemView.img = (ImageView)convertView.findViewById(R.id.huati_listitem_img);
+			listItemView.title = (TextView)convertView.findViewById(R.id.huati_listitem_title);
+			listItemView.intro = (TextView)convertView.findViewById(R.id.huati_listitem_intro);
+/*			listItemView.author = (TextView)convertView.findViewById(R.id.huati_listitem_author);
+			listItemView.count= (TextView)convertView.findViewById(R.id.huati_listitem_count);*/
+			listItemView.date= (TextView)convertView.findViewById(R.id.huati_listitem_date);
 			
 			//设置控件集到convertView
 			convertView.setTag(listItemView);
@@ -92,29 +93,32 @@ public class ListViewHuatiAdapter extends BaseAdapter {
 		}	
       
 		//设置文字和图片
-		Post post = listItems.get(position);
-		String faceURL = post.getFace();
-		if(faceURL.endsWith("portrait.gif") || StringUtils.isEmpty(faceURL)){
-			listItemView.face.setImageResource(R.drawable.widget_dface);
+		Huati huati = listItems.get(position);
+		String imgURL = huati.getImg();
+		if(imgURL.endsWith("portrait.gif") || StringUtils.isEmpty(imgURL)){
+			listItemView.img.setImageResource(R.drawable.widget_dimg);
 		}else{
-			bmpManager.loadBitmap(faceURL, listItemView.face);
+			bmpManager.loadBitmap(imgURL, listItemView.img);
 		}
-		listItemView.face.setOnClickListener(faceClickListener);
-		listItemView.face.setTag(post);
+		listItemView.img.setOnClickListener(imgClickListener);
+		listItemView.img.setTag(huati);
 		
-		listItemView.title.setText(post.getTitle());
-		listItemView.title.setTag(post);//设置隐藏参数(实体类)
-		listItemView.author.setText(post.getAuthor());
-		listItemView.date.setText(StringUtils.friendly_time(post.getPubDate()));
-		listItemView.count.setText(post.getAnswerCount()+"回|"+post.getViewCount()+"阅");
+		listItemView.title.setText(huati.getTitle());
+		listItemView.title.setTag(huati);//设置隐藏参数(实体类)
+		listItemView.intro.setText(huati.getIntro());
+		//listItemView.author.setText(huati.getAuthor());
+		//listItemView.date.setText(StringUtils.friendly_time(huati.getPubDate()));
+		listItemView.date.setText(huati.getPubDate());
+		//listItemView.count.setText(huati.getAnswerCount()+"回|"+huati.getViewCount()+"阅");
 		
 		return convertView;
 	}
-	
-	private View.OnClickListener faceClickListener = new View.OnClickListener(){
+	//CHANGE:点击图片进入用户中心 --> 点击图片放大
+	private View.OnClickListener imgClickListener = new View.OnClickListener(){
 		public void onClick(View v) {
-			Post post = (Post)v.getTag();
-			UIHelper.showUserCenter(v.getContext(), post.getAuthorId(), post.getAuthor());
+			Huati huati = (Huati)v.getTag();
+			//UIHelper.showUserCenter(v.getContext(), huati.getAuthorId(), huati.getAuthor());
+			UIHelper.showImageZoomDialog(v.getContext(), huati.getImg());
 		}
 	};
 }

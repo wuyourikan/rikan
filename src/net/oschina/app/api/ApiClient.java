@@ -11,6 +11,7 @@ import java.util.Map;
 
 import net.oschina.app.AppContext;
 import net.oschina.app.AppException;
+import net.oschina.app.R;
 import net.oschina.app.bean.ActiveList;
 import net.oschina.app.bean.Blog;
 import net.oschina.app.bean.BlogCommentList;
@@ -23,8 +24,8 @@ import net.oschina.app.bean.MyInformation;
 import net.oschina.app.bean.News;
 import net.oschina.app.bean.NewsList;
 import net.oschina.app.bean.Notice;
-import net.oschina.app.bean.Post;
-import net.oschina.app.bean.PostList;
+import net.oschina.app.bean.Huati;
+import net.oschina.app.bean.HuatiList;
 import net.oschina.app.bean.Result;
 import net.oschina.app.bean.SearchList;
 import net.oschina.app.bean.Software;
@@ -50,6 +51,7 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.util.EncodingUtils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -123,7 +125,7 @@ public class ApiClient {
 		return httpGet;
 	}
 	
-	private static PostMethod getHttpPost(String url, String cookie, String userAgent) {
+	private static PostMethod getHttpHuati(String url, String cookie, String userAgent) {
 		PostMethod httpPost = new PostMethod(url);
 		// 设置 请求超时时间
 		httpPost.getParams().setSoTimeout(TIMEOUT_SOCKET);
@@ -151,12 +153,44 @@ public class ApiClient {
 		return url.toString().replace("?&", "?");
 	}
 	
+	//山寨get方法
+	private static InputStream http_get(AppContext appContext, String url)
+	{	
+		String res;
+		try {
+			if(url.contains(URLs.HUATI_LIST)){
+				InputStream in = appContext.getResources().openRawResource(R.raw.huati_list); 
+				
+				int length = in.available();       
+				byte [] buffer = new byte[length];        
+				in.read(buffer);         
+				res = EncodingUtils.getString(buffer, "UTF-8");
+				in.close();
+				return new ByteArrayInputStream(res.getBytes());
+			}
+			else if(url.contains(URLs.HUATI_DETAIL)) {
+				InputStream in = appContext.getResources().openRawResource(R.raw.huati_detail); 
+				
+				int length = in.available();       
+				byte [] buffer = new byte[length];        
+				in.read(buffer);         
+				res = EncodingUtils.getString(buffer, "UTF-8");
+				in.close();
+				return new ByteArrayInputStream(res.getBytes());
+			}
+			else 
+				return null;
+		} catch (Exception e) {
+			e.printStackTrace(); 
+			return null;
+		} 
+	}
 	/**
 	 * get请求URL
 	 * @param url
 	 * @throws AppException 
 	 */
-	private static InputStream http_get(AppContext appContext, String url) throws AppException {	
+	private static InputStream http_gets(AppContext appContext, String url) throws AppException {	
 		//System.out.println("get_url==> "+url);
 		String cookie = getCookie(appContext);
 		String userAgent = getUserAgent(appContext);
@@ -230,21 +264,21 @@ public class ApiClient {
 	 * @throws AppException
 	 */
 	private static InputStream _post(AppContext appContext, String url, Map<String, Object> params, Map<String,File> files) throws AppException {
-		//System.out.println("post_url==> "+url);
+		//System.out.println("huati_url==> "+url);
 		String cookie = getCookie(appContext);
 		String userAgent = getUserAgent(appContext);
 		
 		HttpClient httpClient = null;
 		PostMethod httpPost = null;
 		
-		//post表单参数处理
+		//huati表单参数处理
 		int length = (params == null ? 0 : params.size()) + (files == null ? 0 : files.size());
 		Part[] parts = new Part[length];
 		int i = 0;
         if(params != null)
         for(String name : params.keySet()){
         	parts[i++] = new StringPart(name, String.valueOf(params.get(name)), UTF_8);
-        	//System.out.println("post_key==> "+name+"    value==>"+String.valueOf(params.get(name)));
+        	//System.out.println("huati_key==> "+name+"    value==>"+String.valueOf(params.get(name)));
         }
         if(files != null)
         for(String file : files.keySet()){
@@ -253,7 +287,7 @@ public class ApiClient {
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-        	//System.out.println("post_key_file==> "+file);
+        	//System.out.println("huati_key_file==> "+file);
         }
 		
 		String responseBody = "";
@@ -262,7 +296,7 @@ public class ApiClient {
 			try 
 			{
 				httpClient = getHttpClient();
-				httpPost = getHttpPost(url, cookie, userAgent);	        
+				httpPost = getHttpHuati(url, cookie, userAgent);	        
 		        httpPost.setRequestEntity(new MultipartRequestEntity(parts,httpPost.getParams()));		        
 		        int statusCode = httpClient.executeMethod(httpPost);
 		        if(statusCode != HttpStatus.SC_OK) 
@@ -741,22 +775,22 @@ public class ApiClient {
 	}
 	
 	/**
-	 * 获取帖子列表
+	 * 获取话题列表
 	 * @param url
 	 * @param catalog
 	 * @param pageIndex
 	 * @return
 	 * @throws AppException
 	 */
-	public static PostList getPostList(AppContext appContext, final int catalog, final int pageIndex, final int pageSize) throws AppException {
-		String newUrl = _MakeURL(URLs.POST_LIST, new HashMap<String, Object>(){{
+	public static HuatiList getHuatiList(AppContext appContext, final int catalog, final int pageIndex, final int pageSize) throws AppException {
+		String newUrl = _MakeURL(URLs.HUATI_LIST, new HashMap<String, Object>(){{
 			put("catalog", catalog);
 			put("pageIndex", pageIndex);
 			put("pageSize", pageSize);
 		}});
 
 		try{
-			return PostList.parse(http_get(appContext, newUrl));		
+			return HuatiList.parse(http_get(appContext, newUrl));		
 		}catch(Exception e){
 			if(e instanceof AppException)
 				throw (AppException)e;
@@ -765,21 +799,21 @@ public class ApiClient {
 	}
 	
 	/**
-	 * 通过Tag获取帖子列表
+	 * 通过Tag获取话题列表
 	 * @param url
 	 * @param catalog
 	 * @param pageIndex
 	 * @return
 	 * @throws AppException
 	 */
-	public static PostList getPostListByTag(AppContext appContext, final String tag, final int pageIndex, final int pageSize) throws AppException {
+	public static HuatiList getHuatiListByTag(AppContext appContext, final String tag, final int pageIndex, final int pageSize) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("tag", tag);
 		params.put("pageIndex", pageIndex);
 		params.put("pageSize", pageSize);		
 
 		try{
-			return PostList.parse(_post(appContext, URLs.POST_LIST, params, null));		
+			return HuatiList.parse(_post(appContext, URLs.HUATI_LIST, params, null));		
 		}catch(Exception e){
 			if(e instanceof AppException)
 				throw (AppException)e;
@@ -788,18 +822,18 @@ public class ApiClient {
 	}
 	
 	/**
-	 * 获取帖子的详情
+	 * 获取话题的详情
 	 * @param url
-	 * @param post_id
+	 * @param huati_id
 	 * @return
 	 * @throws AppException
 	 */
-	public static Post getPostDetail(AppContext appContext, final int post_id) throws AppException {
-		String newUrl = _MakeURL(URLs.POST_DETAIL, new HashMap<String, Object>(){{
-			put("id", post_id);
+	public static Huati getHuatiDetail(AppContext appContext, final int huati_id) throws AppException {
+		String newUrl = _MakeURL(URLs.HUATI_DETAIL, new HashMap<String, Object>(){{
+			put("id", huati_id);
 		}});
 		try{
-			return Post.parse(http_get(appContext, newUrl));			
+			return Huati.parse(http_get(appContext, newUrl));			
 		}catch(Exception e){
 			if(e instanceof AppException)
 				throw (AppException)e;
@@ -808,27 +842,27 @@ public class ApiClient {
 	}
 	
 	/**
-	 * 发帖子
-	 * @param post （uid、title、catalog、content、isNoticeMe）
+	 * 发话题（暂不需要）
+	 * @param huati （uid、title、catalog、content、isNoticeMe）
 	 * @return
 	 * @throws AppException
 	 */
-	public static Result pubPost(AppContext appContext, Post post) throws AppException {
+/*	public static Result pubHuati(AppContext appContext, Huati huati) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("uid", post.getAuthorId());
-		params.put("title", post.getTitle());
-		params.put("catalog", post.getCatalog());
-		params.put("content", post.getBody());
-		params.put("isNoticeMe", post.getIsNoticeMe());				
+		params.put("uid", huati.getAuthorId());
+		params.put("title", huati.getTitle());
+		params.put("catalog", huati.getCatalog());
+		params.put("content", huati.getBody());
+		params.put("isNoticeMe", huati.getIsNoticeMe());				
 		
 		try{
-			return http_post(appContext, URLs.POST_PUB, params, null);		
+			return http_post(appContext, URLs.HUATI_PUB, params, null);		
 		}catch(Exception e){
 			if(e instanceof AppException)
 				throw (AppException)e;
 			throw AppException.network(e);
 		}
-	}
+	}*/
 	
 	/**
 	 * 获取动弹列表
@@ -1137,7 +1171,7 @@ public class ApiClient {
 	
 	/**
 	 * 获取评论列表
-	 * @param catalog 1新闻  2帖子  3动弹  4动态
+	 * @param catalog 1新闻  2话题  3动弹  4动态
 	 * @param id
 	 * @param pageIndex
 	 * @param pageSize
@@ -1163,21 +1197,21 @@ public class ApiClient {
 	
 	/**
 	 * 发表评论
-	 * @param catalog 1新闻  2帖子  3动弹  4动态
-	 * @param id 某条新闻，帖子，动弹的id
+	 * @param catalog 1新闻  2话题  3动弹  4动态
+	 * @param id 某条新闻，话题，动弹的id
 	 * @param uid 用户uid
 	 * @param content 发表评论的内容
-	 * @param isPostToMyZone 是否转发到我的空间  0不转发  1转发
+	 * @param isHuatiToMyZone 是否转发到我的空间  0不转发  1转发
 	 * @return
 	 * @throws AppException
 	 */
-	public static Result pubComment(AppContext appContext, int catalog, int id, int uid, String content, int isPostToMyZone) throws AppException {
+	public static Result pubComment(AppContext appContext, int catalog, int id, int uid, String content, int isHuatiToMyZone) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("catalog", catalog);
 		params.put("id", id);
 		params.put("uid", uid);
 		params.put("content", content);
-		params.put("isPostToMyZone", isPostToMyZone);
+		params.put("isHuatiToMyZone", isHuatiToMyZone);
 		
 		try{
 			return http_post(appContext, URLs.COMMENT_PUB, params, null);		
@@ -1190,8 +1224,8 @@ public class ApiClient {
 
 	/**
 	 * 
-	 * @param id 表示被评论的某条新闻，帖子，动弹的id 或者某条消息的 friendid 
-	 * @param catalog 表示该评论所属什么类型：1新闻  2帖子  3动弹  4动态
+	 * @param id 表示被评论的某条新闻，话题，动弹的id 或者某条消息的 friendid 
+	 * @param catalog 表示该评论所属什么类型：1新闻  2话题  3动弹  4动态
 	 * @param replyid 表示被回复的单个评论id
 	 * @param authorid 表示该评论的原始作者id
 	 * @param uid 用户uid 一般都是当前登录用户uid
@@ -1219,8 +1253,8 @@ public class ApiClient {
 	
 	/**
 	 * 删除评论
-	 * @param id 表示被评论对应的某条新闻,帖子,动弹的id 或者某条消息的 friendid
-	 * @param catalog 表示该评论所属什么类型：1新闻  2帖子  3动弹  4动态&留言
+	 * @param id 表示被评论对应的某条新闻,话题,动弹的id 或者某条消息的 friendid
+	 * @param catalog 表示该评论所属什么类型：1新闻  2话题  3动弹  4动态&留言
 	 * @param replyid 表示被回复的单个评论id
 	 * @param authorid 表示该评论的原始作者id
 	 * @return
@@ -1316,7 +1350,7 @@ public class ApiClient {
 	
 	/**
 	 * 获取搜索列表
-	 * @param catalog 全部:all 新闻:news  问答:post 软件:software 博客:blog 代码:code
+	 * @param catalog 全部:all 新闻:news  问答:huati 软件:software 博客:blog 代码:code
 	 * @param content 搜索的内容
 	 * @param pageIndex
 	 * @param pageSize

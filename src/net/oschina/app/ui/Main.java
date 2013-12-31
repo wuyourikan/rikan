@@ -15,9 +15,10 @@ import net.oschina.app.AppException;
 import net.oschina.app.R;
 import net.oschina.app.adapter.ListViewActiveAdapter;
 import net.oschina.app.adapter.ListViewBlogAdapter;
+import net.oschina.app.adapter.ListViewHuatiAdapter;
 import net.oschina.app.adapter.ListViewMessageAdapter;
 import net.oschina.app.adapter.ListViewNewsAdapter;
-import net.oschina.app.adapter.ListViewQuestionAdapter;
+import net.oschina.app.adapter.ListViewHuatiAdapter;
 import net.oschina.app.adapter.ListViewTweetAdapter;
 import net.oschina.app.bean.Active;
 import net.oschina.app.bean.ActiveList;
@@ -28,8 +29,10 @@ import net.oschina.app.bean.Messages;
 import net.oschina.app.bean.News;
 import net.oschina.app.bean.NewsList;
 import net.oschina.app.bean.Notice;
-import net.oschina.app.bean.Post;
-import net.oschina.app.bean.PostList;
+import net.oschina.app.bean.Huati;
+import net.oschina.app.bean.HuatiList;
+import net.oschina.app.bean.Huati;
+import net.oschina.app.bean.HuatiList;
 import net.oschina.app.bean.Result;
 import net.oschina.app.bean.Tweet;
 import net.oschina.app.bean.TweetList;
@@ -91,51 +94,51 @@ public class Main extends BaseActivity {
 	private TextView mHeadTitle;
 	private ProgressBar mHeadProgress;
 	private ImageButton mHead_search;
-	private ImageButton mHeadPub_post;
+	//private ImageButton mHeadPub_huati;
 	private ImageButton mHeadPub_tweet;
 
 	private int curNewsCatalog = NewsList.CATALOG_ALL;
-	private int curQuestionCatalog = PostList.CATALOG_ASK;
+	private int curHuatiCatalog = Huati.CATALOG_WENSHI;
 	private int curTweetCatalog = TweetList.CATALOG_LASTEST;
 	private int curActiveCatalog = ActiveList.CATALOG_LASTEST;
 
 	private PullToRefreshListView lvNews;
 	private PullToRefreshListView lvBlog;
-	private PullToRefreshListView lvQuestion;
+	private PullToRefreshListView lvHuati;
 	private PullToRefreshListView lvTweet;
 	private PullToRefreshListView lvActive;
 	private PullToRefreshListView lvMsg;
 
 	private ListViewNewsAdapter lvNewsAdapter;
 	private ListViewBlogAdapter lvBlogAdapter;
-	private ListViewQuestionAdapter lvQuestionAdapter;
+	private ListViewHuatiAdapter lvHuatiAdapter;
 	private ListViewTweetAdapter lvTweetAdapter;
 	private ListViewActiveAdapter lvActiveAdapter;
 	private ListViewMessageAdapter lvMsgAdapter;
 
 	private List<News> lvNewsData = new ArrayList<News>();
 	private List<Blog> lvBlogData = new ArrayList<Blog>();
-	private List<Post> lvQuestionData = new ArrayList<Post>();
+	private List<Huati> lvHuatiData = new ArrayList<Huati>();
 	private List<Tweet> lvTweetData = new ArrayList<Tweet>();
 	private List<Active> lvActiveData = new ArrayList<Active>();
 	private List<Messages> lvMsgData = new ArrayList<Messages>();
 
 	private Handler lvNewsHandler;
 	private Handler lvBlogHandler;
-	private Handler lvQuestionHandler;
+	private Handler lvHuatiHandler;
 	private Handler lvTweetHandler;
 	private Handler lvActiveHandler;
 	private Handler lvMsgHandler;
 
 	private int lvNewsSumData;
 	private int lvBlogSumData;
-	private int lvQuestionSumData;
+	private int lvHuatiSumData;
 	private int lvTweetSumData;
 	private int lvActiveSumData;
 	private int lvMsgSumData;
 
 	private RadioButton fbNews;
-	private RadioButton fbQuestion;
+	private RadioButton fbHuati;
 	private RadioButton fbTweet;
 	private RadioButton fbactive;
 	private ImageView fbSetting;
@@ -143,11 +146,9 @@ public class Main extends BaseActivity {
 	private Button framebtn_News_lastest;
 	private Button framebtn_News_blog;
 	private Button framebtn_News_recommend;
-	private Button framebtn_Question_ask;
-	private Button framebtn_Question_share;
-	private Button framebtn_Question_other;
-	private Button framebtn_Question_job;
-	private Button framebtn_Question_site;
+	private Button framebtn_Huati_sixiang;
+	private Button framebtn_Huati_zhengjing;
+	private Button framebtn_Huati_wenshi;
 	private Button framebtn_Tweet_lastest;
 	private Button framebtn_Tweet_hot;
 	private Button framebtn_Tweet_my;
@@ -159,21 +160,21 @@ public class Main extends BaseActivity {
 
 	private View lvNews_footer;
 	private View lvBlog_footer;
-	private View lvQuestion_footer;
+	private View lvHuati_footer;
 	private View lvTweet_footer;
 	private View lvActive_footer;
 	private View lvMsg_footer;
 
 	private TextView lvNews_foot_more;
 	private TextView lvBlog_foot_more;
-	private TextView lvQuestion_foot_more;
+	private TextView lvHuati_foot_more;
 	private TextView lvTweet_foot_more;
 	private TextView lvActive_foot_more;
 	private TextView lvMsg_foot_more;
 
 	private ProgressBar lvNews_foot_progress;
 	private ProgressBar lvBlog_foot_progress;
-	private ProgressBar lvQuestion_foot_progress;
+	private ProgressBar lvHuati_foot_progress;
 	private ProgressBar lvTweet_foot_progress;
 	private ProgressBar lvActive_foot_progress;
 	private ProgressBar lvMsg_foot_progress;
@@ -233,7 +234,7 @@ public class Main extends BaseActivity {
 			mViewCount = 4;
 		if (mCurSel == 0 && !fbNews.isChecked()) {
 			fbNews.setChecked(true);
-			fbQuestion.setChecked(false);
+			fbHuati.setChecked(false);
 			fbTweet.setChecked(false);
 			fbactive.setChecked(false);
 		}
@@ -400,7 +401,7 @@ public class Main extends BaseActivity {
 		// 初始化listview控件
 		this.initNewsListView();
 		this.initBlogListView();
-		this.initQuestionListView();
+		this.initHuatiListView();
 		this.initTweetListView();
 		this.initActiveListView();
 		this.initMsgListView();
@@ -417,8 +418,8 @@ public class Main extends BaseActivity {
 				lvNews_foot_more, lvNews_foot_progress, AppContext.PAGE_SIZE);
 		lvBlogHandler = this.getLvHandler(lvBlog, lvBlogAdapter,
 				lvBlog_foot_more, lvBlog_foot_progress, AppContext.PAGE_SIZE);
-		lvQuestionHandler = this.getLvHandler(lvQuestion, lvQuestionAdapter,
-				lvQuestion_foot_more, lvQuestion_foot_progress,
+		lvHuatiHandler = this.getLvHandler(lvHuati, lvHuatiAdapter,
+				lvHuati_foot_more, lvHuati_foot_progress,
 				AppContext.PAGE_SIZE);
 		lvTweetHandler = this.getLvHandler(lvTweet, lvTweetAdapter,
 				lvTweet_foot_more, lvTweet_foot_progress, AppContext.PAGE_SIZE);
@@ -600,85 +601,85 @@ public class Main extends BaseActivity {
 	}
 
 	/**
-	 * 初始化帖子列表
+	 * 初始化话题列表
 	 */
-	private void initQuestionListView() {
-		lvQuestionAdapter = new ListViewQuestionAdapter(this, lvQuestionData,
-				R.layout.question_listitem);
-		lvQuestion_footer = getLayoutInflater().inflate(
+	private void initHuatiListView() {
+		lvHuatiAdapter = new ListViewHuatiAdapter(this, lvHuatiData,
+				R.layout.huati_listitem);
+		lvHuati_footer = getLayoutInflater().inflate(
 				R.layout.listview_footer, null);
-		lvQuestion_foot_more = (TextView) lvQuestion_footer
+		lvHuati_foot_more = (TextView) lvHuati_footer
 				.findViewById(R.id.listview_foot_more);
-		lvQuestion_foot_progress = (ProgressBar) lvQuestion_footer
+		lvHuati_foot_progress = (ProgressBar) lvHuati_footer
 				.findViewById(R.id.listview_foot_progress);
-		lvQuestion = (PullToRefreshListView) findViewById(R.id.frame_listview_question);
-		lvQuestion.addFooterView(lvQuestion_footer);// 添加底部视图 必须在setAdapter前
-		lvQuestion.setAdapter(lvQuestionAdapter);
-		lvQuestion
+		lvHuati = (PullToRefreshListView) findViewById(R.id.frame_listview_huati);
+		lvHuati.addFooterView(lvHuati_footer);// 添加底部视图 必须在setAdapter前
+		lvHuati.setAdapter(lvHuatiAdapter);
+		lvHuati
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						// 点击头部、底部栏无效
-						if (position == 0 || view == lvQuestion_footer)
+						if (position == 0 || view == lvHuati_footer)
 							return;
 
-						Post post = null;
+						Huati huati = null;
 						// 判断是否是TextView
 						if (view instanceof TextView) {
-							post = (Post) view.getTag();
+							huati = (Huati) view.getTag();
 						} else {
 							TextView tv = (TextView) view
-									.findViewById(R.id.question_listitem_title);
-							post = (Post) tv.getTag();
+									.findViewById(R.id.huati_listitem_title);
+							huati = (Huati) tv.getTag();
 						}
-						if (post == null)
+						if (huati == null)
 							return;
 
 						// 跳转到问答详情
-						UIHelper.showQuestionDetail(view.getContext(),
-								post.getId());
+						UIHelper.showHuatiDetail(view.getContext(),
+								huati.getId());
 					}
 				});
-		lvQuestion.setOnScrollListener(new AbsListView.OnScrollListener() {
+		lvHuati.setOnScrollListener(new AbsListView.OnScrollListener() {
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				lvQuestion.onScrollStateChanged(view, scrollState);
+				lvHuati.onScrollStateChanged(view, scrollState);
 
 				// 数据为空--不用继续下面代码了
-				if (lvQuestionData.isEmpty())
+				if (lvHuatiData.isEmpty())
 					return;
 
 				// 判断是否滚动到底部
 				boolean scrollEnd = false;
 				try {
-					if (view.getPositionForView(lvQuestion_footer) == view
+					if (view.getPositionForView(lvHuati_footer) == view
 							.getLastVisiblePosition())
 						scrollEnd = true;
 				} catch (Exception e) {
 					scrollEnd = false;
 				}
 
-				int lvDataState = StringUtils.toInt(lvQuestion.getTag());
+				int lvDataState = StringUtils.toInt(lvHuati.getTag());
 				if (scrollEnd && lvDataState == UIHelper.LISTVIEW_DATA_MORE) {
-					lvQuestion.setTag(UIHelper.LISTVIEW_DATA_LOADING);
-					lvQuestion_foot_more.setText(R.string.load_ing);
-					lvQuestion_foot_progress.setVisibility(View.VISIBLE);
+					lvHuati.setTag(UIHelper.LISTVIEW_DATA_LOADING);
+					lvHuati_foot_more.setText(R.string.load_ing);
+					lvHuati_foot_progress.setVisibility(View.VISIBLE);
 					// 当前pageIndex
-					int pageIndex = lvQuestionSumData / AppContext.PAGE_SIZE;
-					loadLvQuestionData(curQuestionCatalog, pageIndex,lvQuestionHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
+					int pageIndex = lvHuatiSumData / AppContext.PAGE_SIZE;
+					loadLvHuatiData(curHuatiCatalog, pageIndex,lvHuatiHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
 							
 				}
 			}
 
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				lvQuestion.onScroll(view, firstVisibleItem, visibleItemCount,totalItemCount);
+				lvHuati.onScroll(view, firstVisibleItem, visibleItemCount,totalItemCount);
 						
 			}
 		});
-		lvQuestion
+		lvHuati
 				.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
 					public void onRefresh() {
-						loadLvQuestionData(curQuestionCatalog, 0,lvQuestionHandler,UIHelper.LISTVIEW_ACTION_REFRESH);
+						loadLvHuatiData(curHuatiCatalog, 0,lvHuatiHandler,UIHelper.LISTVIEW_ACTION_REFRESH);
 								
 					}
 				});
@@ -1066,7 +1067,7 @@ public class Main extends BaseActivity {
 		mHeadTitle = (TextView) findViewById(R.id.main_head_title);
 		mHeadProgress = (ProgressBar) findViewById(R.id.main_head_progress);
 		mHead_search = (ImageButton) findViewById(R.id.main_head_search);
-		mHeadPub_post = (ImageButton) findViewById(R.id.main_head_pub_post);
+		//mHeadPub_huati = (ImageButton) findViewById(R.id.main_head_pub_huati);
 		mHeadPub_tweet = (ImageButton) findViewById(R.id.main_head_pub_tweet);
 
 		mHead_search.setOnClickListener(new View.OnClickListener() {
@@ -1074,11 +1075,11 @@ public class Main extends BaseActivity {
 				UIHelper.showSearch(v.getContext());
 			}
 		});
-		mHeadPub_post.setOnClickListener(new View.OnClickListener() {
+		/*mHeadPub_huati.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				UIHelper.showQuestionPub(v.getContext());
+				UIHelper.showHuatiPub(v.getContext());
 			}
-		});
+		});*/
 		mHeadPub_tweet.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				UIHelper.showTweetPub(Main.this);
@@ -1091,7 +1092,7 @@ public class Main extends BaseActivity {
 	 */
 	private void initFootBar() {
 		fbNews = (RadioButton) findViewById(R.id.main_footbar_news);
-		fbQuestion = (RadioButton) findViewById(R.id.main_footbar_question);
+		fbHuati = (RadioButton) findViewById(R.id.main_footbar_huati);
 		fbTweet = (RadioButton) findViewById(R.id.main_footbar_tweet);
 		fbactive = (RadioButton) findViewById(R.id.main_footbar_active);
 
@@ -1166,8 +1167,8 @@ public class Main extends BaseActivity {
 							else
 								lvBlog.clickRefresh();
 							break;
-						case 1:// 问答
-							lvQuestion.clickRefresh();
+						case 1:// 话题
+							lvHuati.clickRefresh();
 							break;
 						case 2:// 动弹
 							lvTweet.clickRefresh();
@@ -1210,9 +1211,9 @@ public class Main extends BaseActivity {
 							}
 							break;
 						case 1:// 问答
-							if (lvQuestionData.isEmpty()) {
-								loadLvQuestionData(curQuestionCatalog, 0,
-										lvQuestionHandler,
+							if (lvHuatiData.isEmpty()) {
+								loadLvHuatiData(curHuatiCatalog, 0,
+										lvHuatiHandler,
 										UIHelper.LISTVIEW_ACTION_INIT);
 							}
 							break;
@@ -1285,15 +1286,15 @@ public class Main extends BaseActivity {
 		mCurSel = index;
 
 		mHead_search.setVisibility(View.GONE);
-		mHeadPub_post.setVisibility(View.GONE);
+		//mHeadPub_huati.setVisibility(View.GONE);
 		mHeadPub_tweet.setVisibility(View.GONE);
 		// 头部logo、发帖、发动弹按钮显示
 		if (index == 0) {
 			mHeadLogo.setImageResource(R.drawable.frame_logo_news);
 			mHead_search.setVisibility(View.VISIBLE);
 		} else if (index == 1) {
-			mHeadLogo.setImageResource(R.drawable.frame_logo_post);
-			mHeadPub_post.setVisibility(View.VISIBLE);
+			mHeadLogo.setImageResource(R.drawable.frame_logo_huati);
+			mHead_search.setVisibility(View.VISIBLE);
 		} else if (index == 2) {
 			mHeadLogo.setImageResource(R.drawable.frame_logo_tweet);
 			mHeadPub_tweet.setVisibility(View.VISIBLE);
@@ -1311,11 +1312,9 @@ public class Main extends BaseActivity {
 		framebtn_News_lastest = (Button) findViewById(R.id.frame_btn_news_lastest);
 		framebtn_News_blog = (Button) findViewById(R.id.frame_btn_news_blog);
 		framebtn_News_recommend = (Button) findViewById(R.id.frame_btn_news_recommend);
-		framebtn_Question_ask = (Button) findViewById(R.id.frame_btn_question_ask);
-		framebtn_Question_share = (Button) findViewById(R.id.frame_btn_question_share);
-		framebtn_Question_other = (Button) findViewById(R.id.frame_btn_question_other);
-		framebtn_Question_job = (Button) findViewById(R.id.frame_btn_question_job);
-		framebtn_Question_site = (Button) findViewById(R.id.frame_btn_question_site);
+		framebtn_Huati_sixiang = (Button) findViewById(R.id.frame_btn_huati_sixiang);
+		framebtn_Huati_zhengjing = (Button) findViewById(R.id.frame_btn_huati_zhengjing);
+		framebtn_Huati_wenshi = (Button) findViewById(R.id.frame_btn_huati_wenshi);
 		framebtn_Tweet_lastest = (Button) findViewById(R.id.frame_btn_tweet_lastest);
 		framebtn_Tweet_hot = (Button) findViewById(R.id.frame_btn_tweet_hot);
 		framebtn_Tweet_my = (Button) findViewById(R.id.frame_btn_tweet_my);
@@ -1326,7 +1325,7 @@ public class Main extends BaseActivity {
 		framebtn_Active_message = (Button) findViewById(R.id.frame_btn_active_message);
 		// 设置首选择项
 		framebtn_News_lastest.setEnabled(false);
-		framebtn_Question_ask.setEnabled(false);
+		framebtn_Huati_wenshi.setEnabled(false);
 		framebtn_Tweet_lastest.setEnabled(false);
 		framebtn_Active_lastest.setEnabled(false);
 		// 资讯+博客
@@ -1336,17 +1335,13 @@ public class Main extends BaseActivity {
 				framebtn_News_blog, BlogList.CATALOG_LATEST));
 		framebtn_News_recommend.setOnClickListener(frameNewsBtnClick(
 				framebtn_News_recommend, BlogList.CATALOG_RECOMMEND));
-		// 问答
-		framebtn_Question_ask.setOnClickListener(frameQuestionBtnClick(
-				framebtn_Question_ask, PostList.CATALOG_ASK));
-		framebtn_Question_share.setOnClickListener(frameQuestionBtnClick(
-				framebtn_Question_share, PostList.CATALOG_SHARE));
-		framebtn_Question_other.setOnClickListener(frameQuestionBtnClick(
-				framebtn_Question_other, PostList.CATALOG_OTHER));
-		framebtn_Question_job.setOnClickListener(frameQuestionBtnClick(
-				framebtn_Question_job, PostList.CATALOG_JOB));
-		framebtn_Question_site.setOnClickListener(frameQuestionBtnClick(
-				framebtn_Question_site, PostList.CATALOG_SITE));
+		// 话题
+		framebtn_Huati_sixiang.setOnClickListener(frameHuatiBtnClick(
+				framebtn_Huati_sixiang, HuatiList.CATALOG_SIXIANG));
+		framebtn_Huati_zhengjing.setOnClickListener(frameHuatiBtnClick(
+				framebtn_Huati_zhengjing, HuatiList.CATALOG_ZHENGJING));
+		framebtn_Huati_wenshi.setOnClickListener(frameHuatiBtnClick(
+				framebtn_Huati_wenshi, HuatiList.CATALOG_WENSHI));
 		// 动弹
 		framebtn_Tweet_lastest.setOnClickListener(frameTweetBtnClick(
 				framebtn_Tweet_lastest, TweetList.CATALOG_LASTEST));
@@ -1426,33 +1421,25 @@ public class Main extends BaseActivity {
 		};
 	}
 
-	private View.OnClickListener frameQuestionBtnClick(final Button btn,
+	private View.OnClickListener frameHuatiBtnClick(final Button btn,
 			final int catalog) {
 		return new View.OnClickListener() {
 			public void onClick(View v) {
-				if (btn == framebtn_Question_ask)
-					framebtn_Question_ask.setEnabled(false);
+				if (btn == framebtn_Huati_sixiang)
+					framebtn_Huati_sixiang.setEnabled(false);
 				else
-					framebtn_Question_ask.setEnabled(true);
-				if (btn == framebtn_Question_share)
-					framebtn_Question_share.setEnabled(false);
+					framebtn_Huati_sixiang.setEnabled(true);
+				if (btn == framebtn_Huati_zhengjing)
+					framebtn_Huati_zhengjing.setEnabled(false);
 				else
-					framebtn_Question_share.setEnabled(true);
-				if (btn == framebtn_Question_other)
-					framebtn_Question_other.setEnabled(false);
+					framebtn_Huati_zhengjing.setEnabled(true);
+				if (btn == framebtn_Huati_wenshi)
+					framebtn_Huati_wenshi.setEnabled(false);
 				else
-					framebtn_Question_other.setEnabled(true);
-				if (btn == framebtn_Question_job)
-					framebtn_Question_job.setEnabled(false);
-				else
-					framebtn_Question_job.setEnabled(true);
-				if (btn == framebtn_Question_site)
-					framebtn_Question_site.setEnabled(false);
-				else
-					framebtn_Question_site.setEnabled(true);
+					framebtn_Huati_wenshi.setEnabled(true);
 
-				curQuestionCatalog = catalog;
-				loadLvQuestionData(curQuestionCatalog, 0, lvQuestionHandler,
+				curHuatiCatalog = catalog;
+				loadLvHuatiData(curHuatiCatalog, 0, lvHuatiHandler,
 						UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
 			}
 		};
@@ -1698,16 +1685,16 @@ public class Main extends BaseActivity {
 				lvBlogData.clear();// 先清除原有数据
 				lvBlogData.addAll(blist.getBloglist());
 				break;
-			case UIHelper.LISTVIEW_DATATYPE_POST:
-				PostList plist = (PostList) obj;
+			case UIHelper.LISTVIEW_DATATYPE_HUATI:
+				HuatiList plist = (HuatiList) obj;
 				notice = plist.getNotice();
-				lvQuestionSumData = what;
+				lvHuatiSumData = what;
 				if (actiontype == UIHelper.LISTVIEW_ACTION_REFRESH) {
-					if (lvQuestionData.size() > 0) {
-						for (Post post1 : plist.getPostlist()) {
+					if (lvHuatiData.size() > 0) {
+						for (Huati huati1 : plist.getHuatilist()) {
 							boolean b = false;
-							for (Post post2 : lvQuestionData) {
-								if (post1.getId() == post2.getId()) {
+							for (Huati huati2 : lvHuatiData) {
+								if (huati1.getId() == huati2.getId()) {
 									b = true;
 									break;
 								}
@@ -1719,8 +1706,8 @@ public class Main extends BaseActivity {
 						newdata = what;
 					}
 				}
-				lvQuestionData.clear();// 先清除原有数据
-				lvQuestionData.addAll(plist.getPostlist());
+				lvHuatiData.clear();// 先清除原有数据
+				lvHuatiData.addAll(plist.getHuatilist());
 				break;
 			case UIHelper.LISTVIEW_DATATYPE_TWEET:
 				TweetList tlist = (TweetList) obj;
@@ -1853,24 +1840,24 @@ public class Main extends BaseActivity {
 					lvBlogData.addAll(blist.getBloglist());
 				}
 				break;
-			case UIHelper.LISTVIEW_DATATYPE_POST:
-				PostList plist = (PostList) obj;
+			case UIHelper.LISTVIEW_DATATYPE_HUATI:
+				HuatiList plist = (HuatiList) obj;
 				notice = plist.getNotice();
-				lvQuestionSumData += what;
-				if (lvQuestionData.size() > 0) {
-					for (Post post1 : plist.getPostlist()) {
+				lvHuatiSumData += what;
+				if (lvHuatiData.size() > 0) {
+					for (Huati huati1 : plist.getHuatilist()) {
 						boolean b = false;
-						for (Post post2 : lvQuestionData) {
-							if (post1.getId() == post2.getId()) {
+						for (Huati huati2 : lvHuatiData) {
+							if (huati1.getId() == huati2.getId()) {
 								b = true;
 								break;
 							}
 						}
 						if (!b)
-							lvQuestionData.add(post1);
+							lvHuatiData.add(huati1);
 					}
 				} else {
-					lvQuestionData.addAll(plist.getPostlist());
+					lvHuatiData.addAll(plist.getHuatilist());
 				}
 				break;
 			case UIHelper.LISTVIEW_DATATYPE_TWEET:
@@ -2029,7 +2016,7 @@ public class Main extends BaseActivity {
 	}
 
 	/**
-	 * 线程加载帖子数据
+	 * 线程加载话题数据
 	 * 
 	 * @param catalog
 	 *            分类
@@ -2040,7 +2027,7 @@ public class Main extends BaseActivity {
 	 * @param action
 	 *            动作标识
 	 */
-	private void loadLvQuestionData(final int catalog, final int pageIndex,
+	private void loadLvHuatiData(final int catalog, final int pageIndex,
 			final Handler handler, final int action) {
 		mHeadProgress.setVisibility(ProgressBar.VISIBLE);
 		new Thread() {
@@ -2051,7 +2038,7 @@ public class Main extends BaseActivity {
 						|| action == UIHelper.LISTVIEW_ACTION_SCROLL)
 					isRefresh = true;
 				try {
-					PostList list = appContext.getPostList(catalog, pageIndex,
+					HuatiList list = appContext.getHuatiList(catalog, pageIndex,
 							isRefresh);
 					msg.what = list.getPageSize();
 					msg.obj = list;
@@ -2061,8 +2048,8 @@ public class Main extends BaseActivity {
 					msg.obj = e;
 				}
 				msg.arg1 = action;
-				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_POST;
-				if (curQuestionCatalog == catalog) 
+				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_HUATI;
+				if (curHuatiCatalog == catalog) 
 					handler.sendMessage(msg);
 			}
 		}.start();
