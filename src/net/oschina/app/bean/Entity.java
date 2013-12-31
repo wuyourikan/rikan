@@ -23,4 +23,5 @@ public abstract class Entity extends Base {
 	public void setCacheKey(String cacheKey) {
 		this.cacheKey = cacheKey;
 	}
+
 }

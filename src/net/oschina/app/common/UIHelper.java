@@ -112,12 +112,20 @@ public class UIHelper {
 	public final static int LISTVIEW_DATA_FULL = 0x03;
 	public final static int LISTVIEW_DATA_EMPTY = 0x04;
 
-	public final static int LISTVIEW_DATATYPE_NEWS = 0x01;
+	/*public final static int LISTVIEW_DATATYPE_NEWS = 0x01;
 	public final static int LISTVIEW_DATATYPE_BLOG = 0x02;
 	public final static int LISTVIEW_DATATYPE_HUATI = 0x03;
 	public final static int LISTVIEW_DATATYPE_TWEET = 0x04;
 	public final static int LISTVIEW_DATATYPE_ACTIVE = 0x05;
 	public final static int LISTVIEW_DATATYPE_MESSAGE = 0x06;
+	public final static int LISTVIEW_DATATYPE_COMMENT = 0x07;
+	*/
+	public final static int LISTVIEW_DATATYPE_NEWS = 0x01;
+	public final static int LISTVIEW_DATATYPE_ZATAN = 0x02;
+	public final static int LISTVIEW_DATATYPE_RECOMMEND = 0x03;
+	public final static int LISTVIEW_DATATYPE_ALL = 0x04;
+	public final static int LISTVIEW_DATATYPE_HUATI = 0x05;                                                                                //次数有改动
+	public final static int LISTVIEW_DATATYPE_ZHUANTI = 0x06;
 	public final static int LISTVIEW_DATATYPE_COMMENT = 0x07;
 
 	public final static int REQUEST_CODE_FOR_RESULT = 0x01;
@@ -166,17 +174,43 @@ public class UIHelper {
 		context.startActivity(intent);
 	}
 
+	
 	/**
-	 * 显示新闻详情
-	 * 
+	 * 显示推荐详情
 	 * @param context
 	 * @param newsId
 	 */
-	public static void showNewsDetail(Context context, int newsId) {
+	public static void showRecommendDetail(Context context, int recommendId)
+	{
+		Intent intent = new Intent(context, RecommendDetail.class);
+		intent.putExtra("recommend_id", recommendId);
+		context.startActivity(intent);
+	}
+	
+	/**
+	 * 显示新闻详情
+	 * @param context
+	 * @param newsId
+	 */
+	public static void showNewsDetail(Context context, int newsId)
+	{
 		Intent intent = new Intent(context, NewsDetail.class);
 		intent.putExtra("news_id", newsId);
 		context.startActivity(intent);
 	}
+	
+	/**
+	 * 显示杂谈详情
+	 * @param context
+	 * @param blogId
+	 */
+	public static void showZatanDetail(Context context, int zatanId)
+	{
+		Intent intent = new Intent(context, ZatanDetail.class);
+		intent.putExtra("zatan_id", zatanId);
+		context.startActivity(intent);
+	}
+	
 
 	/**
 	 * 显示话题详情
@@ -279,37 +313,56 @@ public class UIHelper {
 
 	/**
 	 * 新闻超链接点击跳转
-	 * 
 	 * @param context
 	 * @param newsId
 	 * @param newsType
 	 * @param objId
 	 */
-	public static void showNewsRedirect(Context context, News news) {
+	public static void showNewsRedirect(Context context, News news)
+	{
 		String url = news.getUrl();
-		// url为空-旧方法
-		if (StringUtils.isEmpty(url)) {
+		//url为空-旧方法
+		if(StringUtils.isEmpty(url)) {
 			int newsId = news.getId();
 			int newsType = news.getNewType().type;
-			String objId = news.getNewType().attachment;
+			String objId = news.getNewType().attachment;                                                                              //此处有改动
 			switch (newsType) {
-			case News.NEWSTYPE_NEWS:
-				showNewsDetail(context, newsId);
-				break;
-			case News.NEWSTYPE_SOFTWARE:
-				showSoftwareDetail(context, objId);
-				break;
-			case News.NEWSTYPE_HUATI:
-				showHuatiDetail(context, StringUtils.toInt(objId));
-				break;
-			case News.NEWSTYPE_BLOG:
-				showBlogDetail(context, StringUtils.toInt(objId));
-				break;
+				case News.NEWSTYPE_NEWS:
+					showNewsDetail(context, newsId);
+					break;
+				case News.NEWSTYPE_ZATAN:
+					showZatanDetail(context, StringUtils.toInt(objId));
+					break;
 			}
 		} else {
 			showUrlRedirect(context, url);
 		}
 	}
+	/**
+	 * 全部超链接点击跳转
+	 * @param context
+	 * @param allId
+	 * @param allType
+	 * @param objId
+	 */
+	public static void showAllRedirect(Context context, All all)
+	{
+		String url = all.getUrl();
+		if(StringUtils.isEmpty(url)) {
+			int allType = all.getAllType().type;
+			String objId = all.getAllType().attachment;
+			switch (allType) {
+			case All.ALLTYPE_RECOMMEND:
+				showRecommendDetail(context, StringUtils.toInt(objId));
+			case All.ALLTYPE_NEWS:
+			    showNewsDetail(context, StringUtils.toInt(objId));
+			case All.ALLTYPE_ZATAN:
+				showZatanDetail(context, StringUtils.toInt(objId));
+			}
+			
+		}
+	}
+
 
 	/**
 	 * 动态点击跳转到相关新闻、帖子等
@@ -993,10 +1046,16 @@ public class UIHelper {
 			int objId, String objKey) {
 		switch (objType) {
 		case URLs.URL_OBJ_TYPE_NEWS:
-			showNewsDetail(context, objId);
+			showNewsDetail(context, objId);//读取这片资讯
+			break;
+		case URLs.URL_OBJ_TYPE_RECOMMEND:
+			showRecommendDetail(context, objId);
 			break;
 		case URLs.URL_OBJ_TYPE_HUATI:
 			showHuatiDetail(context, objId);
+			break;
+		case URLs.URL_OBJ_TYPE_ZATAN:
+			showZatanDetail(context, objId);
 			break;
 		/*case URLs.URL_OBJ_TYPE_HUATI_TAG:
 			showHuatiListByTag(context, objKey);

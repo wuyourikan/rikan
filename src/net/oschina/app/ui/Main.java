@@ -77,113 +77,148 @@ import android.widget.TextView;
  */
 public class Main extends BaseActivity {
 
-	public static final int QUICKACTION_LOGIN_OR_LOGOUT = 0;
-	public static final int QUICKACTION_USERINFO = 1;
-	public static final int QUICKACTION_SOFTWARE = 2;
-	public static final int QUICKACTION_SEARCH = 3;
-	public static final int QUICKACTION_SETTING = 4;
-	public static final int QUICKACTION_EXIT = 5;
+	//public static final int QUICKACTION_LOGIN_OR_LOGOUT = 0;
+	//public static final int QUICKACTION_USERINFO = 1;
+	//public static final int QUICKACTION_SOFTWARE = 2;
+	public static final int QUICKACTION_SEARCH = 0;
+	public static final int QUICKACTION_SETTING = 1;
+	public static final int QUICKACTION_EXIT = 2;
 
 	private ScrollLayout mScrollLayout;
 	private RadioButton[] mButtons;
 	private String[] mHeadTitles;
 	private int mViewCount;
 	private int mCurSel;
-
+	
+	private RadioButton fbNews;
+	private RadioButton fbHuati;
+	private RadioButton fbZhuanti;
+	private ImageView fbSetting;
+	
 	private ImageView mHeadLogo;
 	private TextView mHeadTitle;
 	private ProgressBar mHeadProgress;
 	private ImageButton mHead_search;
 	//private ImageButton mHeadPub_huati;
-	private ImageButton mHeadPub_tweet;
+	//private ImageButton mHeadPub_tweet;
 
 	private int curNewsCatalog = NewsList.CATALOG_ALL;
 	private int curHuatiCatalog = Huati.CATALOG_WENSHI;
-	private int curTweetCatalog = TweetList.CATALOG_LASTEST;
-	private int curActiveCatalog = ActiveList.CATALOG_LASTEST;
+	private int curZhuantiCatalog = ZhuantiList.CATALOG_COMMON;
+	//private int curTweetCatalog = TweetList.CATALOG_LASTEST;
+	//private int curActiveCatalog = ActiveList.CATALOG_LASTEST;
 
 	private PullToRefreshListView lvNews;
 	private PullToRefreshListView lvBlog;
 	private PullToRefreshListView lvHuati;
-	private PullToRefreshListView lvTweet;
-	private PullToRefreshListView lvActive;
-	private PullToRefreshListView lvMsg;
-
+	private PullToRefreshListView lvZhuanti;
+	//private PullToRefreshListView lvActive;
+	//private PullToRefreshListView lvMsg;
+	
 	private ListViewNewsAdapter lvNewsAdapter;
-	private ListViewBlogAdapter lvBlogAdapter;
+	private ListViewZatanAdapter lvZatanAdapter;
+	private ListViewRecommendAdapter lvRecommendAdapter;
+	private ListViewAllAdapter lvAllAdapter;
 	private ListViewHuatiAdapter lvHuatiAdapter;
-	private ListViewTweetAdapter lvTweetAdapter;
-	private ListViewActiveAdapter lvActiveAdapter;
-	private ListViewMessageAdapter lvMsgAdapter;
-
+	private ListViewZhuantiAdapter lvZhuantiAdapter;
+	//private ImageViewNewsAdapter lvNews_header;
+	//private ListViewActiveAdapter lvActiveAdapter;
+	//private ListViewMessageAdapter lvMsgAdapter;
+	
 	private List<News> lvNewsData = new ArrayList<News>();
-	private List<Blog> lvBlogData = new ArrayList<Blog>();
+	private List<Zatan> lvZatanData = new ArrayList<Zatan>();
+	private List<Recommend> lvRecommendData = new ArrayList<Recommend>();
+	private List<All> lvAllData = new ArrayList<All>();
 	private List<Huati> lvHuatiData = new ArrayList<Huati>();
-	private List<Tweet> lvTweetData = new ArrayList<Tweet>();
-	private List<Active> lvActiveData = new ArrayList<Active>();
-	private List<Messages> lvMsgData = new ArrayList<Messages>();
-
+	private List<Zhuanti> lvZhuantiData = new ArrayList<Zhuanti>();
+	//private List<Active> lvActiveData = new ArrayList<Active>();
+	//private List<Messages> lvMsgData = new ArrayList<Messages>();
+	
+	private String newsBigmap;
+	private String recommendBigmap;
+	private String zatanBigmap;
+	private String newsdetail;
+	private String recommenddetail;
+	private String zatandetail;
+	
 	private Handler lvNewsHandler;
-	private Handler lvBlogHandler;
+	private Handler lvZatanHandler;
+	private Handler lvRecommendHandler;
+	private Handler lvAllHandler;
 	private Handler lvHuatiHandler;
-	private Handler lvTweetHandler;
-	private Handler lvActiveHandler;
-	private Handler lvMsgHandler;
-
+	private Handler lvZhuantiHandler;
+	//private Handler lvActiveHandler;
+	//private Handler lvMsgHandler;
+	
 	private int lvNewsSumData;
-	private int lvBlogSumData;
+	private int lvZatanSumData;
+	private int lvRecommendSumData;
+	private int lvAllSumData;
 	private int lvHuatiSumData;
-	private int lvTweetSumData;
-	private int lvActiveSumData;
-	private int lvMsgSumData;
-
-	private RadioButton fbNews;
-	private RadioButton fbHuati;
-	private RadioButton fbTweet;
-	private RadioButton fbactive;
-	private ImageView fbSetting;
-
+	private int lvZhuantiSumData;
+	//private int lvActiveSumData;
+	//private int lvMsgSumData;
+	
 	private Button framebtn_News_lastest;
-	private Button framebtn_News_blog;
+	private Button framebtn_News_zatan;
 	private Button framebtn_News_recommend;
+	private Button framebtn_News_all;
 	private Button framebtn_Huati_sixiang;
 	private Button framebtn_Huati_zhengjing;
 	private Button framebtn_Huati_wenshi;
-	private Button framebtn_Tweet_lastest;
+	private Button framebtn_Zhuanti_common;
+	private Button framebtn_Zhuanti_particular;
+	/*private Button framebtn_Tweet_lastest;
 	private Button framebtn_Tweet_hot;
 	private Button framebtn_Tweet_my;
 	private Button framebtn_Active_lastest;
 	private Button framebtn_Active_atme;
 	private Button framebtn_Active_comment;
 	private Button framebtn_Active_myself;
-	private Button framebtn_Active_message;
+	private Button framebtn_Active_message;*/
 
 	private View lvNews_footer;
-	private View lvBlog_footer;
+	private View lvZatan_footer;
+	private View lvRecommend_footer;
+	private View lvNews_header;
+	private View lvZatan_header;
+	private View lvRecommend_header;
+	private View lvAll_footer;
 	private View lvHuati_footer;
-	private View lvTweet_footer;
-	private View lvActive_footer;
-	private View lvMsg_footer;
-
+	private View lvZhuanti_footer;
+	//private View lvActive_footer;
+	//private View lvMsg_footer;
+	
 	private TextView lvNews_foot_more;
-	private TextView lvBlog_foot_more;
+	private TextView lvZatan_foot_more;
+	private TextView lvRecommend_foot_more;
+	private TextView lvAll_foot_more;
 	private TextView lvHuati_foot_more;
-	private TextView lvTweet_foot_more;
-	private TextView lvActive_foot_more;
-	private TextView lvMsg_foot_more;
-
+	private TextView lvZhuanti_foot_more;
+	//private TextView lvActive_foot_more;
+	//private TextView lvMsg_foot_more;
+	
 	private ProgressBar lvNews_foot_progress;
-	private ProgressBar lvBlog_foot_progress;
+	private ProgressBar lvZatan_foot_progress;
+	private ProgressBar lvRecommend_foot_progress;
+	private ProgressBar lvAll_foot_progress;
 	private ProgressBar lvHuati_foot_progress;
 	private ProgressBar lvTweet_foot_progress;
-	private ProgressBar lvActive_foot_progress;
-	private ProgressBar lvMsg_foot_progress;
+	//private ProgressBar lvActive_foot_progress;
+	//private ProgressBar lvMsg_foot_progress;
 
-	public static BadgeView bv_active;
-	public static BadgeView bv_message;
-	public static BadgeView bv_atme;
-	public static BadgeView bv_review;
+	private ImageView lvNews_head_imageview;
+	private ImageView lvZatan_head_imageview;
+	private ImageView lvRecommend_head_imageview;
+	
+	//public static BadgeView bv_active;
+	//public static BadgeView bv_message;
+	//public static BadgeView bv_atme;
+	//public static BadgeView bv_review;
 
+	private BitmapManager bitmapmanager;
+	private int window_width;
+	
 	private QuickActionWidget mGrid;// 快捷栏控件
 
 	private boolean isClearNotice = false;
@@ -235,8 +270,9 @@ public class Main extends BaseActivity {
 		if (mCurSel == 0 && !fbNews.isChecked()) {
 			fbNews.setChecked(true);
 			fbHuati.setChecked(false);
-			fbTweet.setChecked(false);
-			fbactive.setChecked(false);
+			fbZhuanti.setChecked(false);
+			//fbTweet.setChecked(false);
+			//fbactive.setChecked(false);
 		}
 		// 读取左右滑动配置
 		mScrollLayout.setIsScroll(appContext.isScroll());
@@ -350,12 +386,12 @@ public class Main extends BaseActivity {
 	 */
 	private void initQuickActionGrid() {
 		mGrid = new QuickActionGrid(this);
-		mGrid.addQuickAction(new MyQuickAction(this, R.drawable.ic_menu_login,
+		/*mGrid.addQuickAction(new MyQuickAction(this, R.drawable.ic_menu_login,
 				R.string.main_menu_login));
 		mGrid.addQuickAction(new MyQuickAction(this, R.drawable.ic_menu_myinfo,
 				R.string.main_menu_myinfo));
 		mGrid.addQuickAction(new MyQuickAction(this,
-				R.drawable.ic_menu_software, R.string.main_menu_software));
+				R.drawable.ic_menu_software, R.string.main_menu_software));*/
 		mGrid.addQuickAction(new MyQuickAction(this, R.drawable.ic_menu_search,
 				R.string.main_menu_search));
 		mGrid.addQuickAction(new MyQuickAction(this,
@@ -372,7 +408,7 @@ public class Main extends BaseActivity {
 	private OnQuickActionClickListener mActionListener = new OnQuickActionClickListener() {
 		public void onQuickActionClicked(QuickActionWidget widget, int position) {
 			switch (position) {
-			case QUICKACTION_LOGIN_OR_LOGOUT:// 用户登录-注销
+			/*case QUICKACTION_LOGIN_OR_LOGOUT:// 用户登录-注销
 				UIHelper.loginOrLogout(Main.this);
 				break;
 			case QUICKACTION_USERINFO:// 我的资料
@@ -380,7 +416,7 @@ public class Main extends BaseActivity {
 				break;
 			case QUICKACTION_SOFTWARE:// 开源软件
 				UIHelper.showSoftware(Main.this);
-				break;
+				break;*/
 			case QUICKACTION_SEARCH:// 搜索
 				UIHelper.showSearch(Main.this);
 				break;
@@ -400,39 +436,35 @@ public class Main extends BaseActivity {
 	private void initFrameListView() {
 		// 初始化listview控件
 		this.initNewsListView();
-		this.initBlogListView();
+		this.initZatanListView();
+		this.initRecommendListView();
+		this.initAllListView();
 		this.initHuatiListView();
-		this.initTweetListView();
-		this.initActiveListView();
-		this.initMsgListView();
-		// 加载listview数据
+		this.initZhuantiListView();
+		//this.initActiveListView();
+		//this.initMsgListView();
+		//加载listview数据
 		this.initFrameListViewData();
-	}
-
-	/**
-	 * 初始化所有ListView数据
-	 */
-	private void initFrameListViewData() {
-		// 初始化Handler
-		lvNewsHandler = this.getLvHandler(lvNews, lvNewsAdapter,
-				lvNews_foot_more, lvNews_foot_progress, AppContext.PAGE_SIZE);
-		lvBlogHandler = this.getLvHandler(lvBlog, lvBlogAdapter,
-				lvBlog_foot_more, lvBlog_foot_progress, AppContext.PAGE_SIZE);
-		lvHuatiHandler = this.getLvHandler(lvHuati, lvHuatiAdapter,
-				lvHuati_foot_more, lvHuati_foot_progress,
-				AppContext.PAGE_SIZE);
-		lvTweetHandler = this.getLvHandler(lvTweet, lvTweetAdapter,
-				lvTweet_foot_more, lvTweet_foot_progress, AppContext.PAGE_SIZE);
-		lvActiveHandler = this.getLvHandler(lvActive, lvActiveAdapter,
-				lvActive_foot_more, lvActive_foot_progress,
-				AppContext.PAGE_SIZE);
-		lvMsgHandler = this.getLvHandler(lvMsg, lvMsgAdapter, lvMsg_foot_more,
-				lvMsg_foot_progress, AppContext.PAGE_SIZE);
-
-		// 加载资讯数据
-		if (lvNewsData.isEmpty()) {
-			loadLvNewsData(curNewsCatalog, 0, lvNewsHandler,
-					UIHelper.LISTVIEW_ACTION_INIT);
+    }
+    
+    /**
+     * 初始化所有ListView数据
+     */
+    private void initFrameListViewData()
+    {
+        //初始化Handler
+        lvNewsHandler = this.getLvHandler(lvNews, lvNewsAdapter, lvNews_foot_more, lvNews_foot_progress, AppContext.PAGE_SIZE);
+        lvZatanHandler = this.getLvHandler(lvZatan, lvZatanAdapter, lvZatan_foot_more, lvZatan_foot_progress, AppContext.PAGE_SIZE);
+        lvRecommendHandler = this.getLvHandler(lvRecommend, lvRecommendAdapter, lvRecommend_foot_more, lvRecommend_foot_progress, AppContext.PAGE_SIZE);
+        lvAllHandler = this.getLvHandler(lvAll, lvAllAdapter, lvAll_foot_more, lvAll_foot_progress, AppContext.PAGE_SIZE);
+        lvHuatiHandler = this.getLvHandler(lvHuati, lvHuatiAdapter, lvHuati_foot_more, lvHuati_foot_progress, AppContext.PAGE_SIZE);  
+        lvZhuantiHandler = this.getLvHandler(lvZhuanti, lvZhuantiAdapter, lvZhuanti_foot_more, lvZhuanti_foot_progress, AppContext.PAGE_SIZE);  
+        //lvActiveHandler = this.getLvHandler(lvActive, lvActiveAdapter, lvActive_foot_more, lvActive_foot_progress, AppContext.PAGE_SIZE); 
+        //lvMsgHandler = this.getLvHandler(lvMsg, lvMsgAdapter, lvMsg_foot_more, lvMsg_foot_progress, AppContext.PAGE_SIZE);      	
+    	
+        //加载资讯数据
+		if(lvNewsData.isEmpty()) {
+			loadLvNewsData(curNewsCatalog, 0, lvNewsHandler, UIHelper.LISTVIEW_ACTION_INIT);
 		}
 	}
 
@@ -519,6 +551,84 @@ public class Main extends BaseActivity {
 	}
 
 	/**
+     * 初始化推荐列表
+     */
+	private void initRecommendListView()
+    {
+        lvRecommendAdapter = new ListViewRecommendAdapter(this, lvRecommendData, R.layout.recommend_listitem);
+        lvRecommend_header = getLayoutInflater().inflate(R.layout.listview_header, null);
+        lvRecommend_head_imageview = (ImageView) lvRecommend_header.findViewById(R.id.lv_header_image);
+		//String recommendurl = "http://static.oschina.net/uploads/user/473/947559_50.jpg";
+		initChildView(this, lvRecommend_head_imageview, recommendBigmap);
+        lvRecommend_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
+        lvRecommend_foot_more = (TextView)lvRecommend_footer.findViewById(R.id.listview_foot_more);
+        lvRecommend_foot_progress = (ProgressBar)lvRecommend_footer.findViewById(R.id.listview_foot_progress);
+        lvRecommend = (PullToRefreshListView)findViewById(R.id.frame_listview_recommend);
+        lvRecommend.addHeaderView(lvRecommend_header);
+        lvRecommend.addFooterView(lvRecommend_footer);//添加底部视图  必须在setAdapter前
+        lvRecommend.setAdapter(lvRecommendAdapter); 
+        lvRecommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        		//点击头部、底部栏无效
+        		if(position == 0) {
+        			UIHelper.showUrlRedirect(view.getContext(), recommenddetail);
+        			return;
+        		}
+        		if(view == lvRecommend_footer) return;
+        		
+        		Recommend recommend = null;        		
+        		//判断是否是TextView
+        		if(view instanceof TextView){
+        			recommend = (Recommend)view.getTag();
+        		}else{
+        			TextView tv = (TextView)view.findViewById(R.id.recommend_listitem_title);
+        			recommend = (Recommend)tv.getTag();
+        		}
+        		if(recommend == null) return;
+        		
+        		//跳转到博客详情
+        		UIHelper.showUrlRedirect(view.getContext(), recommend.getUrl());                                                      //此处需要详细看
+        	}        	
+		});
+        lvRecommend.setOnScrollListener(new AbsListView.OnScrollListener() {
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				lvRecommend.onScrollStateChanged(view, scrollState);
+				
+				//数据为空--不用继续下面代码了
+				if(lvRecommendData.isEmpty()) return;
+				
+				//判断是否滚动到底部
+				boolean scrollEnd = false;
+				try {
+					if(view.getPositionForView(lvRecommend_footer) == view.getLastVisiblePosition())
+						scrollEnd = true;
+				} catch (Exception e) {
+					scrollEnd = false;
+				}
+				
+				int lvDataState = StringUtils.toInt(lvRecommend.getTag());
+				if(scrollEnd && lvDataState==UIHelper.LISTVIEW_DATA_MORE)
+				{
+					lvRecommend.setTag(UIHelper.LISTVIEW_DATA_LOADING);
+					lvRecommend_foot_more.setText(R.string.load_ing);
+					lvRecommend_foot_progress.setVisibility(View.VISIBLE);
+					//当前pageIndex
+					int pageIndex = lvRecommendSumData/AppContext.PAGE_SIZE;
+					loadLvRecommendData(curNewsCatalog, pageIndex, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
+				}
+			}
+			public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
+				lvRecommend.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+			}
+		});
+        lvRecommend.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
+            public void onRefresh() {
+            	loadLvRecommendData(curNewsCatalog, 0, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_REFRESH);
+            }
+        });					
+    }
+    
+	/**
 	 * 初始化博客列表
 	 */
 	private void initBlogListView() {
@@ -599,7 +709,153 @@ public class Main extends BaseActivity {
 			}
 		});
 	}
-
+	
+	/**
+     * 初始化杂谈列表
+     */
+	private void initZatanListView()
+    {
+        lvZatanAdapter = new ListViewZatanAdapter(this, ZatanList.CATALOG_LATEST, lvZatanData, R.layout.zatan_listitem);
+        lvZatan_header = getLayoutInflater().inflate(R.layout.listview_header, null);
+        lvZatan_head_imageview = (ImageView) lvZatan_header.findViewById(R.id.lv_header_image);
+		//String zatanurl = "http://static.oschina.net/uploads/user/473/947559_50.jpg";
+		initChildView(this, lvZatan_head_imageview, zatanBigmap);
+        lvZatan_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
+        lvZatan_foot_more = (TextView)lvZatan_footer.findViewById(R.id.listview_foot_more);
+        lvZatan_foot_progress = (ProgressBar)lvZatan_footer.findViewById(R.id.listview_foot_progress);
+        lvZatan = (PullToRefreshListView)findViewById(R.id.frame_listview_zatan);
+        lvZatan.addHeaderView(lvZatan_header);
+        lvZatan.addFooterView(lvZatan_footer);//添加底部视图  必须在setAdapter前
+        lvZatan.setAdapter(lvZatanAdapter); 
+        lvZatan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        		//点击头部、底部栏无效
+        		if(position == 0) {
+        			UIHelper.showUrlRedirect(view.getContext(), zatandetail);
+        			return;
+        		}
+        		if(view == lvZatan_footer) return;
+        		
+        		Zatan zatan = null;        		
+        		//判断是否是TextView
+        		if(view instanceof TextView){
+        			zatan = (Zatan)view.getTag();
+        		}else{
+        			TextView tv = (TextView)view.findViewById(R.id.zatan_listitem_title);
+        			zatan = (Zatan)tv.getTag();
+        		}
+        		if(zatan == null) return;
+        		
+        		//跳转到博客详情
+        		UIHelper.showUrlRedirect(view.getContext(), zatan.getUrl());
+        	}        	
+		});
+        lvZatan.setOnScrollListener(new AbsListView.OnScrollListener() {
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				lvZatan.onScrollStateChanged(view, scrollState);
+				
+				//数据为空--不用继续下面代码了
+				if(lvZatanData.isEmpty()) return;
+				
+				//判断是否滚动到底部
+				boolean scrollEnd = false;
+				try {
+					if(view.getPositionForView(lvZatan_footer) == view.getLastVisiblePosition())
+						scrollEnd = true;
+				} catch (Exception e) {
+					scrollEnd = false;
+				}
+				
+				int lvDataState = StringUtils.toInt(lvZatan.getTag());
+				if(scrollEnd && lvDataState==UIHelper.LISTVIEW_DATA_MORE)
+				{
+					lvZatan.setTag(UIHelper.LISTVIEW_DATA_LOADING);
+					lvZatan_foot_more.setText(R.string.load_ing);
+					lvZatan_foot_progress.setVisibility(View.VISIBLE);
+					//当前pageIndex
+					int pageIndex = lvZatanSumData/AppContext.PAGE_SIZE;
+					loadLvZatanData(curNewsCatalog, pageIndex, lvZatanHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
+				}
+			}
+			public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
+				lvZatan.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+			}
+		});
+        lvZatan.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
+            public void onRefresh() {
+            	loadLvZatanData(curNewsCatalog, 0, lvZatanHandler, UIHelper.LISTVIEW_ACTION_REFRESH);
+            }
+        });					
+    }
+    
+	/**
+     * 初始化全部列表
+     */
+	private void initAllListView()
+    {
+        lvAllAdapter = new ListViewAllAdapter(this, lvAllData, R.layout.all_listitem);        
+        lvAll_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
+        lvAll_foot_more = (TextView)lvAll_footer.findViewById(R.id.listview_foot_more);
+        lvAll_foot_progress = (ProgressBar)lvAll_footer.findViewById(R.id.listview_foot_progress);
+        lvAll = (PullToRefreshListView)findViewById(R.id.frame_listview_all);
+        lvAll.addFooterView(lvAll_footer);//添加底部视图  必须在setAdapter前
+        lvAll.setAdapter(lvAllAdapter); 
+        lvAll.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        		//点击头部、底部栏无效
+        		if(position == 0 || view == lvAll_footer) return;
+        		
+        		All all = null;        		
+        		//判断是否是TextView
+        		if(view instanceof TextView){
+        			all = (All)view.getTag();
+        		}else{
+        			TextView tv = (TextView)view.findViewById(R.id.all_listitem_title);
+        			all = (All)tv.getTag();
+        		}
+        		if(all == null) return;
+        		
+        		//跳转到博客详情
+        		UIHelper.showAllRedirect(view.getContext(), all);                                                      //此处需要详细看
+        	}        	
+		});
+        lvAll.setOnScrollListener(new AbsListView.OnScrollListener() {
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				lvAll.onScrollStateChanged(view, scrollState);
+				
+				//数据为空--不用继续下面代码了
+				if(lvAllData.isEmpty()) return;
+				
+				//判断是否滚动到底部
+				boolean scrollEnd = false;
+				try {
+					if(view.getPositionForView(lvAll_footer) == view.getLastVisiblePosition())
+						scrollEnd = true;
+				} catch (Exception e) {
+					scrollEnd = false;
+				}
+				
+				int lvDataState = StringUtils.toInt(lvAll.getTag());
+				if(scrollEnd && lvDataState==UIHelper.LISTVIEW_DATA_MORE)
+				{
+					lvAll.setTag(UIHelper.LISTVIEW_DATA_LOADING);
+					lvAll_foot_more.setText(R.string.load_ing);
+					lvAll_foot_progress.setVisibility(View.VISIBLE);
+					//当前pageIndex
+					int pageIndex = lvAllSumData/AppContext.PAGE_SIZE;
+					loadLvRecommendData(curNewsCatalog, pageIndex, lvAllHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
+				}
+			}
+			public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
+				lvAll.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+			}
+		});
+        lvAll.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
+            public void onRefresh() {
+            	loadLvRecommendData(curNewsCatalog, 0, lvAllHandler, UIHelper.LISTVIEW_ACTION_REFRESH);
+            }
+        });					
+    }
 	/**
 	 * 初始化话题列表
 	 */
@@ -685,6 +941,74 @@ public class Main extends BaseActivity {
 				});
 	}
 
+	/**
+     * 初始化专题列表
+     */
+    private void initZhuantiListView()
+    {
+    	 lvZhuantiAdapter = new ListViewZhuantiAdapter(this, lvZhuantiData, R.layout.zhuanti_listitem);        
+         lvZhuanti_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
+         lvZhuanti_foot_more = (TextView)lvHuati_footer.findViewById(R.id.listview_foot_more);
+         lvZhuanti_foot_progress = (ProgressBar)lvHuati_footer.findViewById(R.id.listview_foot_progress);
+         lvZhuanti = (PullToRefreshListView)findViewById(R.id.frame_listview_zhuanti);
+         lvZhuanti.addFooterView(lvZhuanti_footer);//添加底部视图  必须在setAdapter前
+         lvZhuanti.setAdapter(lvZhuantiAdapter); 
+         lvZhuanti.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+         		//点击头部、底部栏无效
+         		if(position == 0 || view == lvZhuanti_footer) return;
+         		
+         		Zhuanti zhuanti = null;		
+         		//判断是否是TextView
+         		if(view instanceof TextView){
+         			zhuanti = (Zhuanti)view.getTag();
+         		}else{
+         			TextView tv = (TextView)view.findViewById(R.id.zhuanti_listitem_title);
+         			zhuanti = (Zhuanti)tv.getTag();
+         		}
+         		if(zhuanti == null) return;
+         		
+         		//跳转到问答详情
+         		//UIHelper.showHuatiDetail(view.getContext(), post.getId());
+         	}        	
+ 		});
+         lvZhuanti.setOnScrollListener(new AbsListView.OnScrollListener() {
+ 			public void onScrollStateChanged(AbsListView view, int scrollState) {
+ 				lvZhuanti.onScrollStateChanged(view, scrollState);
+ 				
+ 				//数据为空--不用继续下面代码了
+ 				if(lvZhuantiData.isEmpty()) return;
+ 				
+ 				//判断是否滚动到底部
+ 				boolean scrollEnd = false;
+ 				try {
+ 					if(view.getPositionForView(lvZhuanti_footer) == view.getLastVisiblePosition())
+ 						scrollEnd = true;
+ 				} catch (Exception e) {
+ 					scrollEnd = false;
+ 				}
+ 				
+ 				int lvDataState = StringUtils.toInt(lvZhuanti.getTag());
+ 				if(scrollEnd && lvDataState==UIHelper.LISTVIEW_DATA_MORE)
+ 				{
+ 					lvZhuanti_foot_more.setText(R.string.load_ing);
+ 					lvZhuanti_foot_progress.setVisibility(View.VISIBLE);
+ 					//当前pageIndex
+ 					int pageIndex = lvZhuantiSumData/AppContext.PAGE_SIZE;
+ 					loadLvZhuantiData(curZhuantiCatalog, pageIndex, lvZhuantiHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
+ 				}
+ 			}
+ 			public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
+ 				lvZhuanti.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+ 			}
+ 		});
+         lvZhuanti.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
+             public void onRefresh() {
+             	loadLvZhuantiData(curZhuantiCatalog, 0, lvZhuantiHandler, UIHelper.LISTVIEW_ACTION_REFRESH);
+             }
+         });
+    }
+    
 	/**
 	 * 初始化动弹列表
 	 */
@@ -1068,23 +1392,31 @@ public class Main extends BaseActivity {
 		mHeadProgress = (ProgressBar) findViewById(R.id.main_head_progress);
 		mHead_search = (ImageButton) findViewById(R.id.main_head_search);
 		//mHeadPub_huati = (ImageButton) findViewById(R.id.main_head_pub_huati);
-		mHeadPub_tweet = (ImageButton) findViewById(R.id.main_head_pub_tweet);
+		//mHeadPub_tweet = (ImageButton) findViewById(R.id.main_head_pub_tweet);
 
 		mHead_search.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				UIHelper.showSearch(v.getContext());
 			}
 		});
+		
+		mHeadLogo.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mScrollLayout.scrollTo(0, 0);
+			}
+		});
 		/*mHeadPub_huati.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				UIHelper.showHuatiPub(v.getContext());
 			}
-		});*/
+		});
 		mHeadPub_tweet.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				UIHelper.showTweetPub(Main.this);
 			}
-		});
+		});*/
 	}
 
 	/**
@@ -1093,15 +1425,15 @@ public class Main extends BaseActivity {
 	private void initFootBar() {
 		fbNews = (RadioButton) findViewById(R.id.main_footbar_news);
 		fbHuati = (RadioButton) findViewById(R.id.main_footbar_huati);
-		fbTweet = (RadioButton) findViewById(R.id.main_footbar_tweet);
-		fbactive = (RadioButton) findViewById(R.id.main_footbar_active);
+		fbZhuanti = (RadioButton)findViewById(R.id.main_footbar_zhuanti);
+		//fbTweet = (RadioButton) findViewById(R.id.main_footbar_tweet);
+		//fbactive = (RadioButton) findViewById(R.id.main_footbar_active);
 
 		fbSetting = (ImageView) findViewById(R.id.main_footbar_setting);
 		fbSetting.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				// 展示快捷栏&判断是否登录&是否加载文章图片
-				UIHelper.showSettingLoginOrLogout(Main.this,
-						mGrid.getQuickAction(0));
+				//UIHelper.showSettingLoginOrLogout(Main.this, mGrid.getQuickAction(0));
 				mGrid.show(v);
 			}
 		});
@@ -1110,6 +1442,7 @@ public class Main extends BaseActivity {
 	/**
 	 * 初始化通知信息标签控件
 	 */
+	/*
 	private void initBadgeView() {
 		bv_active = new BadgeView(this, fbactive);
 		bv_active.setBackgroundResource(R.drawable.widget_count_bg);
@@ -1139,6 +1472,7 @@ public class Main extends BaseActivity {
 		bv_message.setTextSize(8f);
 		bv_message.setTextColor(Color.WHITE);
 	}
+	*/
 
 	/**
 	 * 初始化水平滚动翻页
@@ -1161,26 +1495,33 @@ public class Main extends BaseActivity {
 					// 点击当前项刷新
 					if (mCurSel == pos) {
 						switch (pos) {
-						case 0:// 资讯+博客
-							if (lvNews.getVisibility() == View.VISIBLE)
+						case 0://资讯+杂谈
+							if(lvRecommend.getVisibility() == View.VISIBLE)
+								lvRecommend.clickRefresh();
+							else if(lvNews.getVisibility() == View.VISIBLE)
 								lvNews.clickRefresh();
+							else if(lvZatan.getVisibility() == View.VISIBLE)
+								lvZatan.clickRefresh();
 							else
-								lvBlog.clickRefresh();
-							break;
+								lvAll.clickRefresh();
+							break;	
 						case 1:// 话题
 							lvHuati.clickRefresh();
 							break;
-						case 2:// 动弹
+						case 2://专题
+							lvZhuanti.clickRefresh();
+						/*case 3:// 动弹
 							lvTweet.clickRefresh();
 							break;
-						case 3:// 动态+留言
+						case 4:// 动态+留言
 							if (lvActive.getVisibility() == View.VISIBLE)
 								lvActive.clickRefresh();
 							else
 								lvMsg.clickRefresh();
-							break;
+							break;*/
 						}
 					}
+					setCurPoint(pos);
 					mScrollLayout.snapToScreen(pos);
 				}
 			});
@@ -1195,12 +1536,13 @@ public class Main extends BaseActivity {
 					public void OnViewChange(int viewIndex) {
 						// 切换列表视图-如果列表数据为空：加载数据
 						switch (viewIndex) {
-						case 0:// 资讯
+						case 0:// 资讯(改为推荐)
 							if (lvNews.getVisibility() == View.VISIBLE) {
 								if (lvNewsData.isEmpty()) {
-									loadLvNewsData(curNewsCatalog, 0,
+									/*loadLvNewsData(curNewsCatalog, 0,
 											lvNewsHandler,
-											UIHelper.LISTVIEW_ACTION_INIT);
+											UIHelper.LISTVIEW_ACTION_INIT);*/
+									loadLvRecommendData(curNewsCatalog, 0, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_INIT); 
 								}
 							} else {
 								if (lvBlogData.isEmpty()) {
@@ -1210,14 +1552,19 @@ public class Main extends BaseActivity {
 								}
 							}
 							break;
-						case 1:// 问答
+						case 1://话题
 							if (lvHuatiData.isEmpty()) {
 								loadLvHuatiData(curHuatiCatalog, 0,
 										lvHuatiHandler,
 										UIHelper.LISTVIEW_ACTION_INIT);
 							}
 							break;
-						case 2:// 动弹
+						case 2://专题
+							if(lvZhuantiData.isEmpty()) {
+								loadLvZhuantiData(curZhuantiCatalog, 0, lvZhuantiHandler, UIHelper.LISTVIEW_ACTION_INIT);
+							}
+							break;
+						/*case 2:// 动弹
 							if (lvTweetData.isEmpty()) {
 								loadLvTweetData(curTweetCatalog, 0,
 										lvTweetHandler,
@@ -1243,6 +1590,7 @@ public class Main extends BaseActivity {
 								UIHelper.showLoginDialog(Main.this);
 								break;
 							}
+						
 							// 处理通知信息
 							if (bv_atme.isShown())
 								frameActiveBtnOnClick(framebtn_Active_atme,
@@ -1264,7 +1612,7 @@ public class Main extends BaseActivity {
 									&& lvMsgData.isEmpty())
 								loadLvMsgData(0, lvMsgHandler,
 										UIHelper.LISTVIEW_ACTION_INIT);
-							break;
+							break;*/
 						}
 						setCurPoint(viewIndex);
 					}
@@ -1308,33 +1656,35 @@ public class Main extends BaseActivity {
 	 * 初始化各个主页的按钮(资讯、问答、动弹、动态、留言)
 	 */
 	private void initFrameButton() {
-		// 初始化按钮控件
-		framebtn_News_lastest = (Button) findViewById(R.id.frame_btn_news_lastest);
-		framebtn_News_blog = (Button) findViewById(R.id.frame_btn_news_blog);
-		framebtn_News_recommend = (Button) findViewById(R.id.frame_btn_news_recommend);
-		framebtn_Huati_sixiang = (Button) findViewById(R.id.frame_btn_huati_sixiang);
+		//初始化按钮控件
+    	framebtn_News_recommend = (Button)findViewById(R.id.frame_btn_news_recommend);
+    	framebtn_News_zatan = (Button)findViewById(R.id.frame_btn_news_zatan);
+    	framebtn_News_lastest = (Button)findViewById(R.id.frame_btn_news_lastest);
+    	framebtn_News_all = (Button)findViewById(R.id.frame_btn_news_all);
+    	framebtn_Huati_sixiang = (Button) findViewById(R.id.frame_btn_huati_sixiang);
 		framebtn_Huati_zhengjing = (Button) findViewById(R.id.frame_btn_huati_zhengjing);
 		framebtn_Huati_wenshi = (Button) findViewById(R.id.frame_btn_huati_wenshi);
-		framebtn_Tweet_lastest = (Button) findViewById(R.id.frame_btn_tweet_lastest);
-		framebtn_Tweet_hot = (Button) findViewById(R.id.frame_btn_tweet_hot);
-		framebtn_Tweet_my = (Button) findViewById(R.id.frame_btn_tweet_my);
-		framebtn_Active_lastest = (Button) findViewById(R.id.frame_btn_active_lastest);
-		framebtn_Active_atme = (Button) findViewById(R.id.frame_btn_active_atme);
-		framebtn_Active_comment = (Button) findViewById(R.id.frame_btn_active_comment);
-		framebtn_Active_myself = (Button) findViewById(R.id.frame_btn_active_myself);
-		framebtn_Active_message = (Button) findViewById(R.id.frame_btn_active_message);
-		// 设置首选择项
-		framebtn_News_lastest.setEnabled(false);
-		framebtn_Huati_wenshi.setEnabled(false);
-		framebtn_Tweet_lastest.setEnabled(false);
-		framebtn_Active_lastest.setEnabled(false);
-		// 资讯+博客
-		framebtn_News_lastest.setOnClickListener(frameNewsBtnClick(
-				framebtn_News_lastest, NewsList.CATALOG_ALL));
-		framebtn_News_blog.setOnClickListener(frameNewsBtnClick(
-				framebtn_News_blog, BlogList.CATALOG_LATEST));
-		framebtn_News_recommend.setOnClickListener(frameNewsBtnClick(
-				framebtn_News_recommend, BlogList.CATALOG_RECOMMEND));
+    	//framebtn_Question_job = (Button)findViewById(R.id.frame_btn_question_job);
+    	//framebtn_Question_site = (Button)findViewById(R.id.frame_btn_question_site);
+    	framebtn_Zhuanti_common = (Button)findViewById(R.id.frame_btn_zhuanti_common);
+    	framebtn_Zhuanti_particular = (Button)findViewById(R.id.frame_btn_zhuanti_particular);
+    	//framebtn_Tweet_my = (Button)findViewById(R.id.frame_btn_tweet_my);
+    	//framebtn_Active_lastest = (Button)findViewById(R.id.frame_btn_active_lastest);
+    	//framebtn_Active_atme = (Button)findViewById(R.id.frame_btn_active_atme);
+    	//framebtn_Active_comment = (Button)findViewById(R.id.frame_btn_active_comment);
+    	//framebtn_Active_myself = (Button)findViewById(R.id.frame_btn_active_myself);
+    	//framebtn_Active_message = (Button)findViewById(R.id.frame_btn_active_message);
+    	//设置首选择项
+    	framebtn_News_recommend.setEnabled(false);
+    	framebtn_Huati_wenshi.setEnabled(false);
+    	framebtn_Zhuanti_common.setEnabled(false);
+    	//framebtn_Active_lastest.setEnabled(false);
+    	//资讯+杂谈
+    	framebtn_News_recommend.setOnClickListener(frameNewsBtnClick(framebtn_News_recommend,RecommendList.CATALOG_RECOMMEND));
+    	framebtn_News_zatan.setOnClickListener(frameNewsBtnClick(framebtn_News_zatan,ZatanList.CATALOG_LATEST));
+    	framebtn_News_lastest.setOnClickListener(frameNewsBtnClick(framebtn_News_lastest,NewsList.CATALOG_ALLN));
+    	framebtn_News_all.setOnClickListener(frameNewsBtnClick(framebtn_News_all,AllList.CATALOG_ALL));
+    	
 		// 话题
 		framebtn_Huati_sixiang.setOnClickListener(frameHuatiBtnClick(
 				framebtn_Huati_sixiang, HuatiList.CATALOG_SIXIANG));
@@ -1343,7 +1693,7 @@ public class Main extends BaseActivity {
 		framebtn_Huati_wenshi.setOnClickListener(frameHuatiBtnClick(
 				framebtn_Huati_wenshi, HuatiList.CATALOG_WENSHI));
 		// 动弹
-		framebtn_Tweet_lastest.setOnClickListener(frameTweetBtnClick(
+		/*framebtn_Tweet_lastest.setOnClickListener(frameTweetBtnClick(
 				framebtn_Tweet_lastest, TweetList.CATALOG_LASTEST));
 		framebtn_Tweet_hot.setOnClickListener(frameTweetBtnClick(
 				framebtn_Tweet_hot, TweetList.CATALOG_HOT));
@@ -1364,9 +1714,9 @@ public class Main extends BaseActivity {
 				loadLvTweetData(curTweetCatalog, 0, lvTweetHandler,
 						UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
 			}
-		});
+		});*/
 		// 动态+留言
-		framebtn_Active_lastest.setOnClickListener(frameActiveBtnClick(
+		/*framebtn_Active_lastest.setOnClickListener(frameActiveBtnClick(
 				framebtn_Active_lastest, ActiveList.CATALOG_LASTEST));
 		framebtn_Active_atme.setOnClickListener(frameActiveBtnClick(
 				framebtn_Active_atme, ActiveList.CATALOG_ATME));
@@ -1379,47 +1729,92 @@ public class Main extends BaseActivity {
 		// 特殊处理
 		framebtn_Active_atme.setText("@"
 				+ getString(R.string.frame_title_active_atme));
+		*/
 	}
 
-	private View.OnClickListener frameNewsBtnClick(final Button btn,
-			final int catalog) {
-		return new View.OnClickListener() {
+	 private View.OnClickListener frameNewsBtnClick(final Button btn,final int catalog){//catalog 此类别来自于上面点击哪个按钮
+    	return new View.OnClickListener() {
 			public void onClick(View v) {
-				if (btn == framebtn_News_lastest) {
-					framebtn_News_lastest.setEnabled(false);
-				} else {
-					framebtn_News_lastest.setEnabled(true);
-				}
-				if (btn == framebtn_News_blog) {
-					framebtn_News_blog.setEnabled(false);
-				} else {
-					framebtn_News_blog.setEnabled(true);
-				}
-				if (btn == framebtn_News_recommend) {
-					framebtn_News_recommend.setEnabled(false);
-				} else {
-					framebtn_News_recommend.setEnabled(true);
-				}
-
-				curNewsCatalog = catalog;
-
-				// 非新闻列表
-				if (btn == framebtn_News_lastest) {
-					lvNews.setVisibility(View.VISIBLE);
-					lvBlog.setVisibility(View.GONE);
-
-					loadLvNewsData(curNewsCatalog, 0, lvNewsHandler,
-							UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
-				} else {
-					lvNews.setVisibility(View.GONE);
-					lvBlog.setVisibility(View.VISIBLE);
-
-					loadLvBlogData(curNewsCatalog, 0, lvBlogHandler,
-							UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
-				}
+				if(btn == framebtn_News_recommend){
+		    		framebtn_News_recommend.setEnabled(false);
+		    	}else{
+		    		framebtn_News_recommend.setEnabled(true);
+		    	}
+		    	if(btn == framebtn_News_zatan){
+		    		framebtn_News_zatan.setEnabled(false);
+		    	}else{
+		    		framebtn_News_zatan.setEnabled(true);
+		    	}
+		    	if(btn == framebtn_News_lastest){
+		    		framebtn_News_lastest.setEnabled(false);
+		    	}else{
+		    		framebtn_News_lastest.setEnabled(true);
+		    	}
+		    	if(btn == framebtn_News_all){
+		    		framebtn_News_all.setEnabled(false);
+		    	}else{
+		    		framebtn_News_all.setEnabled(true);
+		    	}
+		    	
+		    	curNewsCatalog = catalog;                                                                 //在此切换类别
+		    	
+				//非新闻列表 原来是用来判断是不是点到资讯按钮了，要是没有点到资讯按钮，就可以根据catalog的类别去加载是推荐还是博客
+		    	if(btn == framebtn_News_recommend)
+		    	{
+		    		lvRecommend.setVisibility(View.VISIBLE);
+		    		lvNews.setVisibility(View.GONE);
+		    		lvZatan.setVisibility(View.GONE);
+		    		lvAll.setVisibility(View.GONE);
+		    		
+		    		lvRecommend_foot_more.setText(R.string.load_more);
+					lvRecommend_foot_progress.setVisibility(View.GONE);
+					
+					loadLvRecommendData(curNewsCatalog, 0, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
+		    	}
+		    	
+		    	else if(btn == framebtn_News_lastest)
+		    	{
+		    		lvRecommend.setVisibility(View.GONE);
+		    		lvNews.setVisibility(View.VISIBLE);
+		    		lvZatan.setVisibility(View.GONE);
+		    		lvAll.setVisibility(View.GONE);
+		    		
+		    		lvNews_foot_more.setText(R.string.load_more);
+					lvNews_foot_progress.setVisibility(View.GONE);
+					
+					loadLvNewsData(curNewsCatalog, 0, lvNewsHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
+		    	}
+		    	else if(btn == framebtn_News_zatan)
+		    	{
+		    		lvRecommend.setVisibility(View.GONE);
+		    		lvNews.setVisibility(View.GONE);
+		    		lvZatan.setVisibility(View.VISIBLE);
+		    		lvAll.setVisibility(View.GONE);
+		    		
+		    		if(lvZatanData.size() > 0){
+		    			lvZatan_foot_more.setText(R.string.load_more);
+		    			lvZatan_foot_progress.setVisibility(View.GONE);		    			
+		    		}
+		    		
+	    			loadLvZatanData(curNewsCatalog, 0, lvZatanHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);//此常量是为了区别这次不是加载能更多和刷新
+		    	}
+		    	else
+		    	{
+		    		lvRecommend.setVisibility(View.GONE);
+		    		lvNews.setVisibility(View.GONE);
+		    		lvZatan.setVisibility(View.GONE);
+		    		lvAll.setVisibility(View.VISIBLE);
+		    		
+		    		if(lvAllData.size() > 0){
+		    			lvAll_foot_more.setText(R.string.load_more);
+		    			lvAll_foot_progress.setVisibility(View.GONE);		    			
+		    		}
+		    		
+	    			loadLvAllData(curNewsCatalog, 0, lvAllHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
+		    	}
 			}
 		};
-	}
+    }
 
 	private View.OnClickListener frameHuatiBtnClick(final Button btn,
 			final int catalog) {
@@ -1445,6 +1840,26 @@ public class Main extends BaseActivity {
 		};
 	}
 
+	private View.OnClickListener frameZhuantiBtnClick(final Button btn,final int catalog){
+    	return new View.OnClickListener() {
+			public void onClick(View v) {
+		    	if(btn == framebtn_Zhuanti_common)
+		    		framebtn_Zhuanti_common.setEnabled(false);
+		    	else
+		    		framebtn_Zhuanti_common.setEnabled(true);
+		    	if(btn == framebtn_Zhuanti_particular)
+		    		framebtn_Zhuanti_particular.setEnabled(false);
+		    	else
+		    		framebtn_Zhuanti_particular.setEnabled(true);
+				lvZhuanti_foot_more.setText(R.string.load_more);
+				lvZhuanti_foot_progress.setVisibility(View.GONE);
+				
+				curZhuantiCatalog = catalog;
+				loadLvZhuantiData(curZhuantiCatalog, 0, lvZhuantiHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);		    	
+			}
+		};
+    }
+	
 	private View.OnClickListener frameTweetBtnClick(final Button btn,
 			final int catalog) {
 		return new View.OnClickListener() {
@@ -1573,13 +1988,13 @@ public class Main extends BaseActivity {
 						more.setText(R.string.load_more);
 
 						// 特殊处理-热门动弹不能翻页
-						if (lv == lvTweet) {
+						/*if (lv == lvTweet) {
 							TweetList tlist = (TweetList) msg.obj;
 							if (lvTweetData.size() == tlist.getTweetCount()) {
 								lv.setTag(UIHelper.LISTVIEW_DATA_FULL);
 								more.setText(R.string.load_full);
 							}
-						}
+						}*/
 					}
 					// 发送通知广播
 					if (notice != null) {
@@ -1615,353 +2030,523 @@ public class Main extends BaseActivity {
 		};
 	}
 
-	/**
-	 * listview数据处理
-	 * 
-	 * @param what
-	 *            数量
-	 * @param obj
-	 *            数据
-	 * @param objtype
-	 *            数据类型
-	 * @param actiontype
-	 *            操作类型
-	 * @return notice 通知信息
-	 */
-	private Notice handleLvData(int what, Object obj, int objtype,
-			int actiontype) {
-		Notice notice = null;
+
+
+    /**
+     * listview数据处理
+     * @param what 数量
+     * @param obj 数据
+     * @param objtype 数据类型
+     * @param actiontype 操作类型
+     * @return notice 通知信息
+     */
+    private Notice handleLvData(int what,Object obj,int objtype,int actiontype){
+    	Notice notice = null;
 		switch (actiontype) {
-		case UIHelper.LISTVIEW_ACTION_INIT:
-		case UIHelper.LISTVIEW_ACTION_REFRESH:
-		case UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG:
-			int newdata = 0;// 新加载数据-只有刷新动作才会使用到
-			switch (objtype) {
-			case UIHelper.LISTVIEW_DATATYPE_NEWS:
-				NewsList nlist = (NewsList) obj;
-				notice = nlist.getNotice();
-				lvNewsSumData = what;
-				if (actiontype == UIHelper.LISTVIEW_ACTION_REFRESH) {
-					if (lvNewsData.size() > 0) {
-						for (News news1 : nlist.getNewslist()) {
-							boolean b = false;
-							for (News news2 : lvNewsData) {
-								if (news1.getId() == news2.getId()) {
-									b = true;
-									break;
+			case UIHelper.LISTVIEW_ACTION_INIT:
+			case UIHelper.LISTVIEW_ACTION_REFRESH:
+			case UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG:
+				int newdata = 0;//新加载数据-只有刷新动作才会使用到
+				switch (objtype) {
+				    case UIHelper.LISTVIEW_DATATYPE_RECOMMEND:
+					    RecommendList rlist = (RecommendList)obj;
+					    notice = rlist.getNotice();
+					    lvRecommendSumData = what;
+					    if(rlist.getImageView() != null){
+							recommendBigmap = rlist.getImageView();
+							recommenddetail = rlist.getRecommendUrl();
+						}
+					    if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
+						    if(lvRecommendData.size() > 0){
+							    for(Recommend recommend1 : rlist.getRecommendlist()){
+								    boolean b = false;
+								    for(Recommend recommend2 : lvRecommendData){
+									    if(recommend1.getId() == recommend2.getId()){
+										    b = true;
+										    break;
+									    }
+								    }
+								    if(!b) newdata++;
+							    }
+						    }else{
+							    newdata = what;
+						    }
+					    }
+					    lvRecommendData.clear();//先清除原有数据
+					    lvRecommendData.addAll(rlist.getRecommendlist());
+					    break;
+					case UIHelper.LISTVIEW_DATATYPE_NEWS:
+						NewsList nlist = (NewsList)obj;
+						notice = nlist.getNotice();
+						lvNewsSumData = what;
+						if(nlist.getImageView() != null) {
+							newsBigmap = nlist.getImageView();
+							newsdetail = nlist.getNewsUrl();
+						}
+						if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
+							if(lvNewsData.size() > 0){
+								for(News news1 : nlist.getNewslist()){
+									boolean b = false;
+									for(News news2 : lvNewsData){
+										if(news1.getId() == news2.getId()){
+											b = true;
+											break;
+										}
+									}
+									if(!b) newdata++;
 								}
+							}else{
+								newdata = what;
 							}
-							if (!b)
-								newdata++;
 						}
-					} else {
-						newdata = what;
-					}
-				}
-				lvNewsData.clear();// 先清除原有数据
-				lvNewsData.addAll(nlist.getNewslist());
-				break;
-			case UIHelper.LISTVIEW_DATATYPE_BLOG:
-				BlogList blist = (BlogList) obj;
-				notice = blist.getNotice();
-				lvBlogSumData = what;
-				if (actiontype == UIHelper.LISTVIEW_ACTION_REFRESH) {
-					if (lvBlogData.size() > 0) {
-						for (Blog blog1 : blist.getBloglist()) {
-							boolean b = false;
-							for (Blog blog2 : lvBlogData) {
-								if (blog1.getId() == blog2.getId()) {
-									b = true;
-									break;
+						lvNewsData.clear();//先清除原有数据
+						lvNewsData.addAll(nlist.getNewslist());
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_ZATAN:
+						ZatanList blist = (ZatanList)obj;
+						notice = blist.getNotice();
+						lvZatanSumData = what;
+						if(blist.getImageView() != null) {
+							zatanBigmap = blist.getImageView();
+							zatandetail = blist.getZatanUrl();
+						}
+						if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
+							if(lvZatanData.size() > 0){
+								for(Zatan zatan1 : blist.getZatanlist()){
+									boolean b = false;
+									for(Zatan zatan2 : lvZatanData){
+										if(zatan1.getId() == zatan2.getId()){
+											b = true;
+											break;
+										}
+									}
+									if(!b) newdata++;
 								}
+							}else{
+								newdata = what;
 							}
-							if (!b)
-								newdata++;
 						}
-					} else {
-						newdata = what;
-					}
-				}
-				lvBlogData.clear();// 先清除原有数据
-				lvBlogData.addAll(blist.getBloglist());
-				break;
-			case UIHelper.LISTVIEW_DATATYPE_HUATI:
-				HuatiList plist = (HuatiList) obj;
-				notice = plist.getNotice();
-				lvHuatiSumData = what;
-				if (actiontype == UIHelper.LISTVIEW_ACTION_REFRESH) {
-					if (lvHuatiData.size() > 0) {
-						for (Huati huati1 : plist.getHuatilist()) {
-							boolean b = false;
-							for (Huati huati2 : lvHuatiData) {
-								if (huati1.getId() == huati2.getId()) {
-									b = true;
-									break;
+						lvZatanData.clear();//先清除原有数据
+						lvZatanData.addAll(blist.getZatanlist());
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_ALL:
+						AllList alist = (AllList)obj;
+						notice = alist.getNotice();
+						lvAllSumData = what;
+						if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
+							if(lvAllData.size() > 0){
+								for(All all1 : alist.getAlllist()){
+									boolean b = false;
+									for(All all2 : lvAllData){
+										if(all1.getId() == all2.getId()){
+											b = true;
+											break;
+										}
+									}
+									if(!b) newdata++;
 								}
+							}else{
+								newdata = what;
 							}
-							if (!b)
-								newdata++;
 						}
-					} else {
-						newdata = what;
-					}
-				}
-				lvHuatiData.clear();// 先清除原有数据
-				lvHuatiData.addAll(plist.getHuatilist());
-				break;
-			case UIHelper.LISTVIEW_DATATYPE_TWEET:
-				TweetList tlist = (TweetList) obj;
-				notice = tlist.getNotice();
-				lvTweetSumData = what;
-				if (actiontype == UIHelper.LISTVIEW_ACTION_REFRESH) {
-					if (lvTweetData.size() > 0) {
-						for (Tweet tweet1 : tlist.getTweetlist()) {
-							boolean b = false;
-							for (Tweet tweet2 : lvTweetData) {
-								if (tweet1.getId() == tweet2.getId()) {
-									b = true;
-									break;
+						lvAllData.clear();//先清除原有数据
+						lvAllData.addAll(alist.getAlllist());
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_HUATI:
+						HuatiList hlist = (HuatiList)obj;
+						notice = hlist.getNotice();
+						lvHuatiSumData = what;
+						if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
+							if(lvHuatiData.size() > 0){
+								for(Huati huati1 : hlist.getHuatilist()){
+									boolean b = false;
+									for(Huati huati2 : lvHuatiData){
+										if(huati1.getId() == huati2.getId()){
+											b = true;
+											break;
+										}
+									}
+									if(!b) newdata++;
 								}
+							}else{
+								newdata = what;
 							}
-							if (!b)
-								newdata++;
 						}
-					} else {
-						newdata = what;
-					}
-				}
-				lvTweetData.clear();// 先清除原有数据
-				lvTweetData.addAll(tlist.getTweetlist());
-				break;
-			case UIHelper.LISTVIEW_DATATYPE_ACTIVE:
-				ActiveList alist = (ActiveList) obj;
-				notice = alist.getNotice();
-				lvActiveSumData = what;
-				if (actiontype == UIHelper.LISTVIEW_ACTION_REFRESH) {
-					if (lvActiveData.size() > 0) {
-						for (Active active1 : alist.getActivelist()) {
-							boolean b = false;
-							for (Active active2 : lvActiveData) {
-								if (active1.getId() == active2.getId()) {
-									b = true;
-									break;
+						lvHuatiData.clear();//先清除原有数据
+						lvHuatiData.addAll(hlist.getHuatilist());
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_ZHUANTI:
+						ZhuantiList zlist = (ZhuantiList)obj;
+						notice = zlist.getNotice();
+						lvZhuantiSumData = what;
+						if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
+							if(lvZhuantiData.size() > 0){
+								for(Zhuanti zhuanti1 : zlist.getZhuantilist()){
+									boolean b = false;
+									for(Zhuanti zhuanti2 : lvZhuantiData){
+										if(zhuanti1.getId() == zhuanti2.getId()){
+											b = true;
+											break;
+										}
+									}
+									if(!b) newdata++;
 								}
+							}else{
+								newdata = what;
 							}
-							if (!b)
-								newdata++;
 						}
-					} else {
-						newdata = what;
-					}
-				}
-				lvActiveData.clear();// 先清除原有数据
-				lvActiveData.addAll(alist.getActivelist());
-				break;
-			case UIHelper.LISTVIEW_DATATYPE_MESSAGE:
-				MessageList mlist = (MessageList) obj;
-				notice = mlist.getNotice();
-				lvMsgSumData = what;
-				if (actiontype == UIHelper.LISTVIEW_ACTION_REFRESH) {
-					if (lvMsgData.size() > 0) {
-						for (Messages msg1 : mlist.getMessagelist()) {
-							boolean b = false;
-							for (Messages msg2 : lvMsgData) {
-								if (msg1.getId() == msg2.getId()) {
-									b = true;
-									break;
+						lvZhuantiData.clear();//先清除原有数据
+						lvZhuantiData.addAll(zlist.getZhuantilist());
+						break;
+					/*case UIHelper.LISTVIEW_DATATYPE_ACTIVE:
+						ActiveList alist = (ActiveList)obj;
+						notice = alist.getNotice();
+						lvActiveSumData = what;
+						if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
+							if(lvActiveData.size() > 0){
+								for(Active active1 : alist.getActivelist()){
+									boolean b = false;
+									for(Active active2 : lvActiveData){
+										if(active1.getId() == active2.getId()){
+											b = true;
+											break;
+										}
+									}
+									if(!b) newdata++;
 								}
-							}
-							if (!b)
-								newdata++;
-						}
-					} else {
-						newdata = what;
-					}
-				}
-				lvMsgData.clear();// 先清除原有数据
-				lvMsgData.addAll(mlist.getMessagelist());
-				break;
-			}
-			if (actiontype == UIHelper.LISTVIEW_ACTION_REFRESH) {
-				// 提示新加载数据
-				if (newdata > 0) {
-					NewDataToast
-							.makeText(
-									this,
-									getString(R.string.new_data_toast_message,
-											newdata), appContext.isAppSound())
-							.show();
-				} else {
-					NewDataToast.makeText(this,
-							getString(R.string.new_data_toast_none), false)
-							.show();
-				}
-			}
-			break;
-		case UIHelper.LISTVIEW_ACTION_SCROLL:
-			switch (objtype) {
-			case UIHelper.LISTVIEW_DATATYPE_NEWS:
-				NewsList list = (NewsList) obj;
-				notice = list.getNotice();
-				lvNewsSumData += what;
-				if (lvNewsData.size() > 0) {
-					for (News news1 : list.getNewslist()) {
-						boolean b = false;
-						for (News news2 : lvNewsData) {
-							if (news1.getId() == news2.getId()) {
-								b = true;
-								break;
+							}else{
+								newdata = what;
 							}
 						}
-						if (!b)
-							lvNewsData.add(news1);
-					}
-				} else {
-					lvNewsData.addAll(list.getNewslist());
-				}
-				break;
-			case UIHelper.LISTVIEW_DATATYPE_BLOG:
-				BlogList blist = (BlogList) obj;
-				notice = blist.getNotice();
-				lvBlogSumData += what;
-				if (lvBlogData.size() > 0) {
-					for (Blog blog1 : blist.getBloglist()) {
-						boolean b = false;
-						for (Blog blog2 : lvBlogData) {
-							if (blog1.getId() == blog2.getId()) {
-								b = true;
-								break;
+						lvActiveData.clear();//先清除原有数据
+						lvActiveData.addAll(alist.getActivelist());
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_MESSAGE:
+						MessageList mlist = (MessageList)obj;
+						notice = mlist.getNotice();
+						lvMsgSumData = what;
+						if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
+							if(lvMsgData.size() > 0){
+								for(Messages msg1 : mlist.getMessagelist()){
+									boolean b = false;
+									for(Messages msg2 : lvMsgData){
+										if(msg1.getId() == msg2.getId()){
+											b = true;
+											break;
+										}
+									}
+									if(!b) newdata++;
+								}
+							}else{
+								newdata = what;
 							}
 						}
-						if (!b)
-							lvBlogData.add(blog1);
+						lvMsgData.clear();//先清除原有数据
+						lvMsgData.addAll(mlist.getMessagelist());
+						break;*/
+				}
+				if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
+					//提示新加载数据
+					if(newdata >0){
+						NewDataToast.makeText(this, getString(R.string.new_data_toast_message, newdata), appContext.isAppSound()).show();
+					}else{
+						NewDataToast.makeText(this, getString(R.string.new_data_toast_none), false).show();
 					}
-				} else {
-					lvBlogData.addAll(blist.getBloglist());
 				}
 				break;
-			case UIHelper.LISTVIEW_DATATYPE_HUATI:
-				HuatiList plist = (HuatiList) obj;
-				notice = plist.getNotice();
-				lvHuatiSumData += what;
-				if (lvHuatiData.size() > 0) {
-					for (Huati huati1 : plist.getHuatilist()) {
-						boolean b = false;
-						for (Huati huati2 : lvHuatiData) {
-							if (huati1.getId() == huati2.getId()) {
-								b = true;
-								break;
+			case UIHelper.LISTVIEW_ACTION_SCROLL:
+				switch (objtype) {
+				    case UIHelper.LISTVIEW_DATATYPE_RECOMMEND:
+						RecommendList rlist = (RecommendList)obj;
+						notice = rlist.getNotice();
+						lvRecommendSumData += what;
+						if(lvRecommendData.size() > 0){
+							for(Recommend recommend1 : rlist.getRecommendlist()){
+								boolean b = false;
+								for(Recommend recommend2 : lvRecommendData){
+									if(recommend1.getId() == recommend2.getId()){
+										b = true;
+										break;
+									}
+								}
+								if(!b) lvRecommendData.add(recommend1);
 							}
+						}else{
+							lvRecommendData.addAll(rlist.getRecommendlist());
 						}
-						if (!b)
-							lvHuatiData.add(huati1);
-					}
-				} else {
-					lvHuatiData.addAll(plist.getHuatilist());
-				}
-				break;
-			case UIHelper.LISTVIEW_DATATYPE_TWEET:
-				TweetList tlist = (TweetList) obj;
-				notice = tlist.getNotice();
-				lvTweetSumData += what;
-				if (lvTweetData.size() > 0) {
-					for (Tweet tweet1 : tlist.getTweetlist()) {
-						boolean b = false;
-						for (Tweet tweet2 : lvTweetData) {
-							if (tweet1.getId() == tweet2.getId()) {
-								b = true;
-								break;
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_NEWS:
+						NewsList nlist = (NewsList)obj;
+						notice = nlist.getNotice();
+						lvNewsSumData += what;
+						if(lvNewsData.size() > 0){
+							for(News news1 : nlist.getNewslist()){
+								boolean b = false;
+								for(News news2 : lvNewsData){
+									if(news1.getId() == news2.getId()){
+										b = true;
+										break;
+									}
+								}
+								if(!b) lvNewsData.add(news1);
 							}
+						}else{
+							lvNewsData.addAll(nlist.getNewslist());
 						}
-						if (!b)
-							lvTweetData.add(tweet1);
-					}
-				} else {
-					lvTweetData.addAll(tlist.getTweetlist());
-				}
-				break;
-			case UIHelper.LISTVIEW_DATATYPE_ACTIVE:
-				ActiveList alist = (ActiveList) obj;
-				notice = alist.getNotice();
-				lvActiveSumData += what;
-				if (lvActiveData.size() > 0) {
-					for (Active active1 : alist.getActivelist()) {
-						boolean b = false;
-						for (Active active2 : lvActiveData) {
-							if (active1.getId() == active2.getId()) {
-								b = true;
-								break;
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_ZATAN:
+						ZatanList blist = (ZatanList)obj;
+						notice = blist.getNotice();
+						lvZatanSumData += what;
+						if(lvZatanData.size() > 0){
+							for(Zatan zatan1 : blist.getZatanlist()){
+								boolean b = false;
+								for(Zatan zatan2 : lvZatanData){
+									if(zatan1.getId() == zatan2.getId()){
+										b = true;
+										break;
+									}
+								}
+								if(!b) lvZatanData.add(zatan1);
 							}
+						}else{
+							lvZatanData.addAll(blist.getZatanlist());
 						}
-						if (!b)
-							lvActiveData.add(active1);
-					}
-				} else {
-					lvActiveData.addAll(alist.getActivelist());
-				}
-				break;
-			case UIHelper.LISTVIEW_DATATYPE_MESSAGE:
-				MessageList mlist = (MessageList) obj;
-				notice = mlist.getNotice();
-				lvMsgSumData += what;
-				if (lvMsgData.size() > 0) {
-					for (Messages msg1 : mlist.getMessagelist()) {
-						boolean b = false;
-						for (Messages msg2 : lvMsgData) {
-							if (msg1.getId() == msg2.getId()) {
-								b = true;
-								break;
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_ALL:
+						AllList alist = (AllList)obj;
+						notice = alist.getNotice();
+						lvAllSumData += what;
+						if(lvAllData.size() > 0){
+							for(All all1 : alist.getAlllist()){
+								boolean b = false;
+								for(All all2 : lvAllData){
+									if(all1.getId() == all2.getId()){
+										b = true;
+										break;
+									}
+								}
+								if(!b) lvAllData.add(all1);
 							}
+						}else{
+							lvAllData.addAll(alist.getAlllist());
 						}
-						if (!b)
-							lvMsgData.add(msg1);
-					}
-				} else {
-					lvMsgData.addAll(mlist.getMessagelist());
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_HUATI:
+						HuatiList hlist = (HuatiList)obj;
+						notice = hlist.getNotice();
+						lvNewsSumData += what;
+						if(lvNewsData.size() > 0){
+							for(Huati huati1 : hlist.getHuatilist()){
+								boolean b = false;
+								for(Huati huati2 : lvHuatiData){
+									if(huati1.getId() == huati2.getId()){
+										b = true;
+										break;
+									}
+								}
+								if(!b) lvHuatiData.add(huati1);
+							}
+						}else{
+							lvHuatiData.addAll(hlist.getHuatilist());
+						}
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_ZHUANTI:
+						ZhuantiList zlist = (ZhuantiList)obj;
+						notice = zlist.getNotice();
+						lvZhuantiSumData += what;
+						if(lvZhuantiData.size() > 0){
+							for(Zhuanti zhuanti1 : zlist.getZhuantilist()){
+								boolean b = false;
+								for(Zhuanti zhuanti2 : lvZhuantiData){
+									if(zhuanti1.getId() == zhuanti2.getId()){
+										b = true;
+										break;
+									}
+								}
+								if(!b) lvZhuantiData.add(zhuanti1);
+							}
+						}else{
+							lvZhuantiData.addAll(zlist.getZhuantilist());
+						}
+						break;
+					/*case UIHelper.LISTVIEW_DATATYPE_ACTIVE:
+						ActiveList alist = (ActiveList)obj;
+						notice = alist.getNotice();
+						lvActiveSumData += what;
+						if(lvActiveData.size() > 0){
+							for(Active active1 : alist.getActivelist()){
+								boolean b = false;
+								for(Active active2 : lvActiveData){
+									if(active1.getId() == active2.getId()){
+										b = true;
+										break;
+									}
+								}
+								if(!b) lvActiveData.add(active1);
+							}
+						}else{
+							lvActiveData.addAll(alist.getActivelist());
+						}
+						break;
+					case UIHelper.LISTVIEW_DATATYPE_MESSAGE:
+						MessageList mlist = (MessageList)obj;
+						notice = mlist.getNotice();
+						lvMsgSumData += what;
+						if(lvMsgData.size() > 0){
+							for(Messages msg1 : mlist.getMessagelist()){
+								boolean b = false;
+								for(Messages msg2 : lvMsgData){
+									if(msg1.getId() == msg2.getId()){
+										b = true;
+										break;
+									}
+								}
+								if(!b) lvMsgData.add(msg1);
+							}
+						}else{
+							lvMsgData.addAll(mlist.getMessagelist());
+						}
+						break;*/
 				}
 				break;
-			}
-			break;
 		}
 		return notice;
-	}
+    }
 
+/**
+     * 线程加载推荐数据
+     * @param catalog 分类
+     * @param pageIndex 当前页数
+     * @param handler 处理器
+     * @param action 动作标识
+     */
+	private void loadLvRecommendData(final int catalog,final int pageIndex,final Handler handler,final int action){ 
+		mHeadProgress.setVisibility(ProgressBar.VISIBLE);		
+		new Thread(){
+			public void run() {				
+				Message msg = new Message();
+				boolean isRefresh = false;
+				if(action == UIHelper.LISTVIEW_ACTION_REFRESH || action == UIHelper.LISTVIEW_ACTION_SCROLL)
+					isRefresh = true;
+				try {					
+					RecommendList list = appContext.getRecommendList(catalog, pageIndex, isRefresh);				
+					msg.what = list.getPageSize();
+					msg.obj = list;
+	            } catch (AppException e) {
+	            	e.printStackTrace();
+	            	msg.what = -1;
+	            	msg.obj = e;
+	            }
+				msg.arg1 = action;
+				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_RECOMMEND;
+                if(curNewsCatalog == catalog)
+                	handler.sendMessage(msg);
+			}
+		}.start();
+	}
+	
+    /**
+     * 线程加载新闻数据
+     * @param catalog 分类
+     * @param pageIndex 当前页数
+     * @param handler 处理器
+     * @param action 动作标识
+     */
+	private void loadLvNewsData(final int catalog,final int pageIndex,final Handler handler,final int action){ 
+		mHeadProgress.setVisibility(ProgressBar.VISIBLE);		
+		new Thread(){
+			public void run() {				
+				Message msg = new Message();
+				boolean isRefresh = false;
+				if(action == UIHelper.LISTVIEW_ACTION_REFRESH || action == UIHelper.LISTVIEW_ACTION_SCROLL)
+					isRefresh = true;
+				try {					
+					NewsList list = appContext.getNewsList(catalog, pageIndex, isRefresh);				
+					msg.what = list.getPageSize();
+					msg.obj = list;
+	            } catch (AppException e) {
+	            	e.printStackTrace();
+	            	msg.what = -1;
+	            	msg.obj = e;
+	            }
+				msg.arg1 = action;
+				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_NEWS;
+                if(curNewsCatalog == catalog)
+                	handler.sendMessage(msg);
+			}
+		}.start();
+	}
+    
 	/**
-	 * 线程加载新闻数据
-	 * 
-	 * @param catalog
-	 *            分类
-	 * @param pageIndex
-	 *            当前页数
-	 * @param handler
-	 *            处理器
-	 * @param action
-	 *            动作标识
-	 */
-	private void loadLvNewsData(final int catalog, final int pageIndex,
-			final Handler handler, final int action) {
+     * 线程加载杂谈数据
+     * @param catalog 分类
+     * @param pageIndex 当前页数
+     * @param handler 处理器
+     * @param action 动作标识
+     */
+	private void loadLvZatanData(final int catalog,final int pageIndex,final Handler handler,final int action){ 
 		mHeadProgress.setVisibility(ProgressBar.VISIBLE);
-		new Thread() {
+		new Thread(){
 			public void run() {
 				Message msg = new Message();
 				boolean isRefresh = false;
-				if (action == UIHelper.LISTVIEW_ACTION_REFRESH
-						|| action == UIHelper.LISTVIEW_ACTION_SCROLL)
+				if(action == UIHelper.LISTVIEW_ACTION_REFRESH || action == UIHelper.LISTVIEW_ACTION_SCROLL)
 					isRefresh = true;
+				/*String type = "";
+				switch (catalog) {
+				case ZatanList.CATALOG_LATEST:
+					type = ZatanList.TYPE_LATEST;
+					break;
+				case ZatanList.CATALOG_ALL:
+					type = ZatanList.TYPE_ALL;                                        //此处要注意修改将原来的recommend改为all
+					break;
+				}*/
 				try {
-					NewsList list = appContext.getNewsList(catalog, pageIndex,
-							isRefresh);
+					ZatanList list = appContext.getZatanList(catalog, pageIndex, isRefresh);				
 					msg.what = list.getPageSize();
 					msg.obj = list;
-				} catch (AppException e) {
-					e.printStackTrace();
-					msg.what = -1;
-					msg.obj = e;
-				}
+	            } catch (AppException e) {
+	            	e.printStackTrace();
+	            	msg.what = -1;
+	            	msg.obj = e;
+	            }
 				msg.arg1 = action;
-				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_NEWS;
-				if (curNewsCatalog == catalog)
-					handler.sendMessage(msg);
+				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_ZATAN;
+                if(curNewsCatalog == catalog)
+                	handler.sendMessage(msg);
+			}
+		}.start();
+	}
+	
+	/**
+     * 线程加载ALL新闻数据
+     * @param catalog 分类
+     * @param pageIndex 当前页数
+     * @param handler 处理器
+     * @param action 动作标识
+     */
+	private void loadLvAllData(final int catalog,final int pageIndex,final Handler handler,final int action){ 
+		mHeadProgress.setVisibility(ProgressBar.VISIBLE);		
+		new Thread(){
+			public void run() {				
+				Message msg = new Message();
+				boolean isRefresh = false;
+				if(action == UIHelper.LISTVIEW_ACTION_REFRESH || action == UIHelper.LISTVIEW_ACTION_SCROLL)
+					isRefresh = true;
+				try {					
+					AllList list = appContext.getAllList(catalog, pageIndex, isRefresh);				
+					msg.what = list.getPageSize();
+					msg.obj = list;
+	            } catch (AppException e) {
+	            	e.printStackTrace();
+	            	msg.what = -1;
+	            	msg.obj = e;
+	            }
+				msg.arg1 = action;
+				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_ALL;
+                if(curNewsCatalog == catalog)
+                	handler.sendMessage(msg);
 			}
 		}.start();
 	}
@@ -2054,7 +2639,60 @@ public class Main extends BaseActivity {
 			}
 		}.start();
 	}
-
+	
+	//线程加载专题数据
+	private void loadLvZhuantiData(final int catalog,final int pageIndex,final Handler handler,final int action){  
+		mHeadProgress.setVisibility(ProgressBar.VISIBLE);
+		new Thread(){
+			public void run() {
+				Message msg = new Message();
+				boolean isRefresh = false;
+				if(action == UIHelper.LISTVIEW_ACTION_REFRESH || action == UIHelper.LISTVIEW_ACTION_SCROLL)
+					isRefresh = true;
+				try {
+					ZhuantiList list = appContext.getZhuantiList(catalog, pageIndex, isRefresh);				
+					msg.what = list.getPageSize();
+					msg.obj = list;
+	            } catch (AppException e) {
+	            	e.printStackTrace();
+	            	msg.what = -1;
+	            	msg.obj = e;
+	            }
+				msg.arg1 = action;
+				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_ZHUANTI;
+				if(curZhuantiCatalog == catalog)
+					handler.sendMessage(msg);
+			}
+		}.start();
+	}
+	
+	public void initChildView(Context context, ImageView imageView, String image_id) {
+		//ArrayList<View> views = new ArrayList<View>();
+		Bitmap bitmap = null;
+		LayoutParams layoutParams = new LayoutParams(LayoutParams.FILL_PARENT,
+				LayoutParams.FILL_PARENT);
+		bitmapmanager = new BitmapManager(BitmapFactory.decodeResource(context.getResources(), R.drawable.widget_dface_loading));
+		//for (int i = 0; i < image_id.length; i++) {
+			//ImageView imageView = new ImageView(this);
+			imageView.setScaleType(ScaleType.FIT_XY);
+			if(/*faceURL.endsWith("portrait.gif") || */StringUtils.isEmpty(image_id)){
+		        imageView.setImageResource(R.drawable.widget_dface);
+			}else{
+				bitmap = bitmapmanager.loadBitmap(image_id, imageView, null, window_width, 1);
+			}
+			//Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+					//image_id[i]);
+			//Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+					//bmpManager);
+			//Bitmap bitmap2 = getBitmap(imageView, window_width);
+			//int frameheight = bitmap.getHeight();// 获取要显示的高度
+			imageView.setImageBitmap(bitmap);
+			//flipper.addView(imageView, layoutParams);
+			//views.add(imageView);
+		//}
+		//initPoint(image_id);
+	}
+	
 	/**
 	 * 线程加载动弹数据
 	 * 

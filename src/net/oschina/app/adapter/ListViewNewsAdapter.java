@@ -75,7 +75,7 @@ public class ListViewNewsAdapter extends BaseAdapter {
 			//获取控件对象
 			listItemView.title = (TextView)convertView.findViewById(R.id.news_listitem_title);
 			listItemView.author = (TextView)convertView.findViewById(R.id.news_listitem_author);
-			listItemView.count= (TextView)convertView.findViewById(R.id.news_listitem_commentCount);
+			//listItemView.count= (TextView)convertView.findViewById(R.id.news_listitem_commentCount);
 			listItemView.date= (TextView)convertView.findViewById(R.id.news_listitem_date);
 			listItemView.flag= (ImageView)convertView.findViewById(R.id.news_listitem_flag);
 			
@@ -92,7 +92,8 @@ public class ListViewNewsAdapter extends BaseAdapter {
 		listItemView.title.setTag(news);//设置隐藏参数(实体类)
 		listItemView.author.setText(news.getAuthor());
 		listItemView.date.setText(StringUtils.friendly_time(news.getPubDate()));
-		listItemView.count.setText(news.getCommentCount()+"");
+		//listItemView.count.setText(news.getCommentCount()+"");
+
 		if(StringUtils.isToday(news.getPubDate()))
 			listItemView.flag.setVisibility(View.VISIBLE);
 		else

@@ -8,6 +8,7 @@ import net.oschina.app.bean.Result;
 import net.oschina.app.bean.User;
 import net.oschina.app.common.StringUtils;
 import net.oschina.app.common.UIHelper;
+
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;

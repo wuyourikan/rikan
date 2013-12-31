@@ -75,6 +75,7 @@
 				style="@style/frame_button"
 	         	android:text="代码"
 	         	android:visibility="gone"/>
+
 		</LinearLayout>
 		
 		<ListView

@@ -21,40 +21,42 @@ import android.util.Xml;
  * @created 2012-3-21
  */
 public class News extends Entity{
-	
-	public final static String NODE_ID = "id";
-	public final static String NODE_TITLE = "title";
-	public final static String NODE_URL = "url";
+
+	public final static String NODE_ID = "id";//时事id
+	public final static String NODE_TITLE = "title";//时事标题
+	public final static String NODE_URL = "url";//详细时事地址
 	public final static String NODE_BODY = "body";
-	public final static String NODE_AUTHORID = "authorid";
+	//public final static String NODE_AUTHORID = "authorid";
 	public final static String NODE_AUTHOR = "author";
 	public final static String NODE_PUBDATE = "pubDate";
-	public final static String NODE_COMMENTCOUNT = "commentCount";
+	//public final static String NODE_COMMENTCOUNT = "commentCount";
 	public final static String NODE_FAVORITE = "favorite";
 	public final static String NODE_START = "news";
+	public final static String NODE_IMAGE = "imageurl";
 	
-	public final static String NODE_SOFTWARELINK = "softwarelink";
-	public final static String NODE_SOFTWARENAME = "softwarename";
+	//public final static String NODE_SOFTWARELINK = "softwarelink";
+	//public final static String NODE_SOFTWARENAME = "softwarename";
 	
 	public final static String NODE_NEWSTYPE = "newstype";
 	public final static String NODE_TYPE = "type";
 	public final static String NODE_ATTACHMENT = "attachment";
-	public final static String NODE_AUTHORUID2 = "authoruid2";
+	//public final static String NODE_AUTHORUID2 = "authoruid2";
 	
 	public final static int NEWSTYPE_NEWS = 0x00;//0 新闻
-	public final static int NEWSTYPE_SOFTWARE = 0x01;//1 软件
-	public final static int NEWSTYPE_HUATI = 0x02;//2 话题
-	public final static int NEWSTYPE_BLOG = 0x03;//3 博客
+	//public final static int NEWSTYPE_SOFTWARE = 0x01;//1 软件
+	//public final static int NEWSTYPE_POST = 0x02;//2 帖子
+	public final static int NEWSTYPE_ZATAN = 0x03;//3 博客
 
 	private String title;
 	private String url;
 	private String body;
 	private String author;
-	private int authorId;
-	private int commentCount;
+	private String imageurl;
+	//private int authorId;
+	//private int commentCount;
 	private String pubDate;
-	private String softwareLink;
-	private String softwareName;
+	//private String softwareLink;
+	//private String softwareName;
 	private int favorite;
 	private NewsType newType;
 	private List<Relative> relatives;
@@ -67,7 +69,7 @@ public class News extends Entity{
 	public class NewsType implements Serializable{
 		public int type;
 		public String attachment;
-		public int authoruid2;
+		//public int authoruid2;
 	} 
 	
 	public static class Relative implements Serializable{
@@ -93,17 +95,23 @@ public class News extends Entity{
 	public void setFavorite(int favorite) {
 		this.favorite = favorite;
 	}
-	public String getSoftwareLink() {
-		return softwareLink;
+	//public String getSoftwareLink() {
+		//return softwareLink;
+	//}
+	//public void setSoftwareLink(String softwareLink) {
+		//this.softwareLink = softwareLink;
+	//}
+	//public String getSoftwareName() {
+		//return softwareName;
+	//}
+	//public void setSoftwareName(String softwareName) {
+		//this.softwareName = softwareName;
+	//}
+	public String getImageView() {
+		return imageurl;
 	}
-	public void setSoftwareLink(String softwareLink) {
-		this.softwareLink = softwareLink;
-	}
-	public String getSoftwareName() {
-		return softwareName;
-	}
-	public void setSoftwareName(String softwareName) {
-		this.softwareName = softwareName;
+	public void setImageView(String imageurl) {
+		this.imageurl = imageurl;
 	}
 	public String getPubDate() {
 		return this.pubDate;
@@ -135,18 +143,18 @@ public class News extends Entity{
 	public void setAuthor(String author) {
 		this.author = author;
 	}
-	public int getAuthorId() {
-		return authorId;
-	}
-	public void setAuthorId(int authorId) {
-		this.authorId = authorId;
-	}
-	public int getCommentCount() {
-		return commentCount;
-	}
-	public void setCommentCount(int commentCount) {
-		this.commentCount = commentCount;
-	}
+	//public int getAuthorId() {
+		//return authorId;
+	//}
+	//public void setAuthorId(int authorId) {
+		//this.authorId = authorId;
+	//}
+	//public int getCommentCount() {
+		///return commentCount;
+	//}
+	//public void setCommentCount(int commentCount) {
+		//this.commentCount = commentCount;
+	//}
 	
 	public static News parse(InputStream inputStream) throws IOException, AppException {
 		News news = null;
@@ -188,26 +196,26 @@ public class News extends Entity{
 				            {			            	
 				            	news.setAuthor(xmlParser.nextText());		            	
 				            }
-				            else if(tag.equalsIgnoreCase(NODE_AUTHORID))
-				            {			            	
-				            	news.setAuthorId(StringUtils.toInt(xmlParser.nextText(),0));		            	
-				            }
-				            else if(tag.equalsIgnoreCase(NODE_COMMENTCOUNT))
-				            {			            	
-				            	news.setCommentCount(StringUtils.toInt(xmlParser.nextText(),0));			            	
-				            }
+				            //else if(tag.equalsIgnoreCase(NODE_AUTHORID))
+				            //{			            	
+				            	//news.setAuthorId(StringUtils.toInt(xmlParser.nextText(),0));		            	
+				            //}
+				            //else if(tag.equalsIgnoreCase(NODE_COMMENTCOUNT))
+				            //{			            	
+				            	//news.setCommentCount(StringUtils.toInt(xmlParser.nextText(),0));			            	
+				            //}
 				            else if(tag.equalsIgnoreCase(NODE_PUBDATE))
 				            {			            	
 				            	news.setPubDate(xmlParser.nextText());      	
 				            }	
-				            else if(tag.equalsIgnoreCase(NODE_SOFTWARELINK))
-				            {			            	
-				            	news.setSoftwareLink(xmlParser.nextText());			            	
-				            }	
-				            else if(tag.equalsIgnoreCase(NODE_SOFTWARENAME))
-				            {			            	
-				            	news.setSoftwareName(xmlParser.nextText());			            	
-				            }	
+				            //else if(tag.equalsIgnoreCase(NODE_SOFTWARELINK))
+				            //{			            	
+				            	//news.setSoftwareLink(xmlParser.nextText());			            	
+				            //}	
+				            //else if(tag.equalsIgnoreCase(NODE_SOFTWARENAME))
+				            //{			            	
+				            	//news.setSoftwareName(xmlParser.nextText());			            	
+				            //}	
 				            else if(tag.equalsIgnoreCase(NODE_FAVORITE))
 				            {			            	
 				            	news.setFavorite(StringUtils.toInt(xmlParser.nextText(),0));		            	
@@ -220,10 +228,10 @@ public class News extends Entity{
 				            {			            	
 				            	news.getNewType().attachment = xmlParser.nextText(); 	
 				            }
-				            else if(tag.equalsIgnoreCase(NODE_AUTHORUID2))
-				            {			            	
-				            	news.getNewType().authoruid2 = StringUtils.toInt(xmlParser.nextText(),0); 
-				            }
+				            //else if(tag.equalsIgnoreCase(NODE_AUTHORUID2))
+				            //{			            	
+				            	//news.getNewType().authoruid2 = StringUtils.toInt(xmlParser.nextText(),0); 
+				            //}
 				            else if(tag.equalsIgnoreCase("relative"))
 				            {			            	
 				            	relative = new Relative();

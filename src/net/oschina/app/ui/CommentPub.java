@@ -93,15 +93,15 @@ public class CommentPub extends BaseActivity{
 			}
 			
 			final AppContext ac = (AppContext)getApplication();
-			if(!ac.isLogin()){
+			/*if(!ac.isLogin()){
 				UIHelper.showLoginDialog(CommentPub.this);
 				return;
-			}
+			}*/
 			
 			if(mZone.isChecked())
 				_isPostToMyZone = 1;
 				
-			_uid = ac.getLoginUid();
+			//_uid = ac.getLoginUid();
 			
 	    	mProgress = ProgressDialog.show(v.getContext(), null, "发表中···",true,true); 			
 			

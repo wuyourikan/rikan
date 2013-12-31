@@ -35,7 +35,7 @@
         <item>站务</item>
     </string-array>
     <string-array name="head_titles">
-        <item>新闻</item>
+        <item>文章</item>
         <item>话题</item>
         <item>专题</item>
         <item>我的空间</item>
@@ -45,5 +45,5 @@
         <item>重命名</item>
         <item>删除</item>
     </string-array>
-
+    
 </resources>

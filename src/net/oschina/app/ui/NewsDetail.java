@@ -56,25 +56,25 @@ import android.widget.ViewSwitcher;
  */
 public class NewsDetail extends BaseActivity {
 
-	private FrameLayout mHeader;
+	//private FrameLayout mHeader;
 	private LinearLayout mFooter;
 	private ImageView mHome;
 	private ImageView mFavorite;
-	private ImageView mRefresh;
-	private TextView mHeadTitle;
-	private ProgressBar mProgressbar;
+	///private ImageView mRefresh;
+	//private TextView mHeadTitle;
+	//private ProgressBar mProgressbar;
 	private ScrollView mScrollView;
 	private ViewSwitcher mViewSwitcher;
 
-	private BadgeView bv_comment;
+	//private BadgeView bv_comment;
 	private ImageView mDetail;
-	private ImageView mCommentList;
+	//private ImageView mCommentList;
 	private ImageView mShare;
 
 	private TextView mTitle;
 	private TextView mAuthor;
 	private TextView mPubDate;
-	private TextView mCommentCount;
+	//private TextView mCommentCount;
 
 	private WebView mWebView;
 	private Handler mHandler;
@@ -82,20 +82,20 @@ public class NewsDetail extends BaseActivity {
 	private int newsId;
 
 	private final static int VIEWSWITCH_TYPE_DETAIL = 0x001;
-	private final static int VIEWSWITCH_TYPE_COMMENTS = 0x002;
+	//private final static int VIEWSWITCH_TYPE_COMMENTS = 0x002;
 
 	private final static int DATA_LOAD_ING = 0x001;
 	private final static int DATA_LOAD_COMPLETE = 0x002;
 	private final static int DATA_LOAD_FAIL = 0x003;
 
-	private PullToRefreshListView mLvComment;
-	private ListViewCommentAdapter lvCommentAdapter;
-	private List<Comment> lvCommentData = new ArrayList<Comment>();
-	private View lvComment_footer;
-	private TextView lvComment_foot_more;
-	private ProgressBar lvComment_foot_progress;
-	private Handler mCommentHandler;
-	private int lvSumData;
+	//private PullToRefreshListView mLvComment;
+	//private ListViewCommentAdapter lvCommentAdapter;
+	//private List<Comment> lvCommentData = new ArrayList<Comment>();
+	//private View lvComment_footer;
+	//private TextView lvComment_foot_more;
+	//private ProgressBar lvComment_foot_progress;
+	//private Handler mCommentHandler;
+	//private int lvSumData;
 
 	private int curId;
 	private int curCatalog;
@@ -103,10 +103,10 @@ public class NewsDetail extends BaseActivity {
 	private int curLvPosition;// 当前listview选中的item位置
 
 	private ViewSwitcher mFootViewSwitcher;
-	private ImageView mFootEditebox;
-	private EditText mFootEditer;
-	private Button mFootPubcomment;
-	private ProgressDialog mProgress;
+	//private ImageView mFootEditebox;
+	//private EditText mFootEditer;
+	//private Button mFootPubcomment;
+	//private ProgressDialog mProgress;
 	private InputMethodManager imm;
 	private String tempCommentKey = AppConfig.TEMP_COMMENT;
 
@@ -128,8 +128,8 @@ public class NewsDetail extends BaseActivity {
 		this.initData();
 
 		// 加载评论视图&数据
-		this.initCommentView();
-		this.initCommentData();
+		//this.initCommentView();
+		//this.initCommentData();
 
 		// 注册双击全屏事件
 		this.regOnDoubleEvent();
@@ -140,28 +140,27 @@ public class NewsDetail extends BaseActivity {
 	private void initView() {
 		newsId = getIntent().getIntExtra("news_id", 0);
 
-		if (newsId > 0)
-			tempCommentKey = AppConfig.TEMP_COMMENT + "_"
-					+ CommentList.CATALOG_NEWS + "_" + newsId;
+		//if (newsId > 0)
+			//tempCommentKey = AppConfig.TEMP_COMMENT + "_" + CommentList.CATALOG_NEWS + "_" + newsId;
 
-		mHeader = (FrameLayout) findViewById(R.id.news_detail_header);
+		//mHeader = (FrameLayout) findViewById(R.id.news_detail_header);
 		mFooter = (LinearLayout) findViewById(R.id.news_detail_footer);
 		mHome = (ImageView) findViewById(R.id.news_detail_home);
-		mRefresh = (ImageView) findViewById(R.id.news_detail_refresh);
-		mHeadTitle = (TextView) findViewById(R.id.news_detail_head_title);
-		mProgressbar = (ProgressBar) findViewById(R.id.news_detail_head_progress);
+		//mRefresh = (ImageView) findViewById(R.id.news_detail_refresh);
+		//mHeadTitle = (TextView) findViewById(R.id.news_detail_head_title);
+		//mProgressbar = (ProgressBar) findViewById(R.id.news_detail_head_progress);
 		mViewSwitcher = (ViewSwitcher) findViewById(R.id.news_detail_viewswitcher);
 		mScrollView = (ScrollView) findViewById(R.id.news_detail_scrollview);
 
 		mDetail = (ImageView) findViewById(R.id.news_detail_footbar_detail);
-		mCommentList = (ImageView) findViewById(R.id.news_detail_footbar_commentlist);
+		//mCommentList = (ImageView) findViewById(R.id.news_detail_footbar_commentlist);
 		mShare = (ImageView) findViewById(R.id.news_detail_footbar_share);
 		mFavorite = (ImageView) findViewById(R.id.news_detail_footbar_favorite);
 
 		mTitle = (TextView) findViewById(R.id.news_detail_title);
 		mAuthor = (TextView) findViewById(R.id.news_detail_author);
 		mPubDate = (TextView) findViewById(R.id.news_detail_date);
-		mCommentCount = (TextView) findViewById(R.id.news_detail_commentcount);
+		//mCommentCount = (TextView) findViewById(R.id.news_detail_commentcount);
 
 		mDetail.setEnabled(false);
 
@@ -173,23 +172,23 @@ public class NewsDetail extends BaseActivity {
 		
 		mHome.setOnClickListener(homeClickListener);
 		mFavorite.setOnClickListener(favoriteClickListener);
-		mRefresh.setOnClickListener(refreshClickListener);
-		mAuthor.setOnClickListener(authorClickListener);
+		//mRefresh.setOnClickListener(refreshClickListener);
+		//mAuthor.setOnClickListener(authorClickListener);
 		mShare.setOnClickListener(shareClickListener);
 		mDetail.setOnClickListener(detailClickListener);
-		mCommentList.setOnClickListener(commentlistClickListener);
+		//mCommentList.setOnClickListener(commentlistClickListener);
 
-		bv_comment = new BadgeView(this, mCommentList);
-		bv_comment.setBackgroundResource(R.drawable.widget_count_bg2);
-		bv_comment.setIncludeFontPadding(false);
-		bv_comment.setGravity(Gravity.CENTER);
-		bv_comment.setTextSize(8f);
-		bv_comment.setTextColor(Color.WHITE);
+		//bv_comment = new BadgeView(this, mCommentList);
+		//bv_comment.setBackgroundResource(R.drawable.widget_count_bg2);
+		//bv_comment.setIncludeFontPadding(false);
+		//bv_comment.setGravity(Gravity.CENTER);
+		//bv_comment.setTextSize(8f);
+		//bv_comment.setTextColor(Color.WHITE);
 
 		imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
 		mFootViewSwitcher = (ViewSwitcher) findViewById(R.id.news_detail_foot_viewswitcher);
-		mFootPubcomment = (Button) findViewById(R.id.news_detail_foot_pubcomment);
+	  /*mFootPubcomment = (Button) findViewById(R.id.news_detail_foot_pubcomment);
 		mFootPubcomment.setOnClickListener(commentpubClickListener);
 		mFootEditebox = (ImageView) findViewById(R.id.news_detail_footbar_editebox);
 		mFootEditebox.setOnClickListener(new View.OnClickListener() {
@@ -224,11 +223,11 @@ public class NewsDetail extends BaseActivity {
 			}
 		});
 		// 编辑器添加文本监听
-		mFootEditer.addTextChangedListener(UIHelper.getTextWatcher(this,
-				tempCommentKey));
+		mFootEditer.addTextChangedListener(UIHelper.getTextWatcher(this, tempCommentKey));
 
 		// 显示临时编辑内容
 		UIHelper.showTempEditContent(this, mFootEditer, tempCommentKey);
+		*/
 	}
 
 	// 初始化控件数据
@@ -240,10 +239,8 @@ public class NewsDetail extends BaseActivity {
 
 					mTitle.setText(newsDetail.getTitle());
 					mAuthor.setText(newsDetail.getAuthor());
-					mPubDate.setText(StringUtils.friendly_time(newsDetail
-							.getPubDate()));
-					mCommentCount.setText(String.valueOf(newsDetail
-							.getCommentCount()));
+					mPubDate.setText(StringUtils.friendly_time(newsDetail.getPubDate()));
+					//mCommentCount.setText(String.valueOf(newsDetail.getCommentCount()));
 
 					// 是否收藏
 					if (newsDetail.getFavorite() == 1)
@@ -254,13 +251,13 @@ public class NewsDetail extends BaseActivity {
 								.setImageResource(R.drawable.widget_bar_favorite);
 
 					// 显示评论数
-					if (newsDetail.getCommentCount() > 0) {
+					/*if (newsDetail.getCommentCount() > 0) {
 						bv_comment.setText(newsDetail.getCommentCount() + "");
 						bv_comment.show();
 					} else {
 						bv_comment.setText("");
 						bv_comment.hide();
-					}
+					}*/
 
 					String body = UIHelper.WEB_STYLE + newsDetail.getBody();
 					// 读取用户设置：是否加载文章图片--默认有wifi下始终加载图片
@@ -288,13 +285,14 @@ public class NewsDetail extends BaseActivity {
 					}
 
 					// 更多关于***软件的信息
-					String softwareName = newsDetail.getSoftwareName();
+					/*String softwareName = newsDetail.getSoftwareName();
 					String softwareLink = newsDetail.getSoftwareLink();
 					if (!StringUtils.isEmpty(softwareName)
 							&& !StringUtils.isEmpty(softwareLink))
 						body += String
 								.format("<div id='oschina_software' style='margin-top:8px;color:#FF0000;font-weight:bold'>更多关于:&nbsp;<a href='%s'>%s</a>&nbsp;的详细信息</div>",
 										softwareLink, softwareName);
+					*/
 
 					// 相关新闻
 					if (newsDetail.getRelatives().size() > 0) {
@@ -370,17 +368,17 @@ public class NewsDetail extends BaseActivity {
 		switch (type) {
 		case VIEWSWITCH_TYPE_DETAIL:
 			mDetail.setEnabled(false);
-			mCommentList.setEnabled(true);
-			mHeadTitle.setText(R.string.news_detail_head_title);
+			//mCommentList.setEnabled(true);
+			//mHeadTitle.setText(R.string.news_detail_head_title);
 			mViewSwitcher.setDisplayedChild(0);
 			break;
-		case VIEWSWITCH_TYPE_COMMENTS:
+		/*case VIEWSWITCH_TYPE_COMMENTS:
 			mDetail.setEnabled(true);
 			mCommentList.setEnabled(false);
 			mHeadTitle.setText(R.string.comment_list_head_title);
 			mViewSwitcher.setDisplayedChild(1);
 			break;
-		}
+		}*/
 	}
 
 	/**
@@ -392,18 +390,18 @@ public class NewsDetail extends BaseActivity {
 		switch (type) {
 		case DATA_LOAD_ING:
 			mScrollView.setVisibility(View.GONE);
-			mProgressbar.setVisibility(View.VISIBLE);
-			mRefresh.setVisibility(View.GONE);
+			//mProgressbar.setVisibility(View.VISIBLE);
+			//mRefresh.setVisibility(View.GONE);
 			break;
 		case DATA_LOAD_COMPLETE:
 			mScrollView.setVisibility(View.VISIBLE);
-			mProgressbar.setVisibility(View.GONE);
-			mRefresh.setVisibility(View.VISIBLE);
+			//mProgressbar.setVisibility(View.GONE);
+			//mRefresh.setVisibility(View.VISIBLE);
 			break;
 		case DATA_LOAD_FAIL:
 			mScrollView.setVisibility(View.GONE);
-			mProgressbar.setVisibility(View.GONE);
-			mRefresh.setVisibility(View.VISIBLE);
+			//mProgressbar.setVisibility(View.GONE);
+			//mRefresh.setVisibility(View.VISIBLE);
 			break;
 		}
 	}
@@ -414,7 +412,7 @@ public class NewsDetail extends BaseActivity {
 		}
 	};
 
-	private View.OnClickListener refreshClickListener = new View.OnClickListener() {
+	/*private View.OnClickListener refreshClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			initData(newsId, true);
 			loadLvCommentData(curId, curCatalog, 0, mCommentHandler,
@@ -427,7 +425,7 @@ public class NewsDetail extends BaseActivity {
 			UIHelper.showUserCenter(v.getContext(), newsDetail.getAuthorId(),
 					newsDetail.getAuthor());
 		}
-	};
+	};*/
 
 	private View.OnClickListener shareClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
@@ -452,7 +450,7 @@ public class NewsDetail extends BaseActivity {
 		}
 	};
 
-	private View.OnClickListener commentlistClickListener = new View.OnClickListener() {
+	/*private View.OnClickListener commentlistClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			if (newsId == 0) {
 				return;
@@ -460,7 +458,7 @@ public class NewsDetail extends BaseActivity {
 			// 切换到评论
 			viewSwitch(VIEWSWITCH_TYPE_COMMENTS);
 		}
-	};
+	};*/
 
 	private View.OnClickListener favoriteClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
@@ -469,12 +467,12 @@ public class NewsDetail extends BaseActivity {
 			}
 
 			final AppContext ac = (AppContext) getApplication();
-			if (!ac.isLogin()) {
+			/*if (!ac.isLogin()) {
 				UIHelper.showLoginDialog(NewsDetail.this);
 				return;
 			}
 			final int uid = ac.getLoginUid();
-
+			*/
 			final Handler handler = new Handler() {
 				public void handleMessage(Message msg) {
 					if (msg.what == 1) {
@@ -525,7 +523,7 @@ public class NewsDetail extends BaseActivity {
 	};
 
 	// 初始化视图控件
-	private void initCommentView() {
+	/*private void initCommentView() {
 		lvComment_footer = getLayoutInflater().inflate(
 				R.layout.listview_footer, null);
 		lvComment_foot_more = (TextView) lvComment_footer
@@ -683,10 +681,10 @@ public class NewsDetail extends BaseActivity {
 								UIHelper.LISTVIEW_ACTION_REFRESH);
 					}
 				});
-	}
+	}*/
 
 	// 初始化评论数据
-	private void initCommentData() {
+	/*private void initCommentData() {
 		curId = newsId;
 		curCatalog = CommentList.CATALOG_NEWS;
 
@@ -768,7 +766,7 @@ public class NewsDetail extends BaseActivity {
 		};
 		this.loadLvCommentData(curId, curCatalog, 0, mCommentHandler,
 				UIHelper.LISTVIEW_ACTION_INIT);
-	}
+	}*/
 
 	/**
 	 * 线程加载评论数据
@@ -784,7 +782,7 @@ public class NewsDetail extends BaseActivity {
 	 * @param action
 	 *            动作标识
 	 */
-	private void loadLvCommentData(final int id, final int catalog,
+	/*private void loadLvCommentData(final int id, final int catalog,
 			final int pageIndex, final Handler handler, final int action) {
 		new Thread() {
 			public void run() {
@@ -926,7 +924,7 @@ public class NewsDetail extends BaseActivity {
 				}
 			}.start();
 		}
-	};
+	};*/
 
 	/**
 	 * 注册双击全屏事件
@@ -945,7 +943,7 @@ public class NewsDetail extends BaseActivity {
 							getWindow()
 									.clearFlags(
 											WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-							mHeader.setVisibility(View.VISIBLE);
+							//mHeader.setVisibility(View.VISIBLE);
 							mFooter.setVisibility(View.VISIBLE);
 						} else {
 							WindowManager.LayoutParams params = getWindow()
@@ -955,7 +953,7 @@ public class NewsDetail extends BaseActivity {
 							getWindow()
 									.addFlags(
 											WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-							mHeader.setVisibility(View.GONE);
+							//mHeader.setVisibility(View.GONE);
 							mFooter.setVisibility(View.GONE);
 						}
 						return true;

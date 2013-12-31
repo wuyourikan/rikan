@@ -14,23 +14,32 @@
     <string name="main_menu_about">关于我们</string>
     <string name="main_menu_setting">系统设置</string>
     <string name="main_menu_exit">退出程序</string>
+
+    <string name="frame_title_news_lastest">时事</string>
+    <string name="frame_title_news_zatan">杂谈</string>
+    <string name="frame_title_news_recommend">推荐</string>
+    <string name="frame_title_news_all">全部</string>
     
-    <string name="frame_title_news_lastest">最新资讯</string>
-    <string name="frame_title_news_blog">最新博客</string>
-    <string name="frame_title_news_recommend">推荐阅读</string>
     <string name="frame_title_question_ask">问答</string>
     <string name="frame_title_question_share">分享</string>
     <string name="frame_title_question_other">综合</string>
     <string name="frame_title_question_job">职业</string>
     <string name="frame_title_question_site">站务</string>
+    
+    <string name="frame_title_zhuanti_particular">特别专题</string>
+    <string name="frame_title_zhuanti_hot">热门动弹</string>
+    <string name="frame_title_zhuanti_common">普通专题</string>
+    
     <string name="frame_title_huati_center">话题中心</string>
     <string name="frame_title_huati_sixiang">思想</string>
     <string name="frame_title_huati_zhengjing">政经</string>
     <string name="frame_title_huati_wenshi">文史</string>
+    
     <string name="frame_title_tweet_lastest">最新动弹</string>
     <string name="frame_title_tweet_hot">热门动弹</string>
     <string name="frame_title_tweet_my">我的动弹</string>
     <string name="frame_title_tweet_send">动弹一下</string>
+    
     <string name="frame_title_active_lastest">最新动态</string>
     <string name="frame_title_active_atme">我</string>
     <string name="frame_title_active_comment">评论</string>
@@ -81,7 +90,7 @@
     <string name="user_favorite_huati">话题</string>
     <string name="user_favorite_old">往期</string>
     <string name="user_favorite_center">中心</string>
-
+    
     <string name="user_friend_head_title">我的好友</string>
     <string name="user_friend_follower">关注(%d)</string>
     <string name="user_friend_fans">粉丝(%d)</string>

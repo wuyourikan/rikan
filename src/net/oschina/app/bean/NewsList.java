@@ -21,13 +21,15 @@ import android.util.Xml;
  */
 public class NewsList extends Entity{
 
-	public final static int CATALOG_ALL = 1;
+	public final static int CATALOG_ALLN = 1;
 	public final static int CATALOG_INTEGRATION = 2;
 	public final static int CATALOG_SOFTWARE = 3;
 	
-	private int catalog;
-	private int pageSize;
+	private int catalog;//类别
+	private int pageSize;//页数
 	private int newsCount;
+	private String imageurl;
+	private String newsurl;
 	private List<News> newslist = new ArrayList<News>();
 	
 	public int getCatalog() {
@@ -42,6 +44,12 @@ public class NewsList extends Entity{
 	public List<News> getNewslist() {
 		return newslist;
 	}
+	public String getImageView() {
+		return imageurl;
+	}
+	public String getNewsUrl() {
+		return newsurl;
+	}
 	
 	public static NewsList parse(InputStream inputStream) throws IOException, AppException {
 		NewsList newslist = new NewsList();
@@ -54,7 +62,7 @@ public class NewsList extends Entity{
             int evtType=xmlParser.getEventType();
 			//一直循环，直到文档结束    
 			while(evtType!=XmlPullParser.END_DOCUMENT){ 
-	    		String tag = xmlParser.getName(); 
+	    		String tag = xmlParser.getName(); //获得标签名
 			    switch(evtType){ 
 			    	case XmlPullParser.START_TAG:
 			    		if(tag.equalsIgnoreCase("catalog")) 
@@ -69,52 +77,59 @@ public class NewsList extends Entity{
 			    		{
 			    			newslist.newsCount = StringUtils.toInt(xmlParser.nextText(),0);
 			    		}
-			    		else if (tag.equalsIgnoreCase(News.NODE_START)) 
+			    		else if (tag.equalsIgnoreCase(News.NODE_START)) //news
 			    		{ 
 			    			news = new News();
 			    		}
 			    		else if(news != null)
 			    		{	
-				            if(tag.equalsIgnoreCase(News.NODE_ID))
+				            if(tag.equalsIgnoreCase(News.NODE_ID))//id
 				            {			      
 				            	news.id = StringUtils.toInt(xmlParser.nextText(),0);
 				            }
-				            else if(tag.equalsIgnoreCase(News.NODE_TITLE))
+				            else if(tag.equalsIgnoreCase(News.NODE_TITLE))//title
 				            {			            	
 				            	news.setTitle(xmlParser.nextText());
 				            }
-				            else if(tag.equalsIgnoreCase(News.NODE_URL))
+				            else if(tag.equalsIgnoreCase(News.NODE_URL))//url
 				            {			            	
 				            	news.setUrl(xmlParser.nextText());
+				            	newslist.newsurl = news.getUrl();
 				            }
-				            else if(tag.equalsIgnoreCase(News.NODE_AUTHOR))
+				            else if(tag.equalsIgnoreCase(News.NODE_AUTHOR))//author
 				            {			            	
 				            	news.setAuthor(xmlParser.nextText());		            	
 				            }
-				            else if(tag.equalsIgnoreCase(News.NODE_AUTHORID))
-				            {			            	
-				            	news.setAuthorId(StringUtils.toInt(xmlParser.nextText(),0));		            	
+				            else if(tag.equalsIgnoreCase(News.NODE_IMAGE))
+				            {
+				            	news.setImageView(xmlParser.nextText());
+				            	newslist.imageurl = news.getImageView();
 				            }
-				            else if(tag.equalsIgnoreCase(News.NODE_COMMENTCOUNT))
-				            {			            	
-				            	news.setCommentCount(StringUtils.toInt(xmlParser.nextText(),0));			            	
-				            }
-				            else if(tag.equalsIgnoreCase(News.NODE_PUBDATE))
+				            //else if(tag.equalsIgnoreCase(News.NODE_AUTHORID))//authorid
+				            //{			            	
+				            	//news.setAuthorId(StringUtils.toInt(xmlParser.nextText(),0));		            	
+				            //}
+				            //else if(tag.equalsIgnoreCase(News.NODE_COMMENTCOUNT))//commentcount
+				            //{			            	
+				            	//news.setCommentCount(StringUtils.toInt(xmlParser.nextText(),0));			            	
+				            //}
+				            else if(tag.equalsIgnoreCase(News.NODE_PUBDATE))//pubDate
 				            {			            	
 				            	news.setPubDate(xmlParser.nextText());	
 				            }
-				            else if(tag.equalsIgnoreCase(News.NODE_TYPE))
+				            else if(tag.equalsIgnoreCase(News.NODE_TYPE))//type
 				            {	
 				            	news.getNewType().type = StringUtils.toInt(xmlParser.nextText(),0); 
 				            }
-				            else if(tag.equalsIgnoreCase(News.NODE_ATTACHMENT))
+				            else if(tag.equalsIgnoreCase(News.NODE_ATTACHMENT))//attachment
 				            {			            	
 				            	news.getNewType().attachment = xmlParser.nextText(); 	
 				            }
-				            else if(tag.equalsIgnoreCase(News.NODE_AUTHORUID2))
-				            {			            	
-				            	news.getNewType().authoruid2 = StringUtils.toInt(xmlParser.nextText(),0); 
-				            }
+				            //else if(tag.equalsIgnoreCase(News.NODE_AUTHORUID2))//authorid2
+				            //{			            	
+				            	//news.getNewType().authoruid2 = StringUtils.toInt(xmlParser.nextText(),0); 
+				            //}
+
 			    		}
 			            //通知信息
 			            else if(tag.equalsIgnoreCase("notice"))

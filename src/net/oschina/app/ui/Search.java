@@ -12,6 +12,7 @@ import net.oschina.app.bean.Notice;
 import net.oschina.app.bean.SearchList.Result;
 import net.oschina.app.common.StringUtils;
 import net.oschina.app.common.UIHelper;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;

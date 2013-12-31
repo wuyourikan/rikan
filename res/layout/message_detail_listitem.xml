@@ -32,7 +32,7 @@
 			android:textColor="@color/listitem_black"
 			android:textColorLink="@color/listitem_blue"
 			android:autoLink="web|email"/>
-       	
+
 		<LinearLayout 
 	    	android:orientation="horizontal" 
 	        android:layout_width="wrap_content"  
@@ -53,7 +53,7 @@
 	         	android:textSize="@dimen/text_size_10"
 	         	android:textColor="@color/listitem_gray"/>
        	</LinearLayout>
-        
+
 	</LinearLayout>
 
     <ImageView 

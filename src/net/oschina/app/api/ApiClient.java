@@ -13,30 +13,31 @@ import net.oschina.app.AppContext;
 import net.oschina.app.AppException;
 import net.oschina.app.R;
 import net.oschina.app.bean.ActiveList;
-import net.oschina.app.bean.Blog;
+import net.oschina.app.bean.Zatan;
 import net.oschina.app.bean.BlogCommentList;
-import net.oschina.app.bean.BlogList;
+import net.oschina.app.bean.ZatanList;
 import net.oschina.app.bean.CommentList;
 import net.oschina.app.bean.FavoriteList;
 import net.oschina.app.bean.FriendList;
+import net.oschina.app.bean.Huati;
+import net.oschina.app.bean.HuatiList;
 import net.oschina.app.bean.MessageList;
 import net.oschina.app.bean.MyInformation;
 import net.oschina.app.bean.News;
 import net.oschina.app.bean.NewsList;
 import net.oschina.app.bean.Notice;
-import net.oschina.app.bean.Huati;
-import net.oschina.app.bean.HuatiList;
+import net.oschina.app.bean.Recommend;
+import net.oschina.app.bean.RecommendList;
+import net.oschina.app.bean.All;
+import net.oschina.app.bean.AllList;
 import net.oschina.app.bean.Result;
 import net.oschina.app.bean.SearchList;
-import net.oschina.app.bean.Software;
-import net.oschina.app.bean.SoftwareCatalogList;
-import net.oschina.app.bean.SoftwareList;
-import net.oschina.app.bean.Tweet;
-import net.oschina.app.bean.TweetList;
 import net.oschina.app.bean.URLs;
 import net.oschina.app.bean.Update;
 import net.oschina.app.bean.User;
 import net.oschina.app.bean.UserInformation;
+import net.oschina.app.bean.Zhuanti;
+import net.oschina.app.bean.ZhuantiList;
 
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
@@ -271,7 +272,7 @@ public class ApiClient {
 		HttpClient httpClient = null;
 		PostMethod httpPost = null;
 		
-		//huati表单参数处理
+		//post表单参数处理
 		int length = (params == null ? 0 : params.size()) + (files == null ? 0 : files.size());
 		Part[] parts = new Part[length];
 		int i = 0;
@@ -634,7 +635,7 @@ public class ApiClient {
 		}
 	}
 	
-	/**
+		/**
 	 * 获取资讯列表
 	 * @param url
 	 * @param catalog
@@ -644,7 +645,7 @@ public class ApiClient {
 	 * @throws AppException
 	 */
 	public static NewsList getNewsList(AppContext appContext, final int catalog, final int pageIndex, final int pageSize) throws AppException {
-		String newUrl = _MakeURL(URLs.NEWS_LIST, new HashMap<String, Object>(){{
+		String newUrl = _MakeURL(URLs.NEWS_LIST, new HashMap<String, Object>(){{                                                      //此处注意
 			put("catalog", catalog);
 			put("pageIndex", pageIndex);
 			put("pageSize", pageSize);
@@ -673,6 +674,51 @@ public class ApiClient {
 		
 		try{
 			return News.parse(http_get(appContext, newUrl));			
+		}catch(Exception e){
+			if(e instanceof AppException)
+				throw (AppException)e;
+			throw AppException.network(e);
+		}
+	}
+	
+	/**
+	 * 获取推荐列表
+	 * @param type 推荐：recommend 最新：latest
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 * @throws AppException
+	 */
+	public static RecommendList getRecommendList(AppContext appContext, final int catalog, final int pageIndex, final int pageSize) throws AppException {
+		String newUrl = _MakeURL(URLs.RECOMMEND_LIST, new HashMap<String, Object>(){{
+			put("catalog", catalog);
+			put("pageIndex", pageIndex);
+			put("pageSize", pageSize);
+		}});
+
+		try{
+			return RecommendList.parse(http_get(appContext, newUrl));		
+		}catch(Exception e){
+			if(e instanceof AppException)
+				throw (AppException)e;
+			throw AppException.network(e);
+		}
+	}
+	
+	/**
+	 * 获取推荐的详情
+	 * @param url
+	 * @param recommend_id
+	 * @return
+	 * @throws AppException
+	 */
+	public static Recommend getRecommendDetail(AppContext appContext, final int recommend_id) throws AppException {
+		String newUrl = _MakeURL(URLs.RECOMMEND_DETAIL, new HashMap<String, Object>(){{
+			put("id", recommend_id);
+		}});
+		
+		try{
+			return Recommend.parse(http_get(appContext, newUrl));			
 		}catch(Exception e){
 			if(e instanceof AppException)
 				throw (AppException)e;
@@ -775,6 +821,71 @@ public class ApiClient {
 	}
 	
 	/**
+	 * 获取杂谈详情
+	 * @param blog_id
+	 * @return
+	 * @throws AppException
+	 */
+	public static Zatan getZatanDetail(AppContext appContext, final int zatan_id) throws AppException {
+		String newUrl = _MakeURL(URLs.ZATAN_DETAIL, new HashMap<String, Object>(){{
+			put("id", zatan_id);
+		}});
+		
+		try{
+			return Zatan.parse(http_get(appContext, newUrl));			
+		}catch(Exception e){
+			if(e instanceof AppException)
+				throw (AppException)e;
+			throw AppException.network(e);
+		}
+	}
+	
+	/**
+	 * 获取全部列表
+	 * @param type 推荐：recommend 最新：latest
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 * @throws AppException
+	 */
+	public static AllList getAllList(AppContext appContext, final int catalog, final int pageIndex, final int pageSize) throws AppException {
+		String newUrl = _MakeURL(URLs.ALL_LIST, new HashMap<String, Object>(){{
+			put("catalog", catalog);
+			put("pageIndex", pageIndex);
+			put("pageSize", pageSize);
+		}});
+
+		try{
+			return AllList.parse(http_get(appContext, newUrl));		
+		}catch(Exception e){
+			if(e instanceof AppException)
+				throw (AppException)e;
+			throw AppException.network(e);
+		}
+	}
+	
+	/**
+	 * 获取全部的详情                                         
+	 * @param url
+	 * @param recommend_id
+	 * @return
+	 * @throws AppException
+	 *///全部主要跳转到其他项目，所以此项可以忽略
+	public static All getAllDetail(AppContext appContext, final int all_id) throws AppException {
+		String newUrl = _MakeURL(URLs.ALL_DETAIL, new HashMap<String, Object>(){{
+			put("id", all_id);
+		}});
+		
+		try{
+			return All.parse(http_get(appContext, newUrl));			
+		}catch(Exception e){
+			if(e instanceof AppException)
+				throw (AppException)e;
+			throw AppException.network(e);
+		}
+	}
+		
+	/**
 	 * 获取话题列表
 	 * @param url
 	 * @param catalog
@@ -840,6 +951,76 @@ public class ApiClient {
 			throw AppException.network(e);
 		}
 	}
+
+	
+	/**
+	 * 获取专题列表
+	 * @param url
+	 * @param catalog
+	 * @param pageIndex
+	 * @return
+	 * @throws AppException
+	 */
+	public static ZhuantiList getZhuantiList(AppContext appContext, final int catalog, final int pageIndex, final int pageSize) throws AppException {
+		String newUrl = _MakeURL(URLs.POST_LIST, new HashMap<String, Object>(){{
+			put("catalog", catalog);
+			put("pageIndex", pageIndex);
+			put("pageSize", pageSize);
+		}});
+
+		try{
+			return ZhuantiList.parse(http_get(appContext, newUrl));		
+		}catch(Exception e){
+			if(e instanceof AppException)
+				throw (AppException)e;
+			throw AppException.network(e);
+		}
+	}
+	
+	/**
+	 * 通过Tag获取专题列表
+	 * @param url
+	 * @param catalog
+	 * @param pageIndex
+	 * @return
+	 * @throws AppException
+	 */
+	public static ZhuantiList getZhuantiListByTag(AppContext appContext, final String tag, final int pageIndex, final int pageSize) throws AppException {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("tag", tag);
+		params.put("pageIndex", pageIndex);
+		params.put("pageSize", pageSize);		
+
+		try{
+			return ZhuantiList.parse(_post(appContext, URLs.POST_LIST, params, null));		
+		}catch(Exception e){
+			if(e instanceof AppException)
+				throw (AppException)e;
+			throw AppException.network(e);
+		}
+	}
+	
+	/**
+	 * 获取专题的详情
+	 * @param url
+	 * @param post_id
+	 * @return
+	 * @throws AppException
+	 */
+	public static Zhuanti getZhuantiDetail(AppContext appContext, final int post_id) throws AppException {
+		String newUrl = _MakeURL(URLs.POST_DETAIL, new HashMap<String, Object>(){{
+			put("id", post_id);
+		}});
+		try{
+			return Zhuanti.parse(http_get(appContext, newUrl));			
+		}catch(Exception e){
+			if(e instanceof AppException)
+				throw (AppException)e;
+			throw AppException.network(e);
+		}
+	}
+	
+
 	
 	/**
 	 * 发话题（暂不需要）
@@ -1372,7 +1553,7 @@ public class ApiClient {
 			throw AppException.network(e);
 		}
 	}
-	
+
 	/**
 	 * 软件列表
 	 * @param searchTag 软件分类  推荐:recommend 最新:time 热门:view 国产:list_cn
@@ -1381,7 +1562,7 @@ public class ApiClient {
 	 * @return
 	 * @throws AppException
 	 */
-	public static SoftwareList getSoftwareList(AppContext appContext,final String searchTag,final int pageIndex,final int pageSize) throws AppException {
+/*	public static SoftwareList getSoftwareList(AppContext appContext,final String searchTag,final int pageIndex,final int pageSize) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("searchTag", searchTag);
 		params.put("pageIndex", pageIndex);
@@ -1395,7 +1576,7 @@ public class ApiClient {
 			throw AppException.network(e);
 		}
 	}
-	
+*/	
 	/**
 	 * 软件分类的软件列表
 	 * @param searchTag 从softwarecatalog_list获取的tag
@@ -1404,7 +1585,7 @@ public class ApiClient {
 	 * @return
 	 * @throws AppException
 	 */
-	public static SoftwareList getSoftwareTagList(AppContext appContext,final int searchTag,final int pageIndex,final int pageSize) throws AppException {
+/*	public static SoftwareList getSoftwareTagList(AppContext appContext,final int searchTag,final int pageIndex,final int pageSize) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("searchTag", searchTag);
 		params.put("pageIndex", pageIndex);
@@ -1418,14 +1599,14 @@ public class ApiClient {
 			throw AppException.network(e);
 		}
 	}
-	
+*/	
 	/**
 	 * 软件分类列表
 	 * @param tag 第一级:0  第二级:tag
 	 * @return
 	 * @throws AppException
 	 */
-	public static SoftwareCatalogList getSoftwareCatalogList(AppContext appContext,final int tag) throws AppException {
+/*	public static SoftwareCatalogList getSoftwareCatalogList(AppContext appContext,final int tag) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("tag", tag);
 
@@ -1437,14 +1618,14 @@ public class ApiClient {
 			throw AppException.network(e);
 		}
 	}
-	
+*/	
 	/**
 	 * 获取软件详情
 	 * @param ident
 	 * @return
 	 * @throws AppException
 	 */
-	public static Software getSoftwareDetail(AppContext appContext, final String ident) throws AppException {
+/*	public static Software getSoftwareDetail(AppContext appContext, final String ident) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("ident", ident);
 		
@@ -1456,4 +1637,5 @@ public class ApiClient {
 			throw AppException.network(e);
 		}
 	}
+*/
 }

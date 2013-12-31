@@ -20,6 +20,7 @@ public class GridViewFaceAdapter extends BaseAdapter
 	// 定义Context
 	private Context	mContext;
 	// 定义整型数组 即图片源
+
 	private static int[] mImageIds = new int[]{
 			R.drawable.f001,R.drawable.f002,R.drawable.f003,R.drawable.f004,R.drawable.f005,R.drawable.f006,
 			R.drawable.f007,R.drawable.f008,R.drawable.f009,R.drawable.f010,R.drawable.f011,R.drawable.f012,

@@ -10,6 +10,7 @@ import net.oschina.app.common.FileUtils;
 import net.oschina.app.common.ImageUtils;
 import net.oschina.app.common.StringUtils;
 import net.oschina.app.common.UIHelper;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;

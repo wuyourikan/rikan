@@ -5,7 +5,7 @@
   	android:orientation="vertical"
   	android:background="@color/white">
 
-	<include layout="@layout/news_detail_header"/>
+	<!--<include layout="@layout/news_detail_header"/>-->
 
 	<ViewSwitcher
     	android:id="@+id/news_detail_viewswitcher" 
@@ -66,12 +66,12 @@
 				        android:layout_marginLeft="10.0dip"
 				        android:layout_gravity="center_vertical"
 				        android:src="@drawable/widget_comment_count_icon"/>	        
-			       	<TextView android:id="@+id/news_detail_commentcount"  
+			       	<!--<TextView android:id="@+id/news_detail_commentcount"  
 			    		android:layout_width="wrap_content" 
 			           	android:layout_height="wrap_content" 
 			           	android:layout_marginLeft="3.0dip"
 			           	android:textSize="@dimen/text_size_12"
-			            android:textColor="@color/gray"/>
+			            android:textColor="@color/gray"/>-->
 			   	</LinearLayout>
 			   	
 				<View style="@style/detail_cut_line"/>
@@ -84,7 +84,7 @@
 	        </LinearLayout>	
 	    </ScrollView>
     	    
-	    <include layout="@layout/comment_list"/>
+	    <!--<include layout="@layout/comment_list"/>-->
 	    
    	</ViewSwitcher>
    	

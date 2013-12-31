@@ -21,7 +21,6 @@ public class QQWeiboHelper {
 	private static final String Share_Site = "OSChina.net";
 	private static final String Share_AppKey = "96f54f97c4de46e393c4835a266207f4";
 	
-
 	/**
 	 * 分享到腾讯微博
 	 * @param activity

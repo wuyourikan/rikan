@@ -27,5 +27,5 @@
 	<net.oschina.app.widget.PullToRefreshListView
 	  	android:id="@+id/frame_listview_huati"
 	    style="@style/widget_listview"/>
-	
+
 </LinearLayout>

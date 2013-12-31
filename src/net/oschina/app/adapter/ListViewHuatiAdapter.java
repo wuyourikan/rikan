@@ -119,6 +119,7 @@ public class ListViewHuatiAdapter extends BaseAdapter {
 			Huati huati = (Huati)v.getTag();
 			//UIHelper.showUserCenter(v.getContext(), huati.getAuthorId(), huati.getAuthor());
 			UIHelper.showImageZoomDialog(v.getContext(), huati.getImg());
+
 		}
 	};
 }

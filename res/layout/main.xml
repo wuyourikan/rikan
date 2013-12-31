@@ -14,13 +14,11 @@
    	  android:layout_weight="1">    
   
  	  <include layout="@layout/frame_news" />
-      
-	  <include layout="@layout/frame_huati" />
-	  
-	  <include layout="@layout/frame_tweet" />
-	      
-	  <include layout="@layout/frame_active" />
-       
+ 	  
+ 	  <include layout="@layout/frame_huati" />
+ 	  
+ 	  <include layout="@layout/frame_zhuanti" />
+ 	  
 	</net.oschina.app.widget.ScrollLayout> 
     
     <include layout="@layout/main_footer" />   

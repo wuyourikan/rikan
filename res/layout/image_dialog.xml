@@ -9,6 +9,7 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		style="?android:attr/progressBarStyleLarge"/>
+
 	<LinearLayout
 	    android:orientation="vertical"
 		android:layout_width="fill_parent" 
@@ -42,4 +43,5 @@
 		    android:text="查看原图"
 		    android:textColor="@color/graywhite"/>
 	</LinearLayout>
+
 </ViewSwitcher>

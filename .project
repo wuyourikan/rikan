@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+<<<<<<< HEAD
 	<name>oschina-android-app-wyf</name>
+=======
+	<name>oschina-android-app</name>
+>>>>>>> refs/remotes/origin/develop
 	<comment></comment>
 	<projects>
 	</projects>

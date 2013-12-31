@@ -14,6 +14,7 @@ import net.oschina.app.bean.Result;
 import net.oschina.app.bean.FavoriteList.Favorite;
 import net.oschina.app.common.UIHelper;
 import net.oschina.app.widget.PullToRefreshListView;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
