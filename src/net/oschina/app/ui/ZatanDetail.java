@@ -323,7 +323,7 @@ public class ZatanDetail extends Activity {
 		initData(zatanId, false);
 	}
 	
-    private void initData(final int blog_id, final boolean isRefresh)
+    private void initData(final int zatan_id, final boolean isRefresh)
     {	
     	headButtonSwitch(DATA_LOAD_ING);
     	
@@ -331,7 +331,7 @@ public class ZatanDetail extends Activity {
 			public void run() {
                 Message msg = new Message();
 				try {
-					zatanDetail = ((AppContext)getApplication()).getBlog(blog_id, isRefresh);
+					zatanDetail = ((AppContext)getApplication()).getZatan(zatan_id, isRefresh);
 	                msg.what = (zatanDetail!=null && zatanDetail.getId()>0) ? 1 : 0;
 	                msg.obj = (zatanDetail!=null) ? zatanDetail.getNotice() : null;
 	            } catch (AppException e) {

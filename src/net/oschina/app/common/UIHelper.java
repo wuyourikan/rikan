@@ -2,6 +2,7 @@ package net.oschina.app.common;
 
 import java.io.File;
 import java.io.IOException;
+
 import greendroid.widget.MyQuickAction;
 import greendroid.widget.QuickAction;
 import net.oschina.app.AppConfig;
@@ -11,6 +12,7 @@ import net.oschina.app.AppManager;
 import net.oschina.app.R;
 import net.oschina.app.api.ApiClient;
 import net.oschina.app.bean.AccessInfo;
+import net.oschina.app.bean.All;
 import net.oschina.app.bean.Comment;
 import net.oschina.app.bean.CommentList;
 import net.oschina.app.bean.News;
@@ -189,6 +191,31 @@ public class UIHelper {
 			}
 		} else {
 			showUrlRedirect(context, url);
+		}
+	}
+	
+	/**
+	 * 全部超链接点击跳转
+	 * @param context
+	 * @param allId
+	 * @param allType
+	 * @param objId
+	 */
+	public static void showAllRedirect(Context context, All all)
+	{
+		String url = all.getUrl();
+		if(StringUtils.isEmpty(url)) {
+			int allType = all.getAllType().type;
+			String objId = all.getAllType().attachment;
+			switch (allType) {
+			case All.ALLTYPE_RECOMMEND:
+				showRecommendDetail(context, StringUtils.toInt(objId));
+			case All.ALLTYPE_NEWS:
+			    showNewsDetail(context, StringUtils.toInt(objId));
+			case All.ALLTYPE_ZATAN:
+				showZatanDetail(context, StringUtils.toInt(objId));
+			}
+			
 		}
 	}
 	

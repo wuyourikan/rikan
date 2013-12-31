@@ -36,7 +36,7 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
     // 刷新完成标志   
     private final static int DONE = 3;  
   
-    private LayoutInflater inflater;  
+    private LayoutInflater inflater;  //LayoutInflater是用来找layout下xml布局文件      可以通过getSystemService(Context.LAYOUT_INFLATER_SERVICE)方法或LayoutInflater inflater = getLayoutInflater();获得
   
     private LinearLayout headView;  
     private TextView tipsTextview;  
@@ -124,7 +124,7 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
     	currentScrollState = scrollState;
     }  
   
-    public boolean onTouchEvent(MotionEvent event) {  
+    public boolean onTouchEvent(MotionEvent event) {  //MotionEvent 手势事件
         switch (event.getAction()) {  
         case MotionEvent.ACTION_DOWN:  
             if (firstItemIndex == 0 && !isRecored) {  

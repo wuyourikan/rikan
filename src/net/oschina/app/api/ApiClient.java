@@ -24,6 +24,8 @@ import net.oschina.app.bean.News;
 import net.oschina.app.bean.NewsList;
 import net.oschina.app.bean.Recommend;
 import net.oschina.app.bean.RecommendList;
+import net.oschina.app.bean.All;
+import net.oschina.app.bean.AllList;
 import net.oschina.app.bean.Notice;
 import net.oschina.app.bean.Result;
 import net.oschina.app.bean.SearchList;
@@ -768,13 +770,58 @@ public class ApiClient {
 	 * @return
 	 * @throws AppException
 	 */
-	public static Zatan getBlogDetail(AppContext appContext, final int blog_id) throws AppException {
+	public static Zatan getZatanDetail(AppContext appContext, final int zatan_id) throws AppException {
 		String newUrl = _MakeURL(URLs.ZATAN_DETAIL, new HashMap<String, Object>(){{
-			put("id", blog_id);
+			put("id", zatan_id);
 		}});
 		
 		try{
 			return Zatan.parse(http_get(appContext, newUrl));			
+		}catch(Exception e){
+			if(e instanceof AppException)
+				throw (AppException)e;
+			throw AppException.network(e);
+		}
+	}
+	
+	/**
+	 * 获取全部列表
+	 * @param type 推荐：recommend 最新：latest
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 * @throws AppException
+	 */
+	public static AllList getAllList(AppContext appContext, final int catalog, final int pageIndex, final int pageSize) throws AppException {
+		String newUrl = _MakeURL(URLs.ALL_LIST, new HashMap<String, Object>(){{
+			put("catalog", catalog);
+			put("pageIndex", pageIndex);
+			put("pageSize", pageSize);
+		}});
+
+		try{
+			return AllList.parse(http_get(appContext, newUrl));		
+		}catch(Exception e){
+			if(e instanceof AppException)
+				throw (AppException)e;
+			throw AppException.network(e);
+		}
+	}
+	
+	/**
+	 * 获取全部的详情                                         
+	 * @param url
+	 * @param recommend_id
+	 * @return
+	 * @throws AppException
+	 *///全部主要跳转到其他项目，所以此项可以忽略
+	public static All getAllDetail(AppContext appContext, final int all_id) throws AppException {
+		String newUrl = _MakeURL(URLs.ALL_DETAIL, new HashMap<String, Object>(){{
+			put("id", all_id);
+		}});
+		
+		try{
+			return All.parse(http_get(appContext, newUrl));			
 		}catch(Exception e){
 			if(e instanceof AppException)
 				throw (AppException)e;

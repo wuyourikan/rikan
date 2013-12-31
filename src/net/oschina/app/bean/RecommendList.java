@@ -26,6 +26,8 @@ public class RecommendList extends Entity{
 	private int catalog;//类别
 	private int pageSize;//页数
 	private int recommendCount;
+	private String imageurl;
+	private String recommendurl;
 	private List<Recommend> recommendlist = new ArrayList<Recommend>();
 	
 	public int getCatalog() {
@@ -39,6 +41,12 @@ public class RecommendList extends Entity{
 	}
 	public List<Recommend> getRecommendlist() {
 		return recommendlist;
+	}
+	public String getImageView() {
+		return imageurl;
+	}
+	public String getRecommendUrl() {
+		return recommendurl;
 	}
 	
 	public static RecommendList parse(InputStream inputStream) throws IOException, AppException {
@@ -84,10 +92,16 @@ public class RecommendList extends Entity{
 				            else if(tag.equalsIgnoreCase(Recommend.NODE_URL))//url
 				            {			            	
 				            	recommend.setUrl(xmlParser.nextText());
+				            	recommendlist.recommendurl = recommend.getUrl();
 				            }
 				            else if(tag.equalsIgnoreCase(Recommend.NODE_AUTHOR))//author
 				            {			            	
 				            	recommend.setAuthor(xmlParser.nextText());		            	
+				            }
+				            else if(tag.equalsIgnoreCase(Recommend.NODE_IMAGE))
+				            {
+				            	recommend.setImageView(xmlParser.nextText());
+				            	recommendlist.imageurl = recommend.getImageView();
 				            }
 				            //else if(tag.equalsIgnoreCase(News.NODE_AUTHORID))//authorid
 				            //{			            	

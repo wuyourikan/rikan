@@ -31,6 +31,8 @@ public class ZatanList extends Entity{
 	
 	private int zatansCount;
 	private int pageSize;
+	private String imageurl;
+	private String zatanurl;
 	private List<Zatan> zatanlist = new ArrayList<Zatan>();
 	
 	public int getZatansCount() {
@@ -41,6 +43,12 @@ public class ZatanList extends Entity{
 	}
 	public List<Zatan> getZatanlist() {
 		return zatanlist;
+	}
+	public String getImageView() {
+		return imageurl;
+	}
+	public String getZatanUrl() {
+		return zatanurl;
 	}
 	
 	public static ZatanList parse(InputStream inputStream) throws IOException, AppException {
@@ -82,10 +90,16 @@ public class ZatanList extends Entity{
 				            else if(tag.equalsIgnoreCase("url"))
 				            {			            	
 				            	zatan.setUrl(xmlParser.nextText());
+				            	zatanlist.zatanurl = zatan.getUrl();
 				            }
 				            else if(tag.equalsIgnoreCase("pubDate"))
 				            {			            	
 				            	zatan.setPubDate(xmlParser.nextText());
+				            }
+				            else if(tag.equalsIgnoreCase("imageview"))
+				            {
+				            	zatan.setImageView(xmlParser.nextText());
+				            	zatanlist.imageurl = zatan.getImageView();
 				            }
 				            //else if(tag.equalsIgnoreCase("authoruid"))
 				            //{			            	

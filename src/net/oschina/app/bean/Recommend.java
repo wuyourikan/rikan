@@ -29,6 +29,7 @@ public class Recommend extends Entity{
 	//public final static String NODE_AUTHORID = "authorid";
 	public final static String NODE_AUTHOR = "author";
 	public final static String NODE_PUBDATE = "pubDate";
+	public final static String NODE_IMAGE = "imageurl";
 	//public final static String NODE_COMMENTCOUNT = "commentCount";
 	public final static String NODE_FAVORITE = "favorite";
 	public final static String NODE_START = "recommend";
@@ -50,6 +51,7 @@ public class Recommend extends Entity{
 	private String url;
 	private String body;
 	private String author;
+	private String imageurl;
 	//private int authorId;
 	//private int commentCount;
 	private String pubDate;
@@ -105,6 +107,12 @@ public class Recommend extends Entity{
 	//public void setSoftwareName(String softwareName) {
 		//this.softwareName = softwareName;
 	//}
+	public String getImageView() {
+		return imageurl;
+	}
+	public void setImageView(String imageurl) {
+		this.imageurl = imageurl;
+	}
 	public String getPubDate() {
 		return this.pubDate;
 	}

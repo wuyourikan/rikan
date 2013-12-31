@@ -37,6 +37,7 @@ public class Zatan extends Entity {
 	private int favorite;
 	//private int commentCount;
 	private String url;
+	private String imageurl;
 	private List<Relative> relatives;
 	
 	public Zatan(){
@@ -71,6 +72,12 @@ public class Zatan extends Entity {
 	}
 	public void setFavorite(int favorite) {
 		this.favorite = favorite;
+	}
+	public String getImageView() {
+		return imageurl;
+	}
+	public void setImageView(String imageurl) {
+		this.imageurl = imageurl;
 	}
 	public String getPubDate() {
 		return pubDate;

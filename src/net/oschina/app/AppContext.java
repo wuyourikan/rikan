@@ -27,6 +27,8 @@ import net.oschina.app.bean.News;
 import net.oschina.app.bean.NewsList;
 import net.oschina.app.bean.Recommend;
 import net.oschina.app.bean.RecommendList;
+import net.oschina.app.bean.All;
+import net.oschina.app.bean.AllList;
 import net.oschina.app.bean.Notice;
 import net.oschina.app.bean.Result;
 import net.oschina.app.bean.SearchList;
@@ -567,7 +569,7 @@ public class AppContext extends Application {
 	}
 	
 	/**
-	 * 博客列表
+	 * 杂谈列表
 	 * @param type 全部：all 最新：latest
 	 * @param pageIndex
 	 * @return
@@ -599,34 +601,98 @@ public class AppContext extends Application {
 	}
 	
 	/**
-	 * 博客详情
+	 * 杂谈详情
 	 * @param blog_id
 	 * @return
 	 * @throws AppException
 	 */
-	public Zatan getBlog(int blog_id, boolean isRefresh) throws AppException {
-		Zatan blog = null;
-		String key = "blog_"+blog_id;
+	public Zatan getZatan(int zatan_id, boolean isRefresh) throws AppException {
+		Zatan zatan = null;
+		String key = "zatan_"+zatan_id;
 		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
 			try{
-				blog = ApiClient.getBlogDetail(this, blog_id);
-				if(blog != null){
-					Notice notice = blog.getNotice();
-					blog.setNotice(null);
-					saveObject(blog, key);
-					blog.setNotice(notice);
+				zatan = ApiClient.getZatanDetail(this, zatan_id);
+				if(zatan != null){
+					Notice notice = zatan.getNotice();
+					zatan.setNotice(null);
+					saveObject(zatan, key);
+					zatan.setNotice(notice);
 				}
 			}catch(AppException e){
-				blog = (Zatan)readObject(key);
-				if(blog == null)
+				zatan = (Zatan)readObject(key);
+				if(zatan == null)
 					throw e;
 			}
 		} else {
-			blog = (Zatan)readObject(key);
-			if(blog == null)
-				blog = new Zatan();
+			zatan = (Zatan)readObject(key);
+			if(zatan == null)
+				zatan = new Zatan();
 		}
-		return blog;
+		return zatan;
+	}
+	
+	/**
+	 * 全部列表
+	 * @param catalog
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 * @throws ApiException
+	 */
+	public AllList getAllList(int catalog, int pageIndex, boolean isRefresh) throws AppException {                                  //此处注意
+		AllList list = null;
+		String key = "alllist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
+		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
+			try{
+				list = ApiClient.getAllList(this, catalog, pageIndex, PAGE_SIZE);
+				if(list != null && pageIndex == 0){
+					Notice notice = list.getNotice();
+					list.setNotice(null);
+					saveObject(list, key);
+					list.setNotice(notice);
+				}
+			}catch(AppException e){
+				list = (AllList)readObject(key);
+				if(list == null)
+					throw e;
+			}		
+		} else {
+			list = (AllList)readObject(key);
+			if(list == null)
+				list = new AllList();
+		}
+		return list;
+	}
+	
+	/**
+	 * 全部详情
+	 * @param news_id
+	 * @return
+	 * @throws ApiException
+	 */
+	public All getAll(int all_id, boolean isRefresh) throws AppException {		
+		All all = null;
+		String key = "all_"+all_id;
+		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
+			try{
+				all = ApiClient.getAllDetail(this, all_id);
+				if(all != null){
+					Notice notice = all.getNotice();
+					all.setNotice(null);
+					saveObject(all, key);
+					all.setNotice(notice);
+				}
+			}catch(AppException e){
+				all = (All)readObject(key);
+				if(all == null)
+					throw e;
+			}
+		} else {
+			all = (All)readObject(key);
+			if(all == null)
+				all = new All();
+		}
+		return all;		
 	}
 	
 	/**

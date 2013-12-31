@@ -8,6 +8,8 @@ import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import net.oschina.app.AppConfig;
 import net.oschina.app.AppContext;
@@ -19,8 +21,10 @@ import net.oschina.app.adapter.ListViewZatanAdapter;
 //import net.oschina.app.adapter.ListViewMessageAdapter;
 import net.oschina.app.adapter.ListViewNewsAdapter;
 import net.oschina.app.adapter.ListViewRecommendAdapter;
+import net.oschina.app.adapter.ListViewAllAdapter;
 import net.oschina.app.adapter.ListViewHuatiAdapter;
 import net.oschina.app.adapter.ListViewZhuantiAdapter;
+//import net.oschina.app.adapter.ImageViewNewsAdapter;
 //import net.oschina.app.bean.Active;
 //import net.oschina.app.bean.ActiveList;
 import net.oschina.app.bean.Zatan;
@@ -31,6 +35,8 @@ import net.oschina.app.bean.News;
 import net.oschina.app.bean.NewsList;
 import net.oschina.app.bean.Recommend;
 import net.oschina.app.bean.RecommendList;
+import net.oschina.app.bean.All;
+import net.oschina.app.bean.AllList;
 import net.oschina.app.bean.Notice;
 import net.oschina.app.bean.Huati;
 import net.oschina.app.bean.HuatiList;
@@ -40,6 +46,7 @@ import net.oschina.app.bean.ZhuantiList;
 import net.oschina.app.common.StringUtils;
 import net.oschina.app.common.UIHelper;
 import net.oschina.app.common.UpdateManager;
+import net.oschina.app.common.BitmapManager;
 import net.oschina.app.widget.BadgeView;
 import net.oschina.app.widget.NewDataToast;
 import net.oschina.app.widget.PullToRefreshListView;
@@ -49,15 +56,22 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -69,6 +83,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
+import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout.LayoutParams;
 
 public class Main extends Activity {
 	//public static final int QUICKACTION_LOGIN_OR_LOGOUT = 0;
@@ -117,6 +134,7 @@ public class Main extends Activity {
 	private ListViewAllAdapter lvAllAdapter;
 	private ListViewHuatiAdapter lvHuatiAdapter;
 	private ListViewZhuantiAdapter lvZhuantiAdapter;
+	//private ImageViewNewsAdapter lvNews_header;
 	//private ListViewActiveAdapter lvActiveAdapter;
 	//private ListViewMessageAdapter lvMsgAdapter;
 	
@@ -128,6 +146,13 @@ public class Main extends Activity {
 	private List<Zhuanti> lvZhuantiData = new ArrayList<Zhuanti>();
 	//private List<Active> lvActiveData = new ArrayList<Active>();
 	//private List<Messages> lvMsgData = new ArrayList<Messages>();
+	
+	private String newsBigmap;
+	private String recommendBigmap;
+	private String zatanBigmap;
+	private String newsdetail;
+	private String recommenddetail;
+	private String zatandetail;
 	
 	private Handler lvNewsHandler;
 	private Handler lvZatanHandler;
@@ -168,6 +193,9 @@ public class Main extends Activity {
 	private View lvNews_footer;
 	private View lvZatan_footer;
 	private View lvRecommend_footer;
+	private View lvNews_header;
+	private View lvZatan_header;
+	private View lvRecommend_header;
 	private View lvAll_footer;
 	private View lvHuati_footer;
 	private View lvZhuanti_footer;
@@ -192,6 +220,18 @@ public class Main extends Activity {
 	//private ProgressBar lvActive_foot_progress;
 	//private ProgressBar lvMsg_foot_progress;
 	
+	private ImageView lvNews_head_imageview;
+	private ImageView lvZatan_head_imageview;
+	private ImageView lvRecommend_head_imageview;
+	
+	//private ViewFlipper lv_header_flipper;                                                                  //此处经过改动测试
+	//private LayoutInflater layoutInflater;
+	//private LinearLayout lv_header_point;
+	//private FrameLayout frameLayout;
+	private BitmapManager bitmapmanager;
+	private int window_width;
+	//private int frameheight;
+	
 	private QuickActionWidget mGrid;//快捷栏控件
 	
 	private AppContext appContext;//全局Context
@@ -207,6 +247,12 @@ public class Main extends Activity {
         	UIHelper.ToastMessage(this, R.string.network_not_connected);
 		
 		AppManager.getAppManager().addActivity(this);
+		DisplayMetrics metric = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metric);
+        window_width = metric.widthPixels;     // 屏幕宽度（像素）
+        //int height = metric.heightPixels;   // 屏幕高度（像素）
+        //float density = metric.density;      // 屏幕密度（0.75 / 1.0 / 1.5）
+        //int densityDpi = metric.densityDpi;  // 屏幕密度DPI（120 / 160 / 240）
 		
 		this.initHeadView();
 		this.initFootBar();
@@ -300,7 +346,7 @@ public class Main extends Activity {
         lvNewsHandler = this.getLvHandler(lvNews, lvNewsAdapter, lvNews_foot_more, lvNews_foot_progress, AppContext.PAGE_SIZE);
         lvZatanHandler = this.getLvHandler(lvZatan, lvZatanAdapter, lvZatan_foot_more, lvZatan_foot_progress, AppContext.PAGE_SIZE);
         lvRecommendHandler = this.getLvHandler(lvRecommend, lvRecommendAdapter, lvRecommend_foot_more, lvRecommend_foot_progress, AppContext.PAGE_SIZE);
-        lvAllHandler = this.getLvHandler(lvAll, lvAlladapter, lvAll_foot_more, lvAll_foot_progress, AppContext.PAGE_SIZE);
+        lvAllHandler = this.getLvHandler(lvAll, lvAllAdapter, lvAll_foot_more, lvAll_foot_progress, AppContext.PAGE_SIZE);
         lvHuatiHandler = this.getLvHandler(lvHuati, lvHuatiAdapter, lvHuati_foot_more, lvHuati_foot_progress, AppContext.PAGE_SIZE);  
         lvZhuantiHandler = this.getLvHandler(lvZhuanti, lvZhuantiAdapter, lvZhuanti_foot_more, lvZhuanti_foot_progress, AppContext.PAGE_SIZE);  
         //lvActiveHandler = this.getLvHandler(lvActive, lvActiveAdapter, lvActive_foot_more, lvActive_foot_progress, AppContext.PAGE_SIZE); 
@@ -317,17 +363,26 @@ public class Main extends Activity {
      */
 	private void initRecommendListView()
     {
-        lvRecommendAdapter = new ListViewRecommendAdapter(this, lvRecommendData, R.layout.recommend_listitem);        
+        lvRecommendAdapter = new ListViewRecommendAdapter(this, lvRecommendData, R.layout.recommend_listitem);
+        lvRecommend_header = getLayoutInflater().inflate(R.layout.listview_header, null);
+        lvRecommend_head_imageview = (ImageView) lvRecommend_header.findViewById(R.id.lv_header_image);
+		//String recommendurl = "http://static.oschina.net/uploads/user/473/947559_50.jpg";
+		initChildView(this, lvRecommend_head_imageview, recommendBigmap);
         lvRecommend_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
         lvRecommend_foot_more = (TextView)lvRecommend_footer.findViewById(R.id.listview_foot_more);
         lvRecommend_foot_progress = (ProgressBar)lvRecommend_footer.findViewById(R.id.listview_foot_progress);
         lvRecommend = (PullToRefreshListView)findViewById(R.id.frame_listview_recommend);
+        lvRecommend.addHeaderView(lvRecommend_header);
         lvRecommend.addFooterView(lvRecommend_footer);//添加底部视图  必须在setAdapter前
         lvRecommend.setAdapter(lvRecommendAdapter); 
         lvRecommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         		//点击头部、底部栏无效
-        		if(position == 0 || view == lvRecommend_footer) return;
+        		if(position == 0) {
+        			UIHelper.showUrlRedirect(view.getContext(), recommenddetail);
+        			return;
+        		}
+        		if(view == lvRecommend_footer) return;
         		
         		Recommend recommend = null;        		
         		//判断是否是TextView
@@ -386,17 +441,27 @@ public class Main extends Activity {
      */
     private void initNewsListView()
     {
-        lvNewsAdapter = new ListViewNewsAdapter(this, lvNewsData, R.layout.news_listitem);        
+        lvNewsAdapter = new ListViewNewsAdapter(this, lvNewsData, R.layout.news_listitem);
+        lvNews_header = getLayoutInflater().inflate(R.layout.listview_header, null);
+        lvNews_head_imageview = (ImageView) lvNews_header.findViewById(R.id.lv_header_image);
+		//String newsurl = "http://static.oschina.net/uploads/user/473/947559_50.jpg";
+		//final String newsdetail = "fjls;djfa;";
+		initChildView(this, lvNews_head_imageview, newsBigmap);
         lvNews_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
         lvNews_foot_more = (TextView)lvNews_footer.findViewById(R.id.listview_foot_more);
         lvNews_foot_progress = (ProgressBar)lvNews_footer.findViewById(R.id.listview_foot_progress);
         lvNews = (PullToRefreshListView)findViewById(R.id.frame_listview_news);
+        lvNews.addHeaderView(lvNews_header);
         lvNews.addFooterView(lvNews_footer);//添加底部视图  必须在setAdapter前
         lvNews.setAdapter(lvNewsAdapter); 
         lvNews.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         		//点击头部、底部栏无效
-        		if(position == 0 || view == lvNews_footer) return;
+        		if(position == 0) {
+        			UIHelper.showUrlRedirect(view.getContext(), newsdetail);
+        			return;
+        		}
+        		if(view == lvNews_footer) return;
         		
         		News news = null;        		
         		//判断是否是TextView
@@ -428,7 +493,7 @@ public class Main extends Activity {
 					scrollEnd = false;
 				}
 				
-				int lvDataState = StringUtils.toInt(lvNews.getTag());
+				int lvDataState = StringUtils.toInt(lvNews.getTag());//看下    getTag
 				if(scrollEnd && lvDataState==UIHelper.LISTVIEW_DATA_MORE)
 				{
 					lvNews.setTag(UIHelper.LISTVIEW_DATA_LOADING);
@@ -455,17 +520,26 @@ public class Main extends Activity {
      */
 	private void initZatanListView()
     {
-        lvZatanAdapter = new ListViewZatanAdapter(this, ZatanList.CATALOG_LATEST, lvZatanData, R.layout.zatan_listitem);        
+        lvZatanAdapter = new ListViewZatanAdapter(this, ZatanList.CATALOG_LATEST, lvZatanData, R.layout.zatan_listitem);
+        lvZatan_header = getLayoutInflater().inflate(R.layout.listview_header, null);
+        lvZatan_head_imageview = (ImageView) lvZatan_header.findViewById(R.id.lv_header_image);
+		//String zatanurl = "http://static.oschina.net/uploads/user/473/947559_50.jpg";
+		initChildView(this, lvZatan_head_imageview, zatanBigmap);
         lvZatan_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
         lvZatan_foot_more = (TextView)lvZatan_footer.findViewById(R.id.listview_foot_more);
         lvZatan_foot_progress = (ProgressBar)lvZatan_footer.findViewById(R.id.listview_foot_progress);
         lvZatan = (PullToRefreshListView)findViewById(R.id.frame_listview_zatan);
+        lvZatan.addHeaderView(lvZatan_header);
         lvZatan.addFooterView(lvZatan_footer);//添加底部视图  必须在setAdapter前
         lvZatan.setAdapter(lvZatanAdapter); 
         lvZatan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         		//点击头部、底部栏无效
-        		if(position == 0 || view == lvZatan_footer) return;
+        		if(position == 0) {
+        			UIHelper.showUrlRedirect(view.getContext(), zatandetail);
+        			return;
+        		}
+        		if(view == lvZatan_footer) return;
         		
         		Zatan zatan = null;        		
         		//判断是否是TextView
@@ -524,11 +598,11 @@ public class Main extends Activity {
      */
 	private void initAllListView()
     {
-        lvAllAdapter = new ListViewRecommendAdapter(this, lvAllData, R.layout.All_listitem);        
+        lvAllAdapter = new ListViewAllAdapter(this, lvAllData, R.layout.all_listitem);        
         lvAll_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
         lvAll_foot_more = (TextView)lvAll_footer.findViewById(R.id.listview_foot_more);
         lvAll_foot_progress = (ProgressBar)lvAll_footer.findViewById(R.id.listview_foot_progress);
-        lvAll = (PullToRefreshListView)findViewById(R.id.frame_listview_All);
+        lvAll = (PullToRefreshListView)findViewById(R.id.frame_listview_all);
         lvAll.addFooterView(lvAll_footer);//添加底部视图  必须在setAdapter前
         lvAll.setAdapter(lvAllAdapter); 
         lvAll.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -541,13 +615,13 @@ public class Main extends Activity {
         		if(view instanceof TextView){
         			all = (All)view.getTag();
         		}else{
-        			TextView tv = (TextView)view.findViewById(R.id.All_listitem_title);
+        			TextView tv = (TextView)view.findViewById(R.id.all_listitem_title);
         			all = (All)tv.getTag();
         		}
         		if(all == null) return;
         		
         		//跳转到博客详情
-        		UIHelper.showUrlRedirect(view.getContext(), all.getUrl());                                                      //此处需要详细看
+        		UIHelper.showAllRedirect(view.getContext(), all);                                                      //此处需要详细看
         	}        	
 		});
         lvAll.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -1014,7 +1088,7 @@ public class Main extends Activity {
 					
 					loadLvNewsData(curNewsCatalog, 0, lvNewsHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
 		    	}
-		    	else if(btn == frambtn_News_Zatan)
+		    	else if(btn == framebtn_News_zatan)
 		    	{
 		    		lvRecommend.setVisibility(View.GONE);
 		    		lvNews.setVisibility(View.GONE);
@@ -1174,6 +1248,10 @@ public class Main extends Activity {
 					    RecommendList rlist = (RecommendList)obj;
 					    notice = rlist.getNotice();
 					    lvRecommendSumData = what;
+					    if(rlist.getImageView() != null){
+							recommendBigmap = rlist.getImageView();
+							recommenddetail = rlist.getRecommendUrl();
+						}
 					    if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
 						    if(lvRecommendData.size() > 0){
 							    for(Recommend recommend1 : rlist.getRecommendlist()){
@@ -1197,6 +1275,10 @@ public class Main extends Activity {
 						NewsList nlist = (NewsList)obj;
 						notice = nlist.getNotice();
 						lvNewsSumData = what;
+						if(nlist.getImageView() != null) {
+							newsBigmap = nlist.getImageView();
+							newsdetail = nlist.getNewsUrl();
+						}
 						if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
 							if(lvNewsData.size() > 0){
 								for(News news1 : nlist.getNewslist()){
@@ -1220,6 +1302,10 @@ public class Main extends Activity {
 						ZatanList blist = (ZatanList)obj;
 						notice = blist.getNotice();
 						lvZatanSumData = what;
+						if(blist.getImageView() != null) {
+							zatanBigmap = blist.getImageView();
+							zatandetail = blist.getZatanUrl();
+						}
 						if(actiontype == UIHelper.LISTVIEW_ACTION_REFRESH){
 							if(lvZatanData.size() > 0){
 								for(Zatan zatan1 : blist.getZatanlist()){
@@ -1716,6 +1802,33 @@ public class Main extends Activity {
 					handler.sendMessage(msg);
 			}
 		}.start();
+	}
+	
+	public void initChildView(Context context, ImageView imageView, String image_id) {
+		//ArrayList<View> views = new ArrayList<View>();
+		Bitmap bitmap = null;
+		LayoutParams layoutParams = new LayoutParams(LayoutParams.FILL_PARENT,
+				LayoutParams.FILL_PARENT);
+		bitmapmanager = new BitmapManager(BitmapFactory.decodeResource(context.getResources(), R.drawable.widget_dface_loading));
+		//for (int i = 0; i < image_id.length; i++) {
+			//ImageView imageView = new ImageView(this);
+			imageView.setScaleType(ScaleType.FIT_XY);
+			if(/*faceURL.endsWith("portrait.gif") || */StringUtils.isEmpty(image_id)){
+		        imageView.setImageResource(R.drawable.widget_dface);
+			}else{
+				bitmap = bitmapmanager.loadBitmap(image_id, imageView, null, window_width, 1);
+			}
+			//Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+					//image_id[i]);
+			//Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+					//bmpManager);
+			//Bitmap bitmap2 = getBitmap(imageView, window_width);
+			//int frameheight = bitmap.getHeight();// 获取要显示的高度
+			imageView.setImageBitmap(bitmap);
+			//flipper.addView(imageView, layoutParams);
+			//views.add(imageView);
+		//}
+		//initPoint(image_id);
 	}
 	
 	public boolean onCreateOptionsMenu(Menu menu) {

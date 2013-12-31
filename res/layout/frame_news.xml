@@ -42,6 +42,7 @@
 	  	android:id="@+id/frame_listview_zatan"
 	    style="@style/widget_listview"
 	    android:visibility="gone"/>
+	
 	<net.oschina.app.widget.PullToRefreshListView
 	  	android:id="@+id/frame_listview_all"
 	    style="@style/widget_listview"

@@ -12,8 +12,8 @@ import java.util.concurrent.Executors;
 
 import net.oschina.app.AppException;
 import net.oschina.app.api.ApiClient;
-
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.ImageView;
@@ -32,7 +32,8 @@ public class BitmapManager {
     private static HashMap<String, SoftReference<Bitmap>> cache;  
     private static ExecutorService pool;  
     private static Map<ImageView, String> imageViews;  
-    private Bitmap defaultBmp;  
+    private Bitmap defaultBmp;
+    public  int frameheight;
     
     static {  
         cache = new HashMap<String, SoftReference<Bitmap>>();  
@@ -80,13 +81,14 @@ public class BitmapManager {
      * @param width
      * @param height
      */
-    public void loadBitmap(String url, ImageView imageView, Bitmap defaultBmp, int width, int height) {  
+    public Bitmap loadBitmap(String url, ImageView imageView, Bitmap defaultBmp, int width, int height) {  
         imageViews.put(imageView, url);  
         Bitmap bitmap = getBitmapFromCache(url);  
    
         if (bitmap != null) {  
 			//显示缓存图片
-            imageView.setImageBitmap(bitmap);  
+            imageView.setImageBitmap(bitmap); 
+            return bitmap;
         } else {  
         	//加载SD卡中的图片缓存
         	String filename = FileUtils.getFileName(url);
@@ -96,10 +98,13 @@ public class BitmapManager {
 				//显示SD卡中的图片缓存
     			Bitmap bmp = ImageUtils.getBitmap(imageView.getContext(), filename);
         		imageView.setImageBitmap(bmp);
+        		return bmp;
         	}else{
 				//线程加载网络图片
         		imageView.setImageBitmap(defaultBmp);
         		queueJob(url, imageView, width, height);
+        		bitmap = downloadBitmap(url, width, height);
+        		return bitmap;
         	}
         }  
     }  
@@ -130,7 +135,7 @@ public class BitmapManager {
                 String tag = imageViews.get(imageView);  
                 if (tag != null && tag.equals(url)) {  
                     if (msg.obj != null) {  
-                        imageView.setImageBitmap((Bitmap) msg.obj);  
+                        imageView.setImageBitmap((Bitmap) msg.obj);
                         try {
                         	//向SD卡中写入图片缓存
 							ImageUtils.saveImage(imageView.getContext(), FileUtils.getFileName(url), (Bitmap) msg.obj);
@@ -148,7 +153,7 @@ public class BitmapManager {
                 message.obj = downloadBitmap(url, width, height);  
                 handler.sendMessage(message);  
             }  
-        });  
+        });
     } 
   
     /**
@@ -164,8 +169,17 @@ public class BitmapManager {
 			bitmap = ApiClient.getNetBitmap(url);
 			if(width > 0 && height > 0) {
 				//指定显示图片的高宽
-				bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
-			} 
+				int w = bitmap.getWidth();
+				int h = bitmap.getHeight();
+				Matrix matrix = new Matrix();
+				float scale = (float) width / w;
+				// 保证图片不变形.
+				matrix.postScale(scale, scale);
+				// w,h是原图的属性.
+			    bitmap = Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
+				//bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+			}
+			frameheight = bitmap.getHeight();
 			//放入缓存
 			cache.put(url, new SoftReference<Bitmap>(bitmap));
 		} catch (AppException e) {

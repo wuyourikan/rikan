@@ -28,6 +28,8 @@ public class NewsList extends Entity{
 	private int catalog;//类别
 	private int pageSize;//页数
 	private int newsCount;
+	private String imageurl;
+	private String newsurl;
 	private List<News> newslist = new ArrayList<News>();
 	
 	public int getCatalog() {
@@ -41,6 +43,12 @@ public class NewsList extends Entity{
 	}
 	public List<News> getNewslist() {
 		return newslist;
+	}
+	public String getImageView() {
+		return imageurl;
+	}
+	public String getNewsUrl() {
+		return newsurl;
 	}
 	
 	public static NewsList parse(InputStream inputStream) throws IOException, AppException {
@@ -86,10 +94,16 @@ public class NewsList extends Entity{
 				            else if(tag.equalsIgnoreCase(News.NODE_URL))//url
 				            {			            	
 				            	news.setUrl(xmlParser.nextText());
+				            	newslist.newsurl = news.getUrl();
 				            }
 				            else if(tag.equalsIgnoreCase(News.NODE_AUTHOR))//author
 				            {			            	
 				            	news.setAuthor(xmlParser.nextText());		            	
+				            }
+				            else if(tag.equalsIgnoreCase(News.NODE_IMAGE))
+				            {
+				            	news.setImageView(xmlParser.nextText());
+				            	newslist.imageurl = news.getImageView();
 				            }
 				            //else if(tag.equalsIgnoreCase(News.NODE_AUTHORID))//authorid
 				            //{			            	
