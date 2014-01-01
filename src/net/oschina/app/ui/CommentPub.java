@@ -140,9 +140,9 @@ public class CommentPub extends BaseActivity{
 						}
 						//对评论进行回复
 						else if(_replyid > 0){
-							if(_catalog == CATALOG_BLOG)
-								res = ac.replyBlogComment(_id, _uid, _content, _replyid, _authorid);
-							else
+							/*if(_catalog == CATALOG_BLOG)
+								//res = ac.replyBlogComment(_id, _uid, _content, _replyid, _authorid);
+							else*/
 								res = ac.replyComment(_id, _catalog, _replyid, _authorid, _uid, _content);
 						}
 						msg.what = 1;

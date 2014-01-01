@@ -24,6 +24,7 @@ public class NewsList extends Entity{
 	public final static int CATALOG_ALLN = 1;
 	public final static int CATALOG_INTEGRATION = 2;
 	public final static int CATALOG_SOFTWARE = 3;
+	public static final int CATALOG_ALL = 0;
 	
 	private int catalog;//类别
 	private int pageSize;//页数

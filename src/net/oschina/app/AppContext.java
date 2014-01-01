@@ -16,9 +16,6 @@ import java.util.UUID;
 
 import net.oschina.app.api.ApiClient;
 import net.oschina.app.bean.ActiveList;
-import net.oschina.app.bean.Blog;
-import net.oschina.app.bean.BlogCommentList;
-import net.oschina.app.bean.BlogList;
 import net.oschina.app.bean.Zatan;
 import net.oschina.app.bean.ZatanList;
 import net.oschina.app.bean.Recommend;
@@ -573,104 +570,7 @@ public class AppContext extends Application {
 		}
 		return news;		
 	}
-	
-	/**
-	 * 用户博客列表
-	 * @param authoruid
-	 * @param pageIndex
-	 * @return
-	 * @throws AppException
-	 */
-	public BlogList getUserBlogList(int authoruid, String authorname, int pageIndex, boolean isRefresh) throws AppException {
-		BlogList list = null;
-		String key = "userbloglist_"+authoruid+"_"+(URLEncoder.encode(authorname))+"_"+loginUid+"_"+pageIndex+"_"+PAGE_SIZE;
-		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {
-			try{
-				list = ApiClient.getUserBlogList(this, authoruid, authorname, loginUid, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
-					list.setNotice(null);
-					list.setCacheKey(key);
-					saveObject(list, key);
-					list.setNotice(notice);
-				}
-			}catch(AppException e){
-				list = (BlogList)readObject(key);
-				if(list == null)
-					throw e;
-			}
-		} else {
-			list = (BlogList)readObject(key);
-			if(list == null)
-				list = new BlogList();
-		}
-		return list;
-	}
-	
-	/**
-	 * 博客列表
-	 * @param type 推荐：recommend 最新：latest
-	 * @param pageIndex
-	 * @return
-	 * @throws AppException
-	 */
-	public BlogList getBlogList(String type, int pageIndex, boolean isRefresh) throws AppException {
-		BlogList list = null;
-		String key = "bloglist_"+type+"_"+pageIndex+"_"+PAGE_SIZE;
-		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {
-			try{
-				list = ApiClient.getBlogList(this, type, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
-					list.setNotice(null);
-					list.setCacheKey(key);
-					saveObject(list, key);
-					list.setNotice(notice);
-				}
-			}catch(AppException e){
-				list = (BlogList)readObject(key);
-				if(list == null)
-					throw e;
-			}
-		} else {
-			list = (BlogList)readObject(key);
-			if(list == null)
-				list = new BlogList();
-		}
-		return list;
-	}
-	
-	/**
-	 * 博客详情
-	 * @param blog_id
-	 * @return
-	 * @throws AppException
-	 */
-	public Blog getBlog(int blog_id, boolean isRefresh) throws AppException {
-		Blog blog = null;
-		String key = "blog_"+blog_id;
-		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {
-			try{
-				blog = ApiClient.getBlogDetail(this, blog_id);
-				if(blog != null){
-					Notice notice = blog.getNotice();
-					blog.setNotice(null);
-					blog.setCacheKey(key);
-					saveObject(blog, key);
-					blog.setNotice(notice);
-				}
-			}catch(AppException e){
-				blog = (Blog)readObject(key);
-				if(blog == null)
-					throw e;
-			}
-		} else {
-			blog = (Blog)readObject(key);
-			if(blog == null)
-				blog = new Blog();
-		}
-		return blog;
-	}
+
 	
 	/**
 	 * 软件列表
@@ -1123,14 +1023,14 @@ public class AppContext extends Application {
 		}
 		return huati;		
 	}
-	
-	/**
+/*	
+	*//**
 	 * 动弹列表
 	 * @param catalog -1 热门，0 最新，大于0 某用户的动弹(uid)
 	 * @param pageIndex
 	 * @return
 	 * @throws AppException
-	 */
+	 *//*
 	public TweetList getTweetList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
 		TweetList list = null;
 		String key = "tweetlist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;		
@@ -1157,12 +1057,12 @@ public class AppContext extends Application {
 		return list;
 	}
 	
-	/**
+	*//**
 	 * 获取动弹详情
 	 * @param tweet_id
 	 * @return
 	 * @throws AppException
-	 */
+	 *//*
 	public Tweet getTweet(int tweet_id, boolean isRefresh) throws AppException {
 		Tweet tweet = null;
 		String key = "tweet_"+tweet_id;
@@ -1189,14 +1089,14 @@ public class AppContext extends Application {
 		return tweet;
 	}
 	
-	/**
+	*//**
 	 * 动态列表
 	 * @param catalog 1最新动态 2@我 3评论 4我自己
 	 * @param id
 	 * @param pageIndex
 	 * @return
 	 * @throws AppException
-	 */
+	 *//*
 	public ActiveList getActiveList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
 		ActiveList list = null;
 		String key = "activelist_"+loginUid+"_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
@@ -1221,7 +1121,7 @@ public class AppContext extends Application {
 				list = new ActiveList();
 		}
 		return list;
-	}
+	}*/
 	
 	/**
 	 * 留言列表
@@ -1251,39 +1151,6 @@ public class AppContext extends Application {
 			list = (MessageList)readObject(key);
 			if(list == null)
 				list = new MessageList();
-		}
-		return list;
-	}
-	
-	/**
-	 * 博客评论列表
-	 * @param id 博客Id
-	 * @param pageIndex
-	 * @return
-	 * @throws AppException
-	 */
-	public BlogCommentList getBlogCommentList(int id, int pageIndex, boolean isRefresh) throws AppException {
-		BlogCommentList list = null;
-		String key = "blogcommentlist_"+id+"_"+pageIndex+"_"+PAGE_SIZE;		
-		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {
-			try{
-				list = ApiClient.getBlogCommentList(this, id, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
-					list.setNotice(null);
-					list.setCacheKey(key);
-					saveObject(list, key);
-					list.setNotice(notice);
-				}
-			}catch(AppException e){
-				list = (BlogCommentList)readObject(key);
-				if(list == null)
-					throw e;
-			}
-		} else {
-			list = (BlogCommentList)readObject(key);
-			if(list == null)
-				list = new BlogCommentList();
 		}
 		return list;
 	}
@@ -1350,56 +1217,56 @@ public class AppContext extends Application {
 	 * @param Tweet-uid & msg & image
 	 * @return
 	 * @throws AppException
-	 */
+	 *//*
 	public Result pubTweet(Tweet tweet) throws AppException {
 		return ApiClient.pubTweet(this, tweet);
 	}
 	
-	/**
+	*//**
 	 * 删除动弹
 	 * @param uid
 	 * @param tweetid
 	 * @return
 	 * @throws AppException
-	 */
+	 *//*
 	public Result delTweet(int uid, int tweetid) throws AppException {
 		return ApiClient.delTweet(this, uid, tweetid);
 	}
 	
-	/**
+	*//**
 	 * 发送留言
 	 * @param uid 登录用户uid
 	 * @param receiver 接受者的用户id
 	 * @param content 消息内容，注意不能超过250个字符
 	 * @return
 	 * @throws AppException
-	 */
+	 *//*
 	public Result pubMessage(int uid, int receiver, String content) throws AppException {
 		return ApiClient.pubMessage(this, uid, receiver, content);
 	}
 	
-	/**
+	*//**
 	 * 转发留言
 	 * @param uid 登录用户uid
 	 * @param receiver 接受者的用户名
 	 * @param content 消息内容，注意不能超过250个字符
 	 * @return
 	 * @throws AppException
-	 */
+	 *//*
 	public Result forwardMessage(int uid, String receiver, String content) throws AppException {
 		return ApiClient.forwardMessage(this, uid, receiver, content);
 	}
 	
-	/**
+	*//**
 	 * 删除留言
 	 * @param uid 登录用户uid
 	 * @param friendid 留言者id
 	 * @return
 	 * @throws AppException
-	 */
+	 *//*
 	public Result delMessage(int uid, int friendid) throws AppException {
 		return ApiClient.delMessage(this, uid, friendid);
-	}
+	}*/
 	
 	/**
 	 * 发表评论
@@ -1441,58 +1308,6 @@ public class AppContext extends Application {
 	 */
 	public Result delComment(int id, int catalog, int replyid, int authorid) throws AppException {
 		return ApiClient.delComment(this, id, catalog, replyid, authorid);
-	}
-	
-	/**
-	 * 发表博客评论
-	 * @param blog 博客id
-	 * @param uid 登陆用户的uid
-	 * @param content 评论内容
-	 * @return
-	 * @throws AppException
-	 */
-	public Result pubBlogComment(int blog, int uid, String content) throws AppException {
-		return ApiClient.pubBlogComment(this, blog, uid, content);
-	}
-	
-	/**
-	 * 发表博客评论
-	 * @param blog 博客id
-	 * @param uid 登陆用户的uid
-	 * @param content 评论内容
-	 * @param reply_id 评论id
-	 * @param objuid 被评论的评论发表者的uid
-	 * @return
-	 * @throws AppException
-	 */
-	public Result replyBlogComment(int blog, int uid, String content, int reply_id, int objuid) throws AppException {
-		return ApiClient.replyBlogComment(this, blog, uid, content, reply_id, objuid);
-	}
-	
-	/**
-	 * 删除博客评论
-	 * @param uid 登录用户的uid
-	 * @param blogid 博客id
-	 * @param replyid 评论id
-	 * @param authorid 评论发表者的uid
-	 * @param owneruid 博客作者uid
-	 * @return
-	 * @throws AppException
-	 */
-	public Result delBlogComment(int uid, int blogid, int replyid, int authorid, int owneruid) throws AppException {
-		return ApiClient.delBlogComment(this, uid, blogid, replyid, authorid, owneruid);
-	}
-	
-	/**
-	 * 删除博客
-	 * @param uid 登录用户的uid
-	 * @param authoruid 博客作者uid
-	 * @param id 博客id
-	 * @return
-	 * @throws AppException
-	 */
-	public Result delBlog(int uid, int authoruid, int id) throws AppException { 	
-		return ApiClient.delBlog(this, uid, authoruid, id);
 	}
 	
 	/**

@@ -14,16 +14,19 @@ import net.oschina.app.AppContext;
 import net.oschina.app.AppException;
 import net.oschina.app.R;
 import net.oschina.app.adapter.ListViewActiveAdapter;
-import net.oschina.app.adapter.ListViewBlogAdapter;
+import net.oschina.app.adapter.ListViewAllAdapter;
 import net.oschina.app.adapter.ListViewHuatiAdapter;
 import net.oschina.app.adapter.ListViewMessageAdapter;
 import net.oschina.app.adapter.ListViewNewsAdapter;
 import net.oschina.app.adapter.ListViewHuatiAdapter;
+import net.oschina.app.adapter.ListViewRecommendAdapter;
 import net.oschina.app.adapter.ListViewTweetAdapter;
+import net.oschina.app.adapter.ListViewZatanAdapter;
+import net.oschina.app.adapter.ListViewZhuantiAdapter;
 import net.oschina.app.bean.Active;
 import net.oschina.app.bean.ActiveList;
-import net.oschina.app.bean.Blog;
-import net.oschina.app.bean.BlogList;
+import net.oschina.app.bean.All;
+import net.oschina.app.bean.AllList;
 import net.oschina.app.bean.MessageList;
 import net.oschina.app.bean.Messages;
 import net.oschina.app.bean.News;
@@ -33,9 +36,16 @@ import net.oschina.app.bean.Huati;
 import net.oschina.app.bean.HuatiList;
 import net.oschina.app.bean.Huati;
 import net.oschina.app.bean.HuatiList;
+import net.oschina.app.bean.Recommend;
+import net.oschina.app.bean.RecommendList;
 import net.oschina.app.bean.Result;
 import net.oschina.app.bean.Tweet;
 import net.oschina.app.bean.TweetList;
+import net.oschina.app.bean.Zatan;
+import net.oschina.app.bean.ZatanList;
+import net.oschina.app.bean.Zhuanti;
+import net.oschina.app.bean.ZhuantiList;
+import net.oschina.app.common.BitmapManager;
 import net.oschina.app.common.StringUtils;
 import net.oschina.app.common.UIHelper;
 import net.oschina.app.common.UpdateManager;
@@ -48,6 +58,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -63,6 +75,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -102,7 +115,7 @@ public class Main extends BaseActivity {
 	//private ImageButton mHeadPub_huati;
 	//private ImageButton mHeadPub_tweet;
 
-	private int curNewsCatalog = NewsList.CATALOG_ALL;
+	private int curNewsCatalog = NewsList.CATALOG_ALLN;
 	private int curHuatiCatalog = Huati.CATALOG_WENSHI;
 	private int curZhuantiCatalog = ZhuantiList.CATALOG_COMMON;
 	//private int curTweetCatalog = TweetList.CATALOG_LASTEST;
@@ -249,7 +262,7 @@ public class Main extends BaseActivity {
 		this.initFootBar();
 		this.initPageScroll();
 		this.initFrameButton();
-		this.initBadgeView();
+		//this.initBadgeView();
 		this.initQuickActionGrid();
 		this.initFrameListView();
 
@@ -290,7 +303,7 @@ public class Main extends BaseActivity {
 
 		if (intent.getBooleanExtra("LOGIN", false)) {
 			// 加载动弹、动态及留言(当前动弹的catalog大于0表示用户的uid)
-			if (lvTweetData.isEmpty() && curTweetCatalog > 0 && mCurSel == 2) {
+			/*if (lvTweetData.isEmpty() && curTweetCatalog > 0 && mCurSel == 2) {
 				this.loadLvTweetData(curTweetCatalog, 0, lvTweetHandler,UIHelper.LISTVIEW_ACTION_INIT);
 			} else if (mCurSel == 3) {
 				if (lvActiveData.isEmpty()) {
@@ -299,7 +312,7 @@ public class Main extends BaseActivity {
 				if (lvMsgData.isEmpty()) {
 					this.loadLvMsgData(0, lvMsgHandler,UIHelper.LISTVIEW_ACTION_INIT);
 				}
-			}
+			}*/
 		} else if (intent.getBooleanExtra("NOTICE", false)) {
 			// 查看最新信息
 			mScrollLayout.scrollToScreen(3);
@@ -319,19 +332,19 @@ public class Main extends BaseActivity {
 						UIHelper.sendBroadCast(context, res.getNotice());
 					}
 					// 发完动弹后-刷新最新动弹、我的动弹&最新动态(当前界面必须是动弹|动态)
-					if (curTweetCatalog >= 0 && mCurSel == 2) {
+					/*if (curTweetCatalog >= 0 && mCurSel == 2) {
 						loadLvTweetData(curTweetCatalog, 0, lvTweetHandler,UIHelper.LISTVIEW_ACTION_REFRESH);
 					} else if (curActiveCatalog == ActiveList.CATALOG_LASTEST&& mCurSel == 3) {
 						
 						loadLvActiveData(curActiveCatalog, 0, lvActiveHandler,UIHelper.LISTVIEW_ACTION_REFRESH);
-					}
+					}*/
 				}
 			} else {
 				final Tweet tweet = (Tweet) intent
 						.getSerializableExtra("TWEET");
 				final Handler handler = new Handler() {
 					public void handleMessage(Message msg) {
-						if (msg.what == 1) {
+						/*if (msg.what == 1) {
 							Result res = (Result) msg.obj;
 							UIHelper.ToastMessage(context,res.getErrorMessage(), 1000);
 							if (res.OK()) {
@@ -356,11 +369,11 @@ public class Main extends BaseActivity {
 							if (TweetPub.mContext != null&&TweetPub.mMessage != null)
 								TweetPub.mMessage.setVisibility(View.GONE);
 						}
-					}
+*/					}
 				};
 				Thread thread = new Thread() {
 					public void run() {
-						Message msg = new Message();
+						/*Message msg = new Message();
 						try {
 							Result res = appContext.pubTweet(tweet);
 							msg.what = 1;
@@ -370,13 +383,13 @@ public class Main extends BaseActivity {
 							msg.what = -1;
 							msg.obj = e;
 						}
-						handler.sendMessage(msg);
+						handler.sendMessage(msg);*/
 					}
 				};
-				if (TweetPub.mContext != null)
+				/*if (TweetPub.mContext != null)
 					UIHelper.showResendTweetDialog(TweetPub.mContext, thread);
 				else
-					UIHelper.showResendTweetDialog(context, thread);
+					UIHelper.showResendTweetDialog(context, thread);*/
 			}
 		}
 	}
@@ -429,6 +442,12 @@ public class Main extends BaseActivity {
 			}
 		}
 	};
+	private PullToRefreshListView lvZatan;
+	private PullToRefreshListView lvRecommend;
+	private PullToRefreshListView lvAll;
+	private ProgressBar lvZhuanti_foot_progress;
+	private View lvBlog_footer;
+	private TextView lvBlog_foot_more;
 
 	/**
 	 * 初始化所有ListView
@@ -559,7 +578,7 @@ public class Main extends BaseActivity {
         lvRecommend_header = getLayoutInflater().inflate(R.layout.listview_header, null);
         lvRecommend_head_imageview = (ImageView) lvRecommend_header.findViewById(R.id.lv_header_image);
 		//String recommendurl = "http://static.oschina.net/uploads/user/473/947559_50.jpg";
-		initChildView(this, lvRecommend_head_imageview, recommendBigmap);
+		//initChildView(this, lvRecommend_head_imageview, recommendBigmap);
         lvRecommend_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
         lvRecommend_foot_more = (TextView)lvRecommend_footer.findViewById(R.id.listview_foot_more);
         lvRecommend_foot_progress = (ProgressBar)lvRecommend_footer.findViewById(R.id.listview_foot_progress);
@@ -631,7 +650,7 @@ public class Main extends BaseActivity {
 	/**
 	 * 初始化博客列表
 	 */
-	private void initBlogListView() {
+	/*private void initBlogListView() {
 		lvBlogAdapter = new ListViewBlogAdapter(this, BlogList.CATALOG_LATEST,
 				lvBlogData, R.layout.blog_listitem);
 		lvBlog_footer = getLayoutInflater().inflate(R.layout.listview_footer,
@@ -708,7 +727,7 @@ public class Main extends BaseActivity {
 						UIHelper.LISTVIEW_ACTION_REFRESH);
 			}
 		});
-	}
+	}*/
 	
 	/**
      * 初始化杂谈列表
@@ -719,7 +738,7 @@ public class Main extends BaseActivity {
         lvZatan_header = getLayoutInflater().inflate(R.layout.listview_header, null);
         lvZatan_head_imageview = (ImageView) lvZatan_header.findViewById(R.id.lv_header_image);
 		//String zatanurl = "http://static.oschina.net/uploads/user/473/947559_50.jpg";
-		initChildView(this, lvZatan_head_imageview, zatanBigmap);
+		//initChildView(this, lvZatan_head_imageview, zatanBigmap);
         lvZatan_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
         lvZatan_foot_more = (TextView)lvZatan_footer.findViewById(R.id.listview_foot_more);
         lvZatan_foot_progress = (ProgressBar)lvZatan_footer.findViewById(R.id.listview_foot_progress);
@@ -949,7 +968,7 @@ public class Main extends BaseActivity {
     	 lvZhuantiAdapter = new ListViewZhuantiAdapter(this, lvZhuantiData, R.layout.zhuanti_listitem);        
          lvZhuanti_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
          lvZhuanti_foot_more = (TextView)lvHuati_footer.findViewById(R.id.listview_foot_more);
-         lvZhuanti_foot_progress = (ProgressBar)lvHuati_footer.findViewById(R.id.listview_foot_progress);
+         //lvZhuanti_foot_progress = (ProgressBar)lvHuati_footer.findViewById(R.id.listview_foot_progress);
          lvZhuanti = (PullToRefreshListView)findViewById(R.id.frame_listview_zhuanti);
          lvZhuanti.addFooterView(lvZhuanti_footer);//添加底部视图  必须在setAdapter前
          lvZhuanti.setAdapter(lvZhuantiAdapter); 
@@ -992,7 +1011,7 @@ public class Main extends BaseActivity {
  				if(scrollEnd && lvDataState==UIHelper.LISTVIEW_DATA_MORE)
  				{
  					lvZhuanti_foot_more.setText(R.string.load_ing);
- 					lvZhuanti_foot_progress.setVisibility(View.VISIBLE);
+ 					//lvZhuanti_foot_progress.setVisibility(View.VISIBLE);
  					//当前pageIndex
  					int pageIndex = lvZhuantiSumData/AppContext.PAGE_SIZE;
  					loadLvZhuantiData(curZhuantiCatalog, pageIndex, lvZhuantiHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
@@ -1011,7 +1030,7 @@ public class Main extends BaseActivity {
     
 	/**
 	 * 初始化动弹列表
-	 */
+	 *//*
 	private void initTweetListView() {
 		lvTweetAdapter = new ListViewTweetAdapter(this, lvTweetData,R.layout.tweet_listitem);
 		lvTweet_footer = getLayoutInflater().inflate(R.layout.listview_footer,null);
@@ -1144,9 +1163,9 @@ public class Main extends BaseActivity {
 		});
 	}
 
-	/**
+	*//**
 	 * 初始化动态列表
-	 */
+	 *//*
 	private void initActiveListView() {
 		lvActiveAdapter = new ListViewActiveAdapter(this, lvActiveData,
 				R.layout.active_listitem);
@@ -1237,9 +1256,9 @@ public class Main extends BaseActivity {
 		});
 	}
 
-	/**
+	*//**
 	 * 初始化留言列表
-	 */
+	 *//*
 	private void initMsgListView() {
 		lvMsgAdapter = new ListViewMessageAdapter(this, lvMsgData,
 				R.layout.message_listitem);
@@ -1381,7 +1400,7 @@ public class Main extends BaseActivity {
 				loadLvMsgData(0, lvMsgHandler, UIHelper.LISTVIEW_ACTION_REFRESH);
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * 初始化头部视图
@@ -1544,13 +1563,13 @@ public class Main extends BaseActivity {
 											UIHelper.LISTVIEW_ACTION_INIT);*/
 									loadLvRecommendData(curNewsCatalog, 0, lvRecommendHandler, UIHelper.LISTVIEW_ACTION_INIT); 
 								}
-							} else {
+							} /*else {
 								if (lvBlogData.isEmpty()) {
 									loadLvBlogData(curNewsCatalog, 0,
 											lvBlogHandler,
 											UIHelper.LISTVIEW_ACTION_INIT);
 								}
-							}
+							}*/
 							break;
 						case 1://话题
 							if (lvHuatiData.isEmpty()) {
@@ -1635,7 +1654,7 @@ public class Main extends BaseActivity {
 
 		mHead_search.setVisibility(View.GONE);
 		//mHeadPub_huati.setVisibility(View.GONE);
-		mHeadPub_tweet.setVisibility(View.GONE);
+		//mHeadPub_tweet.setVisibility(View.GONE);
 		// 头部logo、发帖、发动弹按钮显示
 		if (index == 0) {
 			mHeadLogo.setImageResource(R.drawable.frame_logo_news);
@@ -1645,10 +1664,10 @@ public class Main extends BaseActivity {
 			mHead_search.setVisibility(View.VISIBLE);
 		} else if (index == 2) {
 			mHeadLogo.setImageResource(R.drawable.frame_logo_tweet);
-			mHeadPub_tweet.setVisibility(View.VISIBLE);
+			//mHeadPub_tweet.setVisibility(View.VISIBLE);
 		} else if (index == 3) {
 			mHeadLogo.setImageResource(R.drawable.frame_logo_active);
-			mHeadPub_tweet.setVisibility(View.VISIBLE);
+			//mHeadPub_tweet.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -1860,7 +1879,7 @@ public class Main extends BaseActivity {
 		};
     }
 	
-	private View.OnClickListener frameTweetBtnClick(final Button btn,
+	/*private View.OnClickListener frameTweetBtnClick(final Button btn,
 			final int catalog) {
 		return new View.OnClickListener() {
 			public void onClick(View v) {
@@ -1882,14 +1901,14 @@ public class Main extends BaseActivity {
 						UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
 			}
 		};
-	}
+	}*/
 
 	private View.OnClickListener frameActiveBtnClick(final Button btn,
 			final int catalog) {
 		return new View.OnClickListener() {
 			public void onClick(View v) {
 				// 判断登录
-				if (!appContext.isLogin()) {
+				/*if (!appContext.isLogin()) {
 					if (lvActive.getVisibility() == View.VISIBLE
 							&& lvActiveData.isEmpty()) {
 						lvActive_foot_more.setText(R.string.load_empty);
@@ -1904,12 +1923,12 @@ public class Main extends BaseActivity {
 				}
 
 				frameActiveBtnOnClick(btn, catalog,
-						UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
+						UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);*/
 			}
 		};
 	}
 
-	private void frameActiveBtnOnClick(Button btn, int catalog, int action) {
+/*	private void frameActiveBtnOnClick(Button btn, int catalog, int action) {
 		if (btn == framebtn_Active_lastest)
 			framebtn_Active_lastest.setEnabled(false);
 		else
@@ -1959,7 +1978,7 @@ public class Main extends BaseActivity {
 
 			loadLvMsgData(0, lvMsgHandler, action);
 		}
-	}
+	}*/
 
 	/**
 	 * 获取listview的初始化Handler
@@ -2563,7 +2582,7 @@ public class Main extends BaseActivity {
 	 * @param action
 	 *            动作标识
 	 */
-	private void loadLvBlogData(final int catalog, final int pageIndex,
+	/*private void loadLvBlogData(final int catalog, final int pageIndex,
 			final Handler handler, final int action) {
 		mHeadProgress.setVisibility(ProgressBar.VISIBLE);
 		new Thread() {
@@ -2598,7 +2617,7 @@ public class Main extends BaseActivity {
 					handler.sendMessage(msg);
 			}
 		}.start();
-	}
+	}*/
 
 	/**
 	 * 线程加载话题数据
@@ -2666,7 +2685,7 @@ public class Main extends BaseActivity {
 		}.start();
 	}
 	
-	public void initChildView(Context context, ImageView imageView, String image_id) {
+	/*public void initChildView(Context context, ImageView imageView, String image_id) {
 		//ArrayList<View> views = new ArrayList<View>();
 		Bitmap bitmap = null;
 		LayoutParams layoutParams = new LayoutParams(LayoutParams.FILL_PARENT,
@@ -2675,10 +2694,10 @@ public class Main extends BaseActivity {
 		//for (int i = 0; i < image_id.length; i++) {
 			//ImageView imageView = new ImageView(this);
 			imageView.setScaleType(ScaleType.FIT_XY);
-			if(/*faceURL.endsWith("portrait.gif") || */StringUtils.isEmpty(image_id)){
+			if(faceURL.endsWith("portrait.gif") || StringUtils.isEmpty(image_id)){
 		        imageView.setImageResource(R.drawable.widget_dface);
 			}else{
-				bitmap = bitmapmanager.loadBitmap(image_id, imageView, null, window_width, 1);
+				//bitmap = bitmapmanager.loadBitmap(image_id, imageView, null, window_width, 1);
 			}
 			//Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
 					//image_id[i]);
@@ -2691,7 +2710,7 @@ public class Main extends BaseActivity {
 			//views.add(imageView);
 		//}
 		//initPoint(image_id);
-	}
+	}*/
 	
 	/**
 	 * 线程加载动弹数据
@@ -2705,7 +2724,7 @@ public class Main extends BaseActivity {
 	 * @param action
 	 *            动作标识
 	 */
-	private void loadLvTweetData(final int catalog, final int pageIndex,
+	/*private void loadLvTweetData(final int catalog, final int pageIndex,
 			final Handler handler, final int action) {
 		mHeadProgress.setVisibility(ProgressBar.VISIBLE);
 		new Thread() {
@@ -2731,7 +2750,7 @@ public class Main extends BaseActivity {
 					handler.sendMessage(msg);
 			}
 		}.start();
-	}
+	}*/
 
 	/**
 	 * 线程加载动态数据
@@ -2742,7 +2761,7 @@ public class Main extends BaseActivity {
 	 * @param handler
 	 * @param action
 	 */
-	private void loadLvActiveData(final int catalog, final int pageIndex,
+	/*private void loadLvActiveData(final int catalog, final int pageIndex,
 			final Handler handler, final int action) {
 		mHeadProgress.setVisibility(ProgressBar.VISIBLE);
 		new Thread() {
@@ -2767,7 +2786,7 @@ public class Main extends BaseActivity {
 					handler.sendMessage(msg);
 			}
 		}.start();
-	}
+	}*/
 
 	/**
 	 * 线程加载留言数据
@@ -2777,7 +2796,7 @@ public class Main extends BaseActivity {
 	 * @param handler
 	 * @param action
 	 */
-	private void loadLvMsgData(final int pageIndex, final Handler handler,
+	/*private void loadLvMsgData(final int pageIndex, final Handler handler,
 			final int action) {
 		mHeadProgress.setVisibility(ProgressBar.VISIBLE);
 		new Thread() {
@@ -2802,7 +2821,7 @@ public class Main extends BaseActivity {
 				handler.sendMessage(msg);
 			}
 		}.start();
-	}
+	}*/
 
 	/**
 	 * 轮询通知信息

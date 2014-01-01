@@ -110,7 +110,7 @@ public class MessageForward extends BaseActivity{
 			};
 			new Thread(){
 				public void run() {
-					Message msg =new Message();
+					/*Message msg =new Message();
 					try {
 						Result res = ac.forwardMessage(_uid, _receiver, _content);
 						msg.what = 1;
@@ -120,7 +120,7 @@ public class MessageForward extends BaseActivity{
 						msg.what = -1;
 						msg.obj = e;
 		            }
-					handler.sendMessage(msg);
+					handler.sendMessage(msg);*/
 				}
 			}.start();
 		}

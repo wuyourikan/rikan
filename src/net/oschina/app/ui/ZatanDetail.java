@@ -11,7 +11,6 @@ import net.oschina.app.AppManager;
 import net.oschina.app.R;
 import net.oschina.app.adapter.ListViewCommentAdapter;
 import net.oschina.app.bean.Zatan;
-import net.oschina.app.bean.BlogCommentList;
 import net.oschina.app.bean.Comment;
 import net.oschina.app.bean.FavoriteList;
 import net.oschina.app.bean.Notice;
@@ -467,7 +466,7 @@ public class ZatanDetail extends Activity {
     		};
     		new Thread(){
 				public void run() {
-					Message msg = new Message();
+					/*Message msg = new Message();
 					Result res = null;
 					try {
 						if(zatanDetail.getFavorite() == 1){
@@ -482,7 +481,7 @@ public class ZatanDetail extends Activity {
 		            	msg.what = -1;
 		            	msg.obj = e;
 		            }
-	                handler.sendMessage(msg);
+	                handler.sendMessage(msg);*/
 				}        			
     		}.start();	
 		}

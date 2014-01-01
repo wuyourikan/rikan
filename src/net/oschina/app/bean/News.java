@@ -31,11 +31,8 @@ public class News extends Entity{
 	public final static String NODE_PUBDATE = "pubDate";
 	//public final static String NODE_COMMENTCOUNT = "commentCount";
 	public final static String NODE_FAVORITE = "favorite";
-	public final static String NODE_START = "news";
 	public final static String NODE_IMAGE = "imageurl";
-	
-	//public final static String NODE_SOFTWARELINK = "softwarelink";
-	//public final static String NODE_SOFTWARENAME = "softwarename";
+	public final static String NODE_START = "news";
 	
 	public final static String NODE_NEWSTYPE = "newstype";
 	public final static String NODE_TYPE = "type";

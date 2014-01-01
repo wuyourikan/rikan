@@ -13,7 +13,6 @@ import net.oschina.app.bean.FriendList.Friend;
 import net.oschina.app.bean.Notice;
 import net.oschina.app.common.UIHelper;
 import net.oschina.app.widget.PullToRefreshListView;
-<<<<<<< HEAD
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;

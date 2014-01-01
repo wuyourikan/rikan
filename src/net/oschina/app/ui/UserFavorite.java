@@ -95,14 +95,12 @@ public class UserFavorite extends BaseActivity {
     	favorite_catalog_blog = (Button)findViewById(R.id.favorite_catalog_old);
     	favorite_catalog_news = (Button)findViewById(R.id.favorite_catalog_center);
     	
-    	favorite_catalog_software.setOnClickListener(this.favoriteBtnClick(favorite_catalog_software,FavoriteList.TYPE_SOFTWARE));
-    	favorite_catalog_huati.setOnClickListener(this.favoriteBtnClick(favorite_catalog_huati,FavoriteList.TYPE_HUATI));
-    	favorite_catalog_code.setOnClickListener(this.favoriteBtnClick(favorite_catalog_code,FavoriteList.TYPE_CODE));
-    	favorite_catalog_blog.setOnClickListener(this.favoriteBtnClick(favorite_catalog_blog,FavoriteList.TYPE_BLOG));
     	favorite_catalog_news.setOnClickListener(this.favoriteBtnClick(favorite_catalog_news,FavoriteList.TYPE_NEWS));
+    	favorite_catalog_huati.setOnClickListener(this.favoriteBtnClick(favorite_catalog_huati,FavoriteList.TYPE_HUATI));
+    	favorite_catalog_code.setOnClickListener(this.favoriteBtnClick(favorite_catalog_code,FavoriteList.TYPE_ZHUANTI));    	
     	
     	favorite_catalog_software.setEnabled(false);
-    	curFavoriteCatalog = FavoriteList.TYPE_SOFTWARE;
+    	curFavoriteCatalog = FavoriteList.TYPE_NEWS;
     	
     	lvFavorite_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
     	lvFavorite_foot_more = (TextView)lvFavorite_footer.findViewById(R.id.listview_foot_more);

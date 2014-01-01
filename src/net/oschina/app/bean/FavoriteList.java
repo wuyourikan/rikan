@@ -27,7 +27,8 @@ public class FavoriteList extends Entity{
 	public final static int TYPE_HUATI = 0x02;
 	public final static int TYPE_BLOG = 0x03;
 	public final static int TYPE_NEWS = 0x04;
-	public final static int TYPE_CODE = 0x05;	
+	public final static int TYPE_ZHUANTI = 0x05;
+	public final static int TYPE_SOFTWARE = 0x06;
 	
 	private int pageSize;
 	private List<Favorite> favoritelist = new ArrayList<Favorite>();

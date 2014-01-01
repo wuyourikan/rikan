@@ -24,7 +24,7 @@ import android.widget.TextView;
  */
 public class ListViewZhuantiAdapter extends BaseAdapter {
 	private Context 					context;//运行上下文
-	private List<Zhuanti> 					listItems;//数据集合
+	private List<Zhuanti> 				listItems;//数据集合
 	private LayoutInflater 				listContainer;//视图容器
 	private int 						itemViewResource;//自定义项视图源 
 	private BitmapManager 				bmpManager;
@@ -77,9 +77,9 @@ public class ListViewZhuantiAdapter extends BaseAdapter {
 			
 			listItemView = new ListItemView();
 			//获取控件对象
-			listItemView.face = (ImageView)convertView.findViewById(R.id.huati_listitem_userface);
+			listItemView.face = (ImageView)convertView.findViewById(R.id.huati_listitem_img);
 			listItemView.title = (TextView)convertView.findViewById(R.id.huati_listitem_title);
-			listItemView.author = (TextView)convertView.findViewById(R.id.huati_listitem_author);
+			//listItemView.author = (TextView)convertView.findViewById(R.id.huati_listitem_author);
 			//listItemView.count= (TextView)convertView.findViewById(R.id.huati_listitem_count);
 			listItemView.date= (TextView)convertView.findViewById(R.id.huati_listitem_date);
 			

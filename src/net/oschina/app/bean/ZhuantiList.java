@@ -77,7 +77,7 @@ public class ZhuantiList extends Entity{
 				            {			            	
 				            	zhuanti.setTitle(xmlParser.nextText());
 				            }
-				            else if(tag.equalsIgnoreCase(Huati.NODE_FACE))
+				            else if(tag.equalsIgnoreCase(Huati.NODE_IMG))
 				            {			            	
 				            	zhuanti.setFace(xmlParser.nextText());
 				            }
@@ -89,14 +89,14 @@ public class ZhuantiList extends Entity{
 				            {			            	
 				            	zhuanti.setAuthorId(StringUtils.toInt(xmlParser.nextText(),0));		            	
 				            }
-				            else if(tag.equalsIgnoreCase(Huati.NODE_ANSWERCOUNT))
+				            /*else if(tag.equalsIgnoreCase(Huati.NODE_ANSWERCOUNT))
 				            {			            	
 				            	zhuanti.setAnswerCount(StringUtils.toInt(xmlParser.nextText(),0));			            	
 				            }
 				            else if(tag.equalsIgnoreCase(Huati.NODE_VIEWCOUNT))
 				            {			            	
 				            	zhuanti.setViewCount(StringUtils.toInt(xmlParser.nextText(),0));			            	
-				            }
+				            }*/
 				            else if(tag.equalsIgnoreCase(Huati.NODE_PUBDATE))
 				            {			            	
 				            	zhuanti.setPubDate(xmlParser.nextText());         	

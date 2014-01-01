@@ -13,8 +13,10 @@ import net.oschina.app.AppContext;
 import net.oschina.app.AppException;
 import net.oschina.app.R;
 import net.oschina.app.bean.ActiveList;
+import net.oschina.app.bean.Software;
+import net.oschina.app.bean.SoftwareCatalogList;
+import net.oschina.app.bean.SoftwareList;
 import net.oschina.app.bean.Zatan;
-import net.oschina.app.bean.BlogCommentList;
 import net.oschina.app.bean.ZatanList;
 import net.oschina.app.bean.CommentList;
 import net.oschina.app.bean.FavoriteList;
@@ -180,7 +182,7 @@ public class ApiClient {
 				return new ByteArrayInputStream(res.getBytes());
 			}
 			else 
-				return null;
+				return http_gets(appContext,url);
 		} catch (Exception e) {
 			e.printStackTrace(); 
 			return null;
@@ -727,92 +729,20 @@ public class ApiClient {
 	}
 	
 	/**
-	 * 获取某用户的博客列表
-	 * @param authoruid
-	 * @param uid
-	 * @param pageIndex
-	 * @param pageSize
-	 * @return
-	 * @throws AppException
-	 */
-	public static BlogList getUserBlogList(AppContext appContext, final int authoruid, final String authorname, final int uid, final int pageIndex, final int pageSize) throws AppException {
-		String newUrl = _MakeURL(URLs.USERBLOG_LIST, new HashMap<String, Object>(){{
-			put("authoruid", authoruid);
-			put("authorname", URLEncoder.encode(authorname));
-			put("uid", uid);
-			put("pageIndex", pageIndex);
-			put("pageSize", pageSize);
-		}});
-
-		try{
-			return BlogList.parse(http_get(appContext, newUrl));		
-		}catch(Exception e){
-			if(e instanceof AppException)
-				throw (AppException)e;
-			throw AppException.network(e);
-		}
-	}
-	
-	/**
-	 * 获取博客列表
-	 * @param type 推荐：recommend 最新：latest
-	 * @param pageIndex
-	 * @param pageSize
-	 * @return
-	 * @throws AppException
-	 */
-	public static BlogList getBlogList(AppContext appContext, final String type, final int pageIndex, final int pageSize) throws AppException {
-		String newUrl = _MakeURL(URLs.BLOG_LIST, new HashMap<String, Object>(){{
-			put("type", type);
-			put("pageIndex", pageIndex);
-			put("pageSize", pageSize);
-		}});
-
-		try{
-			return BlogList.parse(http_get(appContext, newUrl));		
-		}catch(Exception e){
-			if(e instanceof AppException)
-				throw (AppException)e;
-			throw AppException.network(e);
-		}
-	}
-	
-	/**
-	 * 删除某用户的博客
-	 * @param uid
-	 * @param authoruid
-	 * @param id
-	 * @return
-	 * @throws AppException
-	 */
-	public static Result delBlog(AppContext appContext, int uid, int authoruid, int id) throws AppException {
-		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("uid", uid);
-		params.put("authoruid", authoruid);
-		params.put("id", id);
-
-		try{
-			return http_post(appContext, URLs.USERBLOG_DELETE, params, null);		
-		}catch(Exception e){
-			if(e instanceof AppException)
-				throw (AppException)e;
-			throw AppException.network(e);
-		}
-	}
-	
-	/**
-	 * 获取博客详情
+	 * 获取杂谈列表
 	 * @param blog_id
 	 * @return
 	 * @throws AppException
 	 */
-	public static Blog getBlogDetail(AppContext appContext, final int blog_id) throws AppException {
-		String newUrl = _MakeURL(URLs.BLOG_DETAIL, new HashMap<String, Object>(){{
-			put("id", blog_id);
+	public static ZatanList getZatanList(AppContext appContext, final int catalog, final int pageIndex, final int pageSize) throws AppException {
+		String newUrl = _MakeURL(URLs.ZATAN_LIST, new HashMap<String, Object>(){{
+			put("catalog", catalog);
+			put("pageIndex", pageIndex);
+			put("pageSize", pageSize);
 		}});
-		
+
 		try{
-			return Blog.parse(http_get(appContext, newUrl));			
+			return ZatanList.parse(http_get(appContext, newUrl));		
 		}catch(Exception e){
 			if(e instanceof AppException)
 				throw (AppException)e;
@@ -962,7 +892,7 @@ public class ApiClient {
 	 * @throws AppException
 	 */
 	public static ZhuantiList getZhuantiList(AppContext appContext, final int catalog, final int pageIndex, final int pageSize) throws AppException {
-		String newUrl = _MakeURL(URLs.POST_LIST, new HashMap<String, Object>(){{
+		String newUrl = _MakeURL(URLs.ZHUANTI_LIST, new HashMap<String, Object>(){{
 			put("catalog", catalog);
 			put("pageIndex", pageIndex);
 			put("pageSize", pageSize);
@@ -992,7 +922,7 @@ public class ApiClient {
 		params.put("pageSize", pageSize);		
 
 		try{
-			return ZhuantiList.parse(_post(appContext, URLs.POST_LIST, params, null));		
+			return ZhuantiList.parse(_post(appContext, URLs.ZHUANTI_LIST, params, null));		
 		}catch(Exception e){
 			if(e instanceof AppException)
 				throw (AppException)e;
@@ -1008,7 +938,7 @@ public class ApiClient {
 	 * @throws AppException
 	 */
 	public static Zhuanti getZhuantiDetail(AppContext appContext, final int post_id) throws AppException {
-		String newUrl = _MakeURL(URLs.POST_DETAIL, new HashMap<String, Object>(){{
+		String newUrl = _MakeURL(URLs.ZHUANTI_DETAIL, new HashMap<String, Object>(){{
 			put("id", post_id);
 		}});
 		try{
@@ -1052,7 +982,7 @@ public class ApiClient {
 	 * @param pageSize
 	 * @return
 	 * @throws AppException
-	 */
+	 *//*
 	public static TweetList getTweetList(AppContext appContext, final int uid, final int pageIndex, final int pageSize) throws AppException {
 		String newUrl = _MakeURL(URLs.TWEET_LIST, new HashMap<String, Object>(){{
 			put("uid", uid);
@@ -1069,12 +999,12 @@ public class ApiClient {
 		}
 	}
 	
-	/**
+	*//**
 	 * 获取动弹详情
 	 * @param tweet_id
 	 * @return
 	 * @throws AppException
-	 */
+	 *//*
 	public static Tweet getTweetDetail(AppContext appContext, final int tweet_id) throws AppException {
 		String newUrl = _MakeURL(URLs.TWEET_DETAIL, new HashMap<String, Object>(){{
 			put("id", tweet_id);
@@ -1088,12 +1018,12 @@ public class ApiClient {
 		}
 	}
 	
-	/**
+	*//**
 	 * 发动弹
 	 * @param Tweet-uid & msg & image
 	 * @return
 	 * @throws AppException
-	 */
+	 *//*
 	public static Result pubTweet(AppContext appContext, Tweet tweet) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("uid", tweet.getAuthorId());
@@ -1112,13 +1042,13 @@ public class ApiClient {
 		}
 	}
 
-	/**
+	*//**
 	 * 删除动弹
 	 * @param uid
 	 * @param tweetid
 	 * @return
 	 * @throws AppException
-	 */
+	 *//*
 	public static Result delTweet(AppContext appContext, int uid, int tweetid) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("uid", uid);
@@ -1131,7 +1061,7 @@ public class ApiClient {
 				throw (AppException)e;
 			throw AppException.network(e);
 		}
-	}
+	}*/
 	
 	/**
 	 * 获取动态列表
@@ -1249,106 +1179,6 @@ public class ApiClient {
 		}
 	}
 	
-	/**
-	 * 获取博客评论列表
-	 * @param id 博客id
-	 * @param pageIndex
-	 * @param pageSize
-	 * @return
-	 * @throws AppException
-	 */
-	public static BlogCommentList getBlogCommentList(AppContext appContext, final int id, final int pageIndex, final int pageSize) throws AppException {
-		String newUrl = _MakeURL(URLs.BLOGCOMMENT_LIST, new HashMap<String, Object>(){{
-			put("id", id);
-			put("pageIndex", pageIndex);
-			put("pageSize", pageSize);
-		}});
-		
-		try{
-			return BlogCommentList.parse(http_get(appContext, newUrl));		
-		}catch(Exception e){
-			if(e instanceof AppException)
-				throw (AppException)e;
-			throw AppException.network(e);
-		}
-	}
-	
-	/**
-	 * 发表博客评论
-	 * @param blog 博客id
-	 * @param uid 登陆用户的uid
-	 * @param content 评论内容
-	 * @return
-	 * @throws AppException
-	 */
-	public static Result pubBlogComment(AppContext appContext, int blog, int uid, String content) throws AppException {
-		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("blog", blog);
-		params.put("uid", uid);
-		params.put("content", content);
-		
-		try{
-			return http_post(appContext, URLs.BLOGCOMMENT_PUB, params, null);		
-		}catch(Exception e){
-			if(e instanceof AppException)
-				throw (AppException)e;
-			throw AppException.network(e);
-		}
-	}
-	
-	/**
-	 * 发表博客评论
-	 * @param blog 博客id
-	 * @param uid 登陆用户的uid
-	 * @param content 评论内容
-	 * @param reply_id 评论id
-	 * @param objuid 被评论的评论发表者的uid
-	 * @return
-	 * @throws AppException
-	 */
-	public static Result replyBlogComment(AppContext appContext, int blog, int uid, String content, int reply_id, int objuid) throws AppException {
-		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("blog", blog);
-		params.put("uid", uid);
-		params.put("content", content);
-		params.put("reply_id", reply_id);
-		params.put("objuid", objuid);
-		
-		try{
-			return http_post(appContext, URLs.BLOGCOMMENT_PUB, params, null);		
-		}catch(Exception e){
-			if(e instanceof AppException)
-				throw (AppException)e;
-			throw AppException.network(e);
-		}
-	}
-	
-	/**
-	 * 删除博客评论
-	 * @param uid 登录用户的uid
-	 * @param blogid 博客id
-	 * @param replyid 评论id
-	 * @param authorid 评论发表者的uid
-	 * @param owneruid 博客作者uid
-	 * @return
-	 * @throws AppException
-	 */
-	public static Result delBlogComment(AppContext appContext, int uid, int blogid, int replyid, int authorid, int owneruid) throws AppException {
-		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("uid", uid);
-		params.put("blogid", blogid);		
-		params.put("replyid", replyid);
-		params.put("authorid", authorid);
-		params.put("owneruid", owneruid);
-
-		try{
-			return http_post(appContext, URLs.BLOGCOMMENT_DELETE, params, null);		
-		}catch(Exception e){
-			if(e instanceof AppException)
-				throw (AppException)e;
-			throw AppException.network(e);
-		}
-	}
 	
 	/**
 	 * 获取评论列表
@@ -1562,7 +1392,7 @@ public class ApiClient {
 	 * @return
 	 * @throws AppException
 	 */
-/*	public static SoftwareList getSoftwareList(AppContext appContext,final String searchTag,final int pageIndex,final int pageSize) throws AppException {
+	public static SoftwareList getSoftwareList(AppContext appContext,final String searchTag,final int pageIndex,final int pageSize) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("searchTag", searchTag);
 		params.put("pageIndex", pageIndex);
@@ -1576,7 +1406,7 @@ public class ApiClient {
 			throw AppException.network(e);
 		}
 	}
-*/	
+	
 	/**
 	 * 软件分类的软件列表
 	 * @param searchTag 从softwarecatalog_list获取的tag
@@ -1585,7 +1415,7 @@ public class ApiClient {
 	 * @return
 	 * @throws AppException
 	 */
-/*	public static SoftwareList getSoftwareTagList(AppContext appContext,final int searchTag,final int pageIndex,final int pageSize) throws AppException {
+	public static SoftwareList getSoftwareTagList(AppContext appContext,final int searchTag,final int pageIndex,final int pageSize) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("searchTag", searchTag);
 		params.put("pageIndex", pageIndex);
@@ -1599,14 +1429,14 @@ public class ApiClient {
 			throw AppException.network(e);
 		}
 	}
-*/	
+	
 	/**
 	 * 软件分类列表
 	 * @param tag 第一级:0  第二级:tag
 	 * @return
 	 * @throws AppException
 	 */
-/*	public static SoftwareCatalogList getSoftwareCatalogList(AppContext appContext,final int tag) throws AppException {
+	public static SoftwareCatalogList getSoftwareCatalogList(AppContext appContext,final int tag) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("tag", tag);
 
@@ -1618,14 +1448,14 @@ public class ApiClient {
 			throw AppException.network(e);
 		}
 	}
-*/	
+	
 	/**
 	 * 获取软件详情
 	 * @param ident
 	 * @return
 	 * @throws AppException
 	 */
-/*	public static Software getSoftwareDetail(AppContext appContext, final String ident) throws AppException {
+	public static Software getSoftwareDetail(AppContext appContext, final String ident) throws AppException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("ident", ident);
 		
@@ -1637,5 +1467,5 @@ public class ApiClient {
 			throw AppException.network(e);
 		}
 	}
-*/
+
 }

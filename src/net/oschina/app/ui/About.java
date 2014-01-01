@@ -2,7 +2,6 @@ package net.oschina.app.ui;
 
 import net.oschina.app.R;
 import net.oschina.app.common.UpdateManager;
-<<<<<<< HEAD
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;

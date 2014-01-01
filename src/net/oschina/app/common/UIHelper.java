@@ -17,6 +17,7 @@ import net.oschina.app.adapter.GridViewFaceAdapter;
 import net.oschina.app.api.ApiClient;
 import net.oschina.app.bean.AccessInfo;
 import net.oschina.app.bean.Active;
+import net.oschina.app.bean.All;
 import net.oschina.app.bean.Comment;
 import net.oschina.app.bean.CommentList;
 import net.oschina.app.bean.Messages;
@@ -27,7 +28,6 @@ import net.oschina.app.bean.Tweet;
 import net.oschina.app.bean.URLs;
 import net.oschina.app.ui.About;
 import net.oschina.app.ui.BaseActivity;
-import net.oschina.app.ui.BlogDetail;
 import net.oschina.app.ui.CommentPub;
 import net.oschina.app.ui.FeedBack;
 import net.oschina.app.ui.HuatiDetail;
@@ -39,17 +39,17 @@ import net.oschina.app.ui.MessageDetail;
 import net.oschina.app.ui.MessageForward;
 import net.oschina.app.ui.MessagePub;
 import net.oschina.app.ui.NewsDetail;
+import net.oschina.app.ui.RecommendDetail;
 import net.oschina.app.ui.ScreenShotShare;
 import net.oschina.app.ui.Search;
 import net.oschina.app.ui.Setting;
 import net.oschina.app.ui.SoftwareDetail;
 import net.oschina.app.ui.SoftwareLib;
-import net.oschina.app.ui.TweetDetail;
-import net.oschina.app.ui.TweetPub;
 import net.oschina.app.ui.UserCenter;
 import net.oschina.app.ui.UserFavorite;
 import net.oschina.app.ui.UserFriend;
 import net.oschina.app.ui.UserInfo;
+import net.oschina.app.ui.ZatanDetail;
 import net.oschina.app.widget.LinkView;
 import net.oschina.app.widget.PathChooseDialog;
 import net.oschina.app.widget.LinkView.MyURLSpan;
@@ -258,24 +258,13 @@ public class UIHelper {
 		context.startActivity(intent);
 	}*/
 
-	/**
-	 * 显示动弹详情及评论
-	 * 
-	 * @param context
-	 * @param tweetId
-	 */
-	public static void showTweetDetail(Context context, int tweetId) {
-		Intent intent = new Intent(context, TweetDetail.class);
-		intent.putExtra("tweet_id", tweetId);
-		context.startActivity(intent);
-	}
 
 	/**
 	 * 显示动弹一下页面
 	 * 
 	 * @param context
 	 */
-	public static void showTweetPub(Activity context) {
+	/*public static void showTweetPub(Activity context) {
 		Intent intent = new Intent(context, TweetPub.class);
 		context.startActivityForResult(intent, REQUEST_CODE_FOR_RESULT);
 	}
@@ -285,19 +274,7 @@ public class UIHelper {
 		intent.putExtra("at_me", atme);
 		intent.putExtra("at_uid", atuid);
 		context.startActivityForResult(intent, REQUEST_CODE_FOR_RESULT);
-	}
-
-	/**
-	 * 显示博客详情
-	 * 
-	 * @param context
-	 * @param blogId
-	 */
-	public static void showBlogDetail(Context context, int blogId) {
-		Intent intent = new Intent(context, BlogDetail.class);
-		intent.putExtra("blog_id", blogId);
-		context.startActivity(intent);
-	}
+	}*/
 
 	/**
 	 * 显示软件详情
@@ -388,12 +365,12 @@ public class UIHelper {
 			case Active.CATALOG_HUATI:
 				showHuatiDetail(context, id);
 				break;
-			case Active.CATALOG_TWEET:
+			/*case Active.CATALOG_TWEET:
 				showTweetDetail(context, id);
 				break;
 			case Active.CATALOG_BLOG:
 				showBlogDetail(context, id);
-				break;
+				break;*/
 			}
 		} else {
 			showUrlRedirect(context, url);
@@ -817,10 +794,10 @@ public class UIHelper {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								dialog.dismiss();
-								if (context == TweetPub.mContext
+								/*if (context == TweetPub.mContext
 										&& TweetPub.mMessage != null)
 									TweetPub.mMessage
-											.setVisibility(View.VISIBLE);
+											.setVisibility(View.VISIBLE);*/
 								thread.start();
 							}
 						})
@@ -1060,18 +1037,18 @@ public class UIHelper {
 		/*case URLs.URL_OBJ_TYPE_HUATI_TAG:
 			showHuatiListByTag(context, objKey);
 			break;*/
-		case URLs.URL_OBJ_TYPE_SOFTWARE:
+		/*case URLs.URL_OBJ_TYPE_SOFTWARE:
 			showSoftwareDetail(context, objKey);
-			break;
+			break;*/
 		case URLs.URL_OBJ_TYPE_ZONE:
 			showUserCenter(context, objId, objKey);
 			break;
-		case URLs.URL_OBJ_TYPE_TWEET:
+		/*case URLs.URL_OBJ_TYPE_TWEET:
 			showTweetDetail(context, objId);
-			break;
-		case URLs.URL_OBJ_TYPE_BLOG:
+			break;*/
+		/*case URLs.URL_OBJ_TYPE_BLOG:
 			showBlogDetail(context, objId);
-			break;
+			break;*/
 		case URLs.URL_OBJ_TYPE_OTHER:
 			openBrowser(context, objKey);
 			break;

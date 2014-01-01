@@ -31,6 +31,8 @@ public class URLs implements Serializable {
 	public final static String HUATI_LIST = URL_API_HOST+"action/api/huati_list";
 	public final static String HUATI_DETAIL = URL_API_HOST+"action/api/huati_detail";
 	//public final static String HUATI_PUB = URL_API_HOST+"action/api/huati_pub";
+	public final static String ZHUANTI_LIST = URL_API_HOST+"action/api/zhuanti_list";
+	public final static String ZHUANTI_DETAIL = URL_API_HOST+"action/api/zhuanti_detail";
 	public final static String TWEET_LIST = URL_API_HOST+"action/api/tweet_list";
 	public final static String TWEET_DETAIL = URL_API_HOST+"action/api/tweet_detail";
 	public final static String TWEET_PUB = URL_API_HOST+"action/api/tweet_pub";
@@ -92,6 +94,7 @@ public class URLs implements Serializable {
 	public final static int URL_OBJ_TYPE_ZATAN = 0x005;
 	public final static int URL_OBJ_TYPE_TWEET = 0x006;
 	public final static int URL_OBJ_TYPE_HUATI = 0x007;
+	public final static int URL_OBJ_TYPE_ZHUANTI = 0x008;
 	//public final static int URL_OBJ_TYPE_HUATI_TAG = 0x007;
 	
 	private int objId;

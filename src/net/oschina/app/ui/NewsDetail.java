@@ -377,8 +377,8 @@ public class NewsDetail extends BaseActivity {
 			mCommentList.setEnabled(false);
 			mHeadTitle.setText(R.string.comment_list_head_title);
 			mViewSwitcher.setDisplayedChild(1);
-			break;
-		}*/
+			break;)*/
+		}
 	}
 
 	/**
@@ -499,7 +499,7 @@ public class NewsDetail extends BaseActivity {
 			};
 			new Thread() {
 				public void run() {
-					Message msg = new Message();
+					/*Message msg = new Message();
 					Result res = null;
 					try {
 						if (newsDetail.getFavorite() == 1) {
@@ -516,7 +516,7 @@ public class NewsDetail extends BaseActivity {
 						msg.what = -1;
 						msg.obj = e;
 					}
-					handler.sendMessage(msg);
+					handler.sendMessage(msg);*/
 				}
 			}.start();
 		}

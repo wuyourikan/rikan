@@ -33,7 +33,7 @@ public class BroadCast extends BroadcastReceiver {
 			int newFansCount = intent.getIntExtra("newFansCount", 0);//新粉丝
 			int activeCount = atmeCount + reviewCount + msgCount + newFansCount;//信息总数
 			
-			//动态-总数
+			/*//动态-总数
 			if(Main.bv_active != null){
 				if(activeCount > 0){
 					Main.bv_active.setText(activeCount+"");
@@ -72,7 +72,7 @@ public class BroadCast extends BroadcastReceiver {
 					Main.bv_message.setText("");
 					Main.bv_message.hide();
 				}
-			}
+			}*/
 			
 			//通知栏显示
 			this.notification(context, activeCount);

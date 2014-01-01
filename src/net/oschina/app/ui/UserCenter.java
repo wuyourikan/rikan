@@ -8,10 +8,7 @@ import net.oschina.app.AppContext;
 import net.oschina.app.AppException;
 import net.oschina.app.R;
 import net.oschina.app.adapter.ListViewActiveAdapter;
-import net.oschina.app.adapter.ListViewBlogAdapter;
 import net.oschina.app.bean.Active;
-import net.oschina.app.bean.Blog;
-import net.oschina.app.bean.BlogList;
 import net.oschina.app.bean.Notice;
 import net.oschina.app.bean.Result;
 import net.oschina.app.bean.User;
@@ -71,14 +68,6 @@ public class UserCenter extends BaseActivity{
     private Handler mActiveHandler;
 	private int lvActiveSumData;
 	
-	private PullToRefreshListView mLvBlog;
-	private ListViewBlogAdapter lvBlogAdapter;
-	private List<Blog> lvBlogData = new ArrayList<Blog>();
-	private View lvBlog_footer;
-	private TextView lvBlog_foot_more;
-	private ProgressBar lvBlog_foot_progress;
-    private Handler mBlogHandler;
-	private int lvBlogSumData;
     
     private User mUser;
     private Handler mUserHandler;
@@ -137,8 +126,8 @@ public class UserCenter extends BaseActivity{
     	mHeadTitle.setText(_username + " ▼");
     	//设置第一选中项
     	mTabActive.setEnabled(false);
-    	mTabActive.setOnClickListener(tabBtnClick(mTabActive));
-    	mTabBlog.setOnClickListener(tabBtnClick(mTabBlog));
+    	//mTabActive.setOnClickListener(tabBtnClick(mTabActive));
+    	//mTabBlog.setOnClickListener(tabBtnClick(mTabBlog));
     	
     	mBack.setOnClickListener(UIHelper.finish(this));
     	mRefresh.setOnClickListener(refreshClickListener);
@@ -148,7 +137,6 @@ public class UserCenter extends BaseActivity{
     	mUserinfoDialog.setOnCancelListener(dialogCancelListener);
     	
     	this.initLvActive();
-    	this.initLvBlog();
     }    
     
     //初始化动态列表控件
@@ -210,125 +198,6 @@ public class UserCenter extends BaseActivity{
         });
     }
     
-    //初始化博客列表控件
-    private void initLvBlog() {
-    	lvBlog_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
-    	lvBlog_foot_more = (TextView)lvBlog_footer.findViewById(R.id.listview_foot_more);
-        lvBlog_foot_progress = (ProgressBar)lvBlog_footer.findViewById(R.id.listview_foot_progress);
-
-    	lvBlogAdapter = new ListViewBlogAdapter(this, BlogList.CATALOG_USER, lvBlogData, R.layout.blog_listitem); 
-    	mLvBlog = (PullToRefreshListView)findViewById(R.id.user_center_bloglist);
-    	
-        mLvBlog.addFooterView(lvBlog_footer);//添加底部视图  必须在setAdapter前
-        mLvBlog.setAdapter(lvBlogAdapter); 
-        mLvBlog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        		//点击头部、底部栏无效
-        		if(position == 0 || view == lvBlog_footer) return;
-        		
-        		TextView txt = (TextView)view.findViewById(R.id.blog_listitem_title);
-        		Blog blog = (Blog)txt.getTag();
-        		//跳转
-        		UIHelper.showUrlRedirect(view.getContext(), blog.getUrl());
-        	}
-		});
-        mLvBlog.setOnScrollListener(new AbsListView.OnScrollListener() {
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				mLvBlog.onScrollStateChanged(view, scrollState);
-				
-				//数据为空--不用继续下面代码了
-				if(lvBlogData.size() == 0) return;
-				
-				//判断是否滚动到底部
-				boolean scrollEnd = false;
-				try {
-					if(view.getPositionForView(lvBlog_footer) == view.getLastVisiblePosition())
-						scrollEnd = true;
-				} catch (Exception e) {
-					scrollEnd = false;
-				}
-				
-				if(scrollEnd && curLvBlogDataState==UIHelper.LISTVIEW_DATA_MORE)
-				{
-					mLvBlog.setTag(UIHelper.LISTVIEW_DATA_LOADING);
-					lvBlog_foot_more.setText(R.string.load_ing);
-					lvBlog_foot_progress.setVisibility(View.VISIBLE);
-					//当前页数
-					int pageIndex = lvBlogSumData/_pageSize;
-					loadLvBlogData(mBlogHandler, pageIndex, UIHelper.LISTVIEW_ACTION_SCROLL);
-				}
-			}
-			public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
-				mLvBlog.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-			}
-		});
-        mLvBlog.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				//点击头部、底部栏无效
-        		if(position == 0 || view == lvBlog_footer) return false;				
-				
-        		Blog _blog = null;
-        		//判断是否是TextView
-        		if(view instanceof TextView){
-        			_blog = (Blog)view.getTag();
-        		}else{
-        			TextView txt = (TextView)view.findViewById(R.id.blog_listitem_title);
-            		_blog = (Blog)txt.getTag();
-        		} 
-        		if(_blog == null) return false;
-        		
-        		final Blog blog = _blog;
-        		
-        		final AppContext ac = (AppContext)getApplication();
-				//操作--删除
-        		final int uid = ac.getLoginUid();
-        		//判断该博客是否是当前登录用户发表的
-        		if(uid == blog.getAuthorId())
-        		{
-	        		final Handler handler = new Handler(){
-						public void handleMessage(Message msg) {
-							if(msg.what == 1){
-								Result res = (Result)msg.obj;
-								if(res.OK()){
-									lvBlogData.remove(blog);
-									lvBlogAdapter.notifyDataSetChanged();
-								}
-								UIHelper.ToastMessage(UserCenter.this, res.getErrorMessage());
-							}else{
-								((AppException)msg.obj).makeToast(UserCenter.this);
-							}
-						}        			
-	        		};
-	        		final Thread thread = new Thread(){
-						public void run() {
-							Message msg = new Message();
-							try {
-								Result res = ac.delBlog(uid, blog.getAuthorId(), blog.getId());
-								msg.what = 1;
-								msg.obj = res;
-				            } catch (AppException e) {
-				            	e.printStackTrace();
-				            	msg.what = -1;
-				            	msg.obj = e;
-				            }
-			                handler.sendMessage(msg);
-						}        			
-	        		};
-	        		UIHelper.showBlogOptionDialog(UserCenter.this, thread);
-        		}
-        		else
-        		{
-        			UIHelper.showBlogOptionDialog(UserCenter.this, null);
-        		}
-				return true;
-			}        	
-		});
-        mLvBlog.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
-            public void onRefresh() {
-				loadLvBlogData(mBlogHandler, 0, UIHelper.LISTVIEW_ACTION_REFRESH);
-            }
-        });
-    }
     
     //初始化控件数据
 	private void initData()
@@ -338,14 +207,6 @@ public class UserCenter extends BaseActivity{
 			public void handleMessage(Message msg) {
 				headButtonSwitch(DATA_LOAD_COMPLETE);
 				lvActiveHandleMessage(msg);
-			}
-		};
-		
-    	mBlogHandler = new Handler()
-		{
-			public void handleMessage(Message msg) {
-				headButtonSwitch(DATA_LOAD_COMPLETE);
-				lvBlogHandleMessage(msg);
 			}
 		};
 		
@@ -374,7 +235,6 @@ public class UserCenter extends BaseActivity{
 		};
 		
 		this.loadLvActiveData(mUserHandler, 0 ,UIHelper.LISTVIEW_ACTION_INIT);
-		this.loadLvBlogData(mBlogHandler, 0, UIHelper.LISTVIEW_ACTION_INIT);
 	}
 
 	//加载动态列表
@@ -401,30 +261,6 @@ public class UserCenter extends BaseActivity{
 			}
 		}.start();
 	}
-	
-	//加载博客列表
-	private void loadLvBlogData(final Handler handler, final int pageIndex, final int action){  
-		headButtonSwitch(DATA_LOAD_ING);
-		new Thread(){
-				public void run() {
-					Message msg = new Message();
-					boolean isRefresh = false;
-					if(action == UIHelper.LISTVIEW_ACTION_REFRESH || action == UIHelper.LISTVIEW_ACTION_SCROLL)
-						isRefresh = true;
-					try {
-						BlogList bloglist= ((AppContext)getApplication()).getUserBlogList(_hisuid, _hisname, pageIndex, isRefresh);
-						msg.what = bloglist.getPageSize();
-						msg.obj = bloglist;
-		            } catch (AppException e) {
-		            	e.printStackTrace();
-		            	msg.what = -1;
-		            	msg.obj = e;
-		            }
-					msg.arg1 = action;//告知handler当前action
-	                handler.sendMessage(msg);
-				}
-			}.start();
-		}
 	
 	private void loadUserRelation(int relation){
 		switch (relation) {
@@ -514,74 +350,6 @@ public class UserCenter extends BaseActivity{
 		}
 	}
 	
-	private void lvBlogHandleMessage(Message msg){
-		if(msg.what >= 0){
-			BlogList bloglist = (BlogList)msg.obj;
-			Notice notice = bloglist.getNotice();
-			//显示用户博客数量
-			String tabBlogText = String.format("博客(%d)", bloglist.getBlogsCount());
-			mTabBlog.setText(tabBlogText);
-			//处理listview数据			
-			switch (msg.arg1) {
-			case UIHelper.LISTVIEW_ACTION_INIT:
-			case UIHelper.LISTVIEW_ACTION_REFRESH:
-			case UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG:
-				lvBlogSumData = msg.what;
-				lvBlogData.clear();//先清除原有数据
-				lvBlogData.addAll(bloglist.getBloglist());
-				break;
-			case UIHelper.LISTVIEW_ACTION_SCROLL:
-				lvBlogSumData += msg.what;
-				if(lvBlogData.size() > 0){
-					for(Blog blog1 : bloglist.getBloglist()){
-						boolean b = false;
-						for(Blog blog2 : lvBlogData){
-							if(blog1.getId() == blog2.getId()){
-								b = true;
-								break;
-							}
-						}
-						if(!b) lvBlogData.add(blog1);
-					}
-				}else{
-					lvBlogData.addAll(bloglist.getBloglist());
-				}
-				break;
-			}
-			if(msg.what<_pageSize){
-				curLvBlogDataState = UIHelper.LISTVIEW_DATA_FULL;
-				lvBlogAdapter.notifyDataSetChanged();
-				lvBlog_foot_more.setText(R.string.load_full);
-			}
-			else if(msg.what == _pageSize){	
-				curLvBlogDataState = UIHelper.LISTVIEW_DATA_MORE;
-				lvBlogAdapter.notifyDataSetChanged();
-				lvBlog_foot_more.setText(R.string.load_more);
-			}
-			//发送通知广播
-			if(msg.obj != null){
-				UIHelper.sendBroadCast(UserCenter.this, notice);
-			}
-		}
-		else if(msg.what == -1){
-			//有异常--显示加载出错 & 弹出错误消息
-			curLvBlogDataState = UIHelper.LISTVIEW_DATA_MORE;
-			lvBlog_foot_more.setText(R.string.load_error);
-			((AppException)msg.obj).makeToast(UserCenter.this);
-		}
-		if(lvBlogData.size()==0){
-			curLvBlogDataState = UIHelper.LISTVIEW_DATA_EMPTY;
-			lvBlog_foot_more.setText(R.string.load_empty);
-		}
-		lvBlog_foot_progress.setVisibility(View.GONE);
-		if(msg.arg1 == UIHelper.LISTVIEW_ACTION_REFRESH){
-			mLvBlog.onRefreshComplete(getString(R.string.pull_to_refresh_update) + new Date().toLocaleString());
-			mLvBlog.setSelection(0);
-		}else if(msg.arg1 == UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG){
-			mLvBlog.setSelection(0);
-		}
-	}
-	
     /**
      * 头部按钮展示
      * @param type
@@ -599,41 +367,10 @@ public class UserCenter extends BaseActivity{
 		}
     }
 	
-	private View.OnClickListener tabBtnClick(final Button btn){
-    	return new View.OnClickListener() {
-			public void onClick(View v) {
-		    	if(btn == mTabActive){
-		    		mTabActive.setEnabled(false);
-		    	}else{
-		    		mTabActive.setEnabled(true);
-		    	}
-		    	if(btn == mTabBlog){
-		    		mTabBlog.setEnabled(false);
-		    	}else{
-		    		mTabBlog.setEnabled(true);
-		    	}	    	
-				
-				if(btn == mTabActive){
-					mLvActive.setVisibility(View.VISIBLE);
-					mLvBlog.setVisibility(View.GONE);
-					
-					if(lvActiveData.size() == 0)
-						loadLvActiveData(mActiveHandler, 0, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
-				}else{
-					mLvActive.setVisibility(View.GONE);
-					mLvBlog.setVisibility(View.VISIBLE);
-					
-					if(lvBlogData.size() == 0)
-						loadLvBlogData(mBlogHandler, 0, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);
-				}
-			}
-		};
-    }
-	
 	private View.OnClickListener refreshClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
 			loadLvActiveData(mUserHandler, 0 ,UIHelper.LISTVIEW_ACTION_REFRESH);
-			loadLvBlogData(mBlogHandler, 0, UIHelper.LISTVIEW_ACTION_REFRESH);
+			//loadLvBlogData(mBlogHandler, 0, UIHelper.LISTVIEW_ACTION_REFRESH);
 		}
 	};
 	private View.OnClickListener headTitleClickListener = new View.OnClickListener() {
@@ -661,7 +398,7 @@ public class UserCenter extends BaseActivity{
 	private View.OnClickListener atmeClickListener = new View.OnClickListener() {
 		public void onClick(View v) {	
 			if(mUser == null)	return;
-			UIHelper.showTweetPub(UserCenter.this, "@"+mUser.getName()+" ", mUser.getUid());
+			//UIHelper.showTweetPub(UserCenter.this, "@"+mUser.getName()+" ", mUser.getUid());
 		}
 	};
 	private View.OnClickListener relationClickListener = new View.OnClickListener() {

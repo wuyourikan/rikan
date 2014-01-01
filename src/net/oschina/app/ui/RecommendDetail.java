@@ -474,7 +474,7 @@ public class RecommendDetail extends Activity {
 				public void run() {
 					Message msg = new Message();
 					Result res = null;
-					try {
+					/*try {
 						if(recommendDetail.getFavorite() == 1){
 							res = ac.delFavorite(recommendId, FavoriteList.TYPE_RECOMMEND);
 						}else{
@@ -487,7 +487,7 @@ public class RecommendDetail extends Activity {
 		            	msg.what = -1;
 		            	msg.obj = e;
 		            }
-	                handler.sendMessage(msg);
+	                handler.sendMessage(msg);*/
 				}        			
     		}.start();	
 		}

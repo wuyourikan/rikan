@@ -123,7 +123,7 @@ public class MessagePub extends BaseActivity{
 			};
 			new Thread(){
 				public void run() {
-					Message msg =new Message();
+					/*Message msg =new Message();
 					try {
 						Result res = ac.pubMessage(_uid, _friendid, _content);
 						msg.what = 1;
@@ -133,7 +133,7 @@ public class MessagePub extends BaseActivity{
 						msg.what = -1;
 						msg.obj = e;
 		            }
-					handler.sendMessage(msg);
+					handler.sendMessage(msg);*/
 				}
 			}.start();
 		}
