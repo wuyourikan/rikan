@@ -44,14 +44,14 @@ public class SoftwareLib extends BaseActivity{
 	private ProgressBar mProgressbar;
 	private ScrollLayout mScrollLayout;	
 	
-	private Button software_catalog;
+	private Button software_catalog;//头部按钮
 	private Button software_recommend;
 	private Button software_lastest;
 	private Button software_hot;
 	private Button software_china;
 	
-	private PullToRefreshListView mlvSoftware;
-	private ListViewSoftwareAdapter lvSoftwareAdapter;
+	private PullToRefreshListView mlvSoftware;//最底层软件列表
+	private ListViewSoftwareAdapter lvSoftwareAdapter;//列表适配器
 	private List<Software> lvSoftwareData = new ArrayList<Software>();
 	private View lvSoftware_footer;
 	private TextView lvSoftware_foot_more;
@@ -59,13 +59,13 @@ public class SoftwareLib extends BaseActivity{
     private Handler mSoftwareHandler;
     private int lvSumData;
 	
-	private ListView mlvSoftwareCatalog;
-	private ListViewSoftwareCatalogAdapter lvSoftwareCatalogAdapter;
+	private ListView mlvSoftwareCatalog;//软件类别
+	private ListViewSoftwareCatalogAdapter lvSoftwareCatalogAdapter;//软件类别适配器
 	private List<SoftwareType> lvSoftwareCatalogData = new ArrayList<SoftwareType>();
     private Handler mSoftwareCatalogHandler;
     
-	private ListView mlvSoftwareTag;
-	private ListViewSoftwareCatalogAdapter lvSoftwareTagAdapter;
+	private ListView mlvSoftwareTag;//二级列表
+	private ListViewSoftwareCatalogAdapter lvSoftwareTagAdapter;//二级列表适配器
 	private List<SoftwareType> lvSoftwareTagData = new ArrayList<SoftwareType>();
     private Handler mSoftwareTagHandler;
     

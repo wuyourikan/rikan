@@ -19,8 +19,20 @@
          	android:text="@string/frame_title_zhuanti_particular"/>
     </LinearLayout>
     
-	<net.oschina.app.widget.PullToRefreshListView
+	<net.oschina.app.widget.ScrollLayout   
+	  	android:id="@+id/frame_zhuanti_scrolllayout"    
+	  	android:layout_width="fill_parent"    
+	  	android:layout_height="fill_parent"
+   	  	android:layout_weight="1">
+     	
+	    <net.oschina.app.widget.PullToRefreshListView
+	    android:id="@+id/frame_listview_catalogzhuanti"
+	    style="@style/widget_listview"/>
+	    
+	    <net.oschina.app.widget.PullToRefreshListView
 	  	android:id="@+id/frame_listview_zhuanti"
 	    style="@style/widget_listview"/>
+	    
+	</net.oschina.app.widget.ScrollLayout> 
 	
 </LinearLayout>

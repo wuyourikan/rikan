@@ -132,8 +132,7 @@ public class UIHelper {
 	public final static int REQUEST_CODE_FOR_REPLY = 0x02;
 
 	/** 表情图片匹配 */
-	private static Pattern facePattern = Pattern
-			.compile("\\[{1}([0-9]\\d*)\\]{1}");
+	private static Pattern facePattern = Pattern.compile("\\[{1}([0-9]\\d*)\\]{1}");
 
 	/** 全局web样式 */
 	public final static String WEB_STYLE = "<style>"
@@ -230,7 +229,7 @@ public class UIHelper {
 	 * @param context
 	 * @param huatiId
 	 */
-/*	public static void showHuatiDetail(Context context, int huatiId) {
+    /*public static void showHuatiDetail(Context context, int huatiId) {
 		Intent intent = new Intent(context, HuatiDetail.class);
 		intent.putExtra("huati_id", huatiId);
 		context.startActivity(intent);
@@ -238,11 +237,10 @@ public class UIHelper {
 	
 	/**
 	 * 显示相关Tag话题列表
-	 * 
 	 * @param context
 	 * @param tag
 	 */
-/*	public static void showHuatiListByTag(Context context, String tag) {
+	/*public static void showHuatiListByTag(Context context, String tag) {
 		Intent intent = new Intent(context, HuatiTag.class);
 		intent.putExtra("huati_tag", tag);
 		context.startActivity(intent);
@@ -250,18 +248,15 @@ public class UIHelper {
 
 	/**
 	 * 显示我要提问页面
-	 * 
 	 * @param context
 	 */
-/*	public static void showHuatiPub(Context context) {
+	/*public static void showHuatiPub(Context context) {
 		Intent intent = new Intent(context, HuatiPub.class);
 		context.startActivity(intent);
 	}*/
 
-
 	/**
 	 * 显示动弹一下页面
-	 * 
 	 * @param context
 	 */
 	/*public static void showTweetPub(Activity context) {
@@ -278,7 +273,6 @@ public class UIHelper {
 
 	/**
 	 * 显示软件详情
-	 * 
 	 * @param context
 	 * @param ident
 	 */
@@ -340,14 +334,11 @@ public class UIHelper {
 		}
 	}
 
-
 	/**
 	 * 动态点击跳转到相关新闻、帖子等
-	 * 
 	 * @param context
 	 * @param id
-	 * @param catalog
-	 *            0其他 1新闻 2帖子 3动弹 4博客
+	 * @param catalog 0其他 1新闻 2帖子 3动弹 4博客
 	 */
 	public static void showActiveRedirect(Context context, Active active) {
 		String url = active.getUrl();
@@ -379,12 +370,9 @@ public class UIHelper {
 
 	/**
 	 * 显示评论发表页面
-	 * 
 	 * @param context
-	 * @param id
-	 *            新闻|帖子|动弹的id
-	 * @param catalog
-	 *            1新闻 2帖子 3动弹 4动态
+	 * @param id 新闻|帖子|动弹的id
+	 * @param catalog 1新闻 2帖子 3动弹 4动态
 	 */
 	public static void showCommentPub(Activity context, int id, int catalog) {
 		Intent intent = new Intent(context, CommentPub.class);
@@ -395,15 +383,13 @@ public class UIHelper {
 
 	/**
 	 * 显示评论回复页面
-	 * 
 	 * @param context
 	 * @param id
 	 * @param catalog
 	 * @param replyid
 	 * @param authorid
 	 */
-	public static void showCommentReply(Activity context, int id, int catalog,
-			int replyid, int authorid, String author, String content) {
+	public static void showCommentReply(Activity context, int id, int catalog,int replyid, int authorid, String author, String content) {
 		Intent intent = new Intent(context, CommentPub.class);
 		intent.putExtra("id", id);
 		intent.putExtra("catalog", catalog);
@@ -419,13 +405,11 @@ public class UIHelper {
 
 	/**
 	 * 显示留言对话页面
-	 * 
 	 * @param context
 	 * @param catalog
 	 * @param friendid
 	 */
-	public static void showMessageDetail(Context context, int friendid,
-			String friendname) {
+	public static void showMessageDetail(Context context, int friendid, String friendname) {
 		Intent intent = new Intent(context, MessageDetail.class);
 		intent.putExtra("friend_name", friendname);
 		intent.putExtra("friend_id", friendid);
@@ -434,18 +418,13 @@ public class UIHelper {
 
 	/**
 	 * 显示留言回复界面
-	 * 
 	 * @param context
-	 * @param friendId
-	 *            对方id
-	 * @param friendName
-	 *            对方名称
+	 * @param friendId 对方id
+	 * @param friendName 对方名称
 	 */
-	public static void showMessagePub(Activity context, int friendId,
-			String friendName) {
+	public static void showMessagePub(Activity context, int friendId, String friendName) {
 		Intent intent = new Intent();
-		intent.putExtra("user_id",
-				((AppContext) context.getApplication()).getLoginUid());
+		intent.putExtra("user_id", ((AppContext) context.getApplication()).getLoginUid());
 		intent.putExtra("friend_id", friendId);
 		intent.putExtra("friend_name", friendName);
 		intent.setClass(context, MessagePub.class);
@@ -454,18 +433,13 @@ public class UIHelper {
 
 	/**
 	 * 显示转发留言界面
-	 * 
 	 * @param context
-	 * @param friendName
-	 *            对方名称
-	 * @param messageContent
-	 *            留言内容
+	 * @param friendName 对方名称
+	 * @param messageContent 留言内容
 	 */
-	public static void showMessageForward(Activity context, String friendName,
-			String messageContent) {
+	public static void showMessageForward(Activity context, String friendName, String messageContent) {
 		Intent intent = new Intent();
-		intent.putExtra("user_id",
-				((AppContext) context.getApplication()).getLoginUid());
+		intent.putExtra("user_id", ((AppContext) context.getApplication()).getLoginUid());
 		intent.putExtra("friend_name", friendName);
 		intent.putExtra("message_content", messageContent);
 		intent.setClass(context, MessageForward.class);
@@ -474,13 +448,11 @@ public class UIHelper {
 
 	/**
 	 * 调用系统安装了的应用分享
-	 * 
 	 * @param context
 	 * @param title
 	 * @param url
 	 */
-	public static void showShareMore(Activity context, final String title,
-			final String url) {
+	public static void showShareMore(Activity context, final String title, final String url) {
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/plain");
 		intent.putExtra(Intent.EXTRA_SUBJECT, "分享：" + title);
@@ -490,16 +462,11 @@ public class UIHelper {
 
 	/**
 	 * 分享到'新浪微博'或'腾讯微博'的对话框
-	 * 
-	 * @param context
-	 *            当前Activity
-	 * @param title
-	 *            分享的标题
-	 * @param url
-	 *            分享的链接
+	 * @param context 当前Activity
+	 * @param title 分享的标题
+	 * @param url 分享的链接
 	 */
-	public static void showShareDialog(final Activity context,
-			final String title, final String url) {
+	public static void showShareDialog(final Activity context, final String title, final String url) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setIcon(android.R.drawable.btn_star);
 		builder.setTitle(context.getString(R.string.share));
@@ -576,12 +543,10 @@ public class UIHelper {
 
 	/**
 	 * 收藏操作选择框
-	 * 
 	 * @param context
 	 * @param thread
 	 */
-	public static void showFavoriteOptionDialog(final Activity context,
-			final Thread thread) {
+	public static void showFavoriteOptionDialog(final Activity context, final Thread thread) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setIcon(R.drawable.ic_dialog_menu);
 		builder.setTitle(context.getString(R.string.select));
@@ -600,13 +565,11 @@ public class UIHelper {
 
 	/**
 	 * 消息列表操作选择框
-	 * 
 	 * @param context
 	 * @param msg
 	 * @param thread
 	 */
-	public static void showMessageListOptionDialog(final Activity context,
-			final Messages msg, final Thread thread) {
+	public static void showMessageListOptionDialog(final Activity context, final Messages msg, final Thread thread) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setIcon(R.drawable.ic_dialog_menu);
 		builder.setTitle(context.getString(R.string.select));
@@ -633,13 +596,11 @@ public class UIHelper {
 
 	/**
 	 * 消息详情操作选择框
-	 * 
 	 * @param context
 	 * @param msg
 	 * @param thread
 	 */
-	public static void showMessageDetailOptionDialog(final Activity context,
-			final Comment msg, final Thread thread) {
+	public static void showMessageDetailOptionDialog(final Activity context, final Comment msg, final Thread thread) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setIcon(R.drawable.ic_dialog_menu);
 		builder.setTitle(context.getString(R.string.select));
@@ -662,20 +623,13 @@ public class UIHelper {
 
 	/**
 	 * 评论操作选择框
-	 * 
 	 * @param context
-	 * @param id
-	 *            某条新闻，帖子，动弹的id 或者某条消息的 friendid
-	 * @param catalog
-	 *            该评论所属类型：1新闻 2帖子 3动弹 4动态
-	 * @param comment
-	 *            本条评论对象，用于获取评论id&评论者authorid
-	 * @param thread
-	 *            处理删除评论的线程，若无删除操作传null
+	 * @param id 某条新闻，帖子，动弹的id 或者某条消息的 friendid
+	 * @param catalog 该评论所属类型：1新闻 2帖子 3动弹 4动态
+	 * @param comment 本条评论对象，用于获取评论id&评论者authorid
+	 * @param thread 处理删除评论的线程，若无删除操作传null
 	 */
-	public static void showCommentOptionDialog(final Activity context,
-			final int id, final int catalog, final Comment comment,
-			final Thread thread) {
+	public static void showCommentOptionDialog(final Activity context, final int id, final int catalog, final Comment comment, final Thread thread) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setIcon(R.drawable.ic_dialog_menu);
 		builder.setTitle(context.getString(R.string.select));
@@ -716,12 +670,10 @@ public class UIHelper {
 
 	/**
 	 * 博客列表操作
-	 * 
 	 * @param context
 	 * @param thread
 	 */
-	public static void showBlogOptionDialog(final Context context,
-			final Thread thread) {
+	public static void showBlogOptionDialog(final Context context, final Thread thread) {
 		new AlertDialog.Builder(context)
 				.setIcon(android.R.drawable.ic_dialog_info)
 				.setTitle(context.getString(R.string.delete_blog))
@@ -748,12 +700,10 @@ public class UIHelper {
 
 	/**
 	 * 动弹操作选择框
-	 * 
 	 * @param context
 	 * @param thread
 	 */
-	public static void showTweetOptionDialog(final Context context,
-			final Thread thread) {
+	public static void showTweetOptionDialog(final Context context, final Thread thread) {
 		new AlertDialog.Builder(context)
 				.setIcon(android.R.drawable.ic_dialog_info)
 				.setTitle(context.getString(R.string.delete_tweet))
@@ -780,12 +730,10 @@ public class UIHelper {
 
 	/**
 	 * 是否重新发布动弹操对话框
-	 * 
 	 * @param context
 	 * @param thread
 	 */
-	public static void showResendTweetDialog(final Context context,
-			final Thread thread) {
+	public static void showResendTweetDialog(final Context context, final Thread thread) {
 		new AlertDialog.Builder(context)
 				.setIcon(android.R.drawable.ic_dialog_info)
 				.setTitle(context.getString(R.string.republish_tweet))
@@ -812,7 +760,6 @@ public class UIHelper {
 
 	/**
 	 * 显示图片对话框
-	 * 
 	 * @param context
 	 * @param imgUrl
 	 */
@@ -840,7 +787,6 @@ public class UIHelper {
 
 	/**
 	 * 显示搜索界面
-	 * 
 	 * @param context
 	 */
 	public static void showSearch(Context context) {
@@ -850,7 +796,6 @@ public class UIHelper {
 
 	/**
 	 * 显示软件界面
-	 * 
 	 * @param context
 	 */
 	public static void showSoftware(Context context) {
@@ -860,7 +805,6 @@ public class UIHelper {
 
 	/**
 	 * 显示我的资料
-	 * 
 	 * @param context
 	 */
 	public static void showUserInfo(Activity context) {
@@ -875,24 +819,20 @@ public class UIHelper {
 
 	/**
 	 * 显示路径选择对话框
-	 * 
 	 * @param context
 	 */
-	public static void showFilePathDialog(Activity context,
-			ChooseCompleteListener listener) {
+	public static void showFilePathDialog(Activity context, ChooseCompleteListener listener) {
 		new PathChooseDialog(context, listener).show();
 	}
 
 	/**
 	 * 显示用户动态
-	 * 
 	 * @param context
 	 * @param uid
 	 * @param hisuid
 	 * @param hisname
 	 */
-	public static void showUserCenter(Context context, int hisuid,
-			String hisname) {
+	public static void showUserCenter(Context context, int hisuid, String hisname) {
 		Intent intent = new Intent(context, UserCenter.class);
 		intent.putExtra("his_id", hisuid);
 		intent.putExtra("his_name", hisname);
@@ -901,7 +841,6 @@ public class UIHelper {
 
 	/**
 	 * 显示用户收藏夹
-	 * 
 	 * @param context
 	 */
 	public static void showUserFavorite(Context context) {
@@ -911,11 +850,9 @@ public class UIHelper {
 
 	/**
 	 * 显示用户好友
-	 * 
 	 * @param context
 	 */
-	public static void showUserFriend(Context context, int friendType,
-			int followers, int fans) {
+	public static void showUserFriend(Context context, int friendType, int followers, int fans) {
 		Intent intent = new Intent(context, UserFriend.class);
 		intent.putExtra("friend_type", friendType);
 		intent.putExtra("friend_followers", followers);
@@ -925,29 +862,24 @@ public class UIHelper {
 
 	/**
 	 * 加载显示用户头像
-	 * 
 	 * @param imgFace
 	 * @param faceURL
 	 */
-	public static void showUserFace(final ImageView imgFace,
-			final String faceURL) {
+	public static void showUserFace(final ImageView imgFace, final String faceURL) {
 		showLoadImage(imgFace, faceURL,
 				imgFace.getContext().getString(R.string.msg_load_userface_fail));
 	}
 
 	/**
 	 * 加载显示图片
-	 * 
 	 * @param imgFace
 	 * @param faceURL
 	 * @param errMsg
 	 */
-	public static void showLoadImage(final ImageView imgView,
-			final String imgURL, final String errMsg) {
+	public static void showLoadImage(final ImageView imgView, final String imgURL, final String errMsg) {
 		// 读取本地图片
 		if (StringUtils.isEmpty(imgURL) || imgURL.endsWith("portrait.gif")) {
-			Bitmap bmp = BitmapFactory.decodeResource(imgView.getResources(),
-					R.drawable.widget_dface);
+			Bitmap bmp = BitmapFactory.decodeResource(imgView.getResources(), R.drawable.widget_dface);
 			imgView.setImageBitmap(bmp);
 			return;
 		}
@@ -955,8 +887,7 @@ public class UIHelper {
 		// 是否有缓存图片
 		final String filename = FileUtils.getFileName(imgURL);
 		// Environment.getExternalStorageDirectory();返回/sdcard
-		String filepath = imgView.getContext().getFilesDir() + File.separator
-				+ filename;
+		String filepath = imgView.getContext().getFilesDir() + File.separator + filename;
 		File file = new File(filepath);
 		if (file.exists()) {
 			Bitmap bmp = ImageUtils.getBitmap(imgView.getContext(), filename);
@@ -965,8 +896,7 @@ public class UIHelper {
 		}
 
 		// 从网络获取&写入图片缓存
-		String _errMsg = imgView.getContext().getString(
-				R.string.msg_load_image_fail);
+		String _errMsg = imgView.getContext().getString(R.string.msg_load_image_fail);
 		if (!StringUtils.isEmpty(errMsg))
 			_errMsg = errMsg;
 		final String ErrMsg = _errMsg;
@@ -1005,7 +935,6 @@ public class UIHelper {
 
 	/**
 	 * url跳转
-	 * 
 	 * @param context
 	 * @param url
 	 */
@@ -1057,7 +986,6 @@ public class UIHelper {
 
 	/**
 	 * 打开浏览器
-	 * 
 	 * @param context
 	 * @param url
 	 */
@@ -1074,7 +1002,6 @@ public class UIHelper {
 
 	/**
 	 * 获取webviewClient对象
-	 * 
 	 * @return
 	 */
 	public static WebViewClient getWebViewClient() {
@@ -1089,13 +1016,11 @@ public class UIHelper {
 
 	/**
 	 * 获取TextWatcher对象
-	 * 
 	 * @param context
 	 * @param tmlKey
 	 * @return
 	 */
-	public static TextWatcher getTextWatcher(final Activity context,
-			final String temlKey) {
+	public static TextWatcher getTextWatcher(final Activity context, final String temlKey) {
 		return new TextWatcher() {
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
@@ -1115,18 +1040,14 @@ public class UIHelper {
 
 	/**
 	 * 编辑器显示保存的草稿
-	 * 
 	 * @param context
 	 * @param editer
 	 * @param temlKey
 	 */
-	public static void showTempEditContent(Activity context, EditText editer,
-			String temlKey) {
-		String tempContent = ((AppContext) context.getApplication())
-				.getProperty(temlKey);
+	public static void showTempEditContent(Activity context, EditText editer, String temlKey) {
+		String tempContent = ((AppContext) context.getApplication()).getProperty(temlKey);
 		if (!StringUtils.isEmpty(tempContent)) {
-			SpannableStringBuilder builder = parseFaceByText(context,
-					tempContent);
+			SpannableStringBuilder builder = parseFaceByText(context, tempContent);
 			editer.setText(builder);
 			editer.setSelection(tempContent.length());// 设置光标位置
 		}
@@ -1134,12 +1055,10 @@ public class UIHelper {
 
 	/**
 	 * 将[12]之类的字符串替换为表情
-	 * 
 	 * @param context
 	 * @param content
 	 */
-	public static SpannableStringBuilder parseFaceByText(Context context,
-			String content) {
+	public static SpannableStringBuilder parseFaceByText(Context context, String content) {
 		SpannableStringBuilder builder = new SpannableStringBuilder(content);
 		Matcher matcher = facePattern.matcher(content);
 		while (matcher.find()) {
@@ -1155,8 +1074,7 @@ public class UIHelper {
 				Drawable d = context.getResources().getDrawable(resId);
 				d.setBounds(0, 0, 35, 35);// 设置表情图片的显示大小
 				ImageSpan span = new ImageSpan(d, ImageSpan.ALIGN_BOTTOM);
-				builder.setSpan(span, matcher.start(), matcher.end(),
-						Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				builder.setSpan(span, matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 			} catch (Exception e) {
 			}
 		}
@@ -1169,12 +1087,10 @@ public class UIHelper {
 	 * @param cont
 	 * @param editer
 	 */
-	public static void showClearWordsDialog(final Context cont,
-			final EditText editer, final TextView numwords) {
+	public static void showClearWordsDialog(final Context cont, final EditText editer, final TextView numwords) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(cont);
 		builder.setTitle(R.string.clearwords);
-		builder.setPositiveButton(R.string.sure,
-				new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.dismiss();
 						// 清除文字
@@ -1198,8 +1114,7 @@ public class UIHelper {
 	 * @param notice
 	 */
 	public static void sendBroadCast(Context context, Notice notice) {
-		if (!((AppContext) context.getApplicationContext()).isLogin()
-				|| notice == null)
+		if (!((AppContext) context.getApplicationContext()).isLogin() || notice == null)
 			return;
 		Intent intent = new Intent("net.oschina.app.action.APPWIDGET_UPDATE");
 		intent.putExtra("atmeCount", notice.getAtmeCount());
@@ -1215,8 +1130,7 @@ public class UIHelper {
 	 * @param context
 	 * @param notice
 	 */
-	public static void sendBroadCastTweet(Context context, int what,
-			Result res, Tweet tweet) {
+	public static void sendBroadCastTweet(Context context, int what, Result res, Tweet tweet) {
 		if (res == null && tweet == null)
 			return;
 		Intent intent = new Intent("net.oschina.app.action.APP_TWEETPUB");
@@ -1237,8 +1151,7 @@ public class UIHelper {
 	 * @return
 	 */
 	@SuppressLint("NewApi")
-	public static SpannableString parseActiveAction(String author,
-			int objecttype, int objectcatalog, String objecttitle) {
+	public static SpannableString parseActiveAction(String author, int objecttype, int objectcatalog, String objecttitle) {
 		String title = "";
 		int start = 0;
 		int end = 0;
@@ -1311,10 +1224,8 @@ public class UIHelper {
 	public static SpannableString parseActiveReply(String name, String body) {
 		SpannableString sp = new SpannableString(name + "：" + body);
 		// 设置用户名字体加粗、高亮
-		sp.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0,
-				name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		sp.setSpan(new ForegroundColorSpan(Color.parseColor("#0e5986")), 0,
-				name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		sp.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		sp.setSpan(new ForegroundColorSpan(Color.parseColor("#0e5986")), 0, name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		return sp;
 	}
 
@@ -1325,8 +1236,7 @@ public class UIHelper {
 	 * @param body
 	 * @return
 	 */
-	public static void parseMessageSpan(LinkView view, String name,
-			String body, String action) {
+	public static void parseMessageSpan(LinkView view, String name, String body, String action) {
 		Spanned span = null;
 		SpannableStringBuilder style = null;
 		int start = 0;
@@ -1376,10 +1286,8 @@ public class UIHelper {
 	public static SpannableString parseQuoteSpan(String name, String body) {
 		SpannableString sp = new SpannableString("回复：" + name + "\n" + body);
 		// 设置用户名字体加粗、高亮
-		sp.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 3,
-				3 + name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		sp.setSpan(new ForegroundColorSpan(Color.parseColor("#0e5986")), 3,
-				3 + name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		sp.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 3, 3 + name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		sp.setSpan(new ForegroundColorSpan(Color.parseColor("#0e5986")), 3, 3 + name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		return sp;
 	}
 
@@ -1442,15 +1350,11 @@ public class UIHelper {
 	 */
 	public static void showMenuLoginOrLogout(Activity activity, Menu menu) {
 		if (((AppContext) activity.getApplication()).isLogin()) {
-			menu.findItem(R.id.main_menu_user).setTitle(
-					R.string.main_menu_logout);
-			menu.findItem(R.id.main_menu_user).setIcon(
-					R.drawable.ic_menu_logout);
+			menu.findItem(R.id.main_menu_user).setTitle(R.string.main_menu_logout);
+			menu.findItem(R.id.main_menu_user).setIcon(R.drawable.ic_menu_logout);
 		} else {
-			menu.findItem(R.id.main_menu_user).setTitle(
-					R.string.main_menu_login);
-			menu.findItem(R.id.main_menu_user)
-					.setIcon(R.drawable.ic_menu_login);
+			menu.findItem(R.id.main_menu_user).setTitle(R.string.main_menu_login);
+			menu.findItem(R.id.main_menu_user).setIcon(R.drawable.ic_menu_login);
 		}
 	}
 
@@ -1460,15 +1364,12 @@ public class UIHelper {
 	 * @param activity
 	 * @param qa
 	 */
-	public static void showSettingLoginOrLogout(Activity activity,
-			QuickAction qa) {
+	public static void showSettingLoginOrLogout(Activity activity, QuickAction qa) {
 		if (((AppContext) activity.getApplication()).isLogin()) {
-			qa.setIcon(MyQuickAction.buildDrawable(activity,
-					R.drawable.ic_menu_logout));
+			qa.setIcon(MyQuickAction.buildDrawable(activity, R.drawable.ic_menu_logout));
 			qa.setTitle(activity.getString(R.string.main_menu_logout));
 		} else {
-			qa.setIcon(MyQuickAction.buildDrawable(activity,
-					R.drawable.ic_menu_login));
+			qa.setIcon(MyQuickAction.buildDrawable(activity, R.drawable.ic_menu_login));
 			qa.setTitle(activity.getString(R.string.main_menu_login));
 		}
 	}
@@ -1481,12 +1382,10 @@ public class UIHelper {
 	 */
 	public static void showSettingIsLoadImage(Activity activity, QuickAction qa) {
 		if (((AppContext) activity.getApplication()).isLoadImage()) {
-			qa.setIcon(MyQuickAction.buildDrawable(activity,
-					R.drawable.ic_menu_picnoshow));
+			qa.setIcon(MyQuickAction.buildDrawable(activity, R.drawable.ic_menu_picnoshow));
 			qa.setTitle(activity.getString(R.string.main_menu_picnoshow));
 		} else {
-			qa.setIcon(MyQuickAction.buildDrawable(activity,
-					R.drawable.ic_menu_picshow));
+			qa.setIcon(MyQuickAction.buildDrawable(activity, R.drawable.ic_menu_picshow));
 			qa.setTitle(activity.getString(R.string.main_menu_picshow));
 		}
 	}
@@ -1564,38 +1463,33 @@ public class UIHelper {
 	 * @param cont
 	 * @param crashReport
 	 */
-	public static void sendAppCrashReport(final Context cont,
-			final String crashReport) {
+	public static void sendAppCrashReport(final Context cont, final String crashReport) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(cont);
 		builder.setIcon(android.R.drawable.ic_dialog_info);
 		builder.setTitle(R.string.app_error);
 		builder.setMessage(R.string.app_error_message);
-		builder.setPositiveButton(R.string.submit_report,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-						// 发送异常报告
-						Intent i = new Intent(Intent.ACTION_SEND);
-						// i.setType("text/plain"); //模拟器
-						i.setType("message/rfc822"); // 真机
-						i.putExtra(Intent.EXTRA_EMAIL,
-								new String[] { "jxsmallmouse@163.com" });
-						i.putExtra(Intent.EXTRA_SUBJECT,
-								"开源中国Android客户端 - 错误报告");
-						i.putExtra(Intent.EXTRA_TEXT, crashReport);
-						cont.startActivity(Intent.createChooser(i, "发送错误报告"));
-						// 退出
-						AppManager.getAppManager().AppExit(cont);
-					}
-				});
-		builder.setNegativeButton(R.string.sure,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-						// 退出
-						AppManager.getAppManager().AppExit(cont);
-					}
-				});
+		builder.setPositiveButton(R.string.submit_report, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				// 发送异常报告
+				Intent i = new Intent(Intent.ACTION_SEND);
+				// i.setType("text/plain"); //模拟器
+				i.setType("message/rfc822"); // 真机
+				i.putExtra(Intent.EXTRA_EMAIL, new String[] { "wuyouzhibang5@163.com" });
+				i.putExtra(Intent.EXTRA_SUBJECT, "乌有网刊Android客户端 - 错误报告");
+				i.putExtra(Intent.EXTRA_TEXT, crashReport);
+				cont.startActivity(Intent.createChooser(i, "发送错误报告"));
+				// 退出
+				AppManager.getAppManager().AppExit(cont);
+				}
+			});
+		builder.setNegativeButton(R.string.sure, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				// 退出
+				AppManager.getAppManager().AppExit(cont);
+				}
+			});
 		builder.show();
 	}
 
@@ -1608,16 +1502,14 @@ public class UIHelper {
 		AlertDialog.Builder builder = new AlertDialog.Builder(cont);
 		builder.setIcon(android.R.drawable.ic_dialog_info);
 		builder.setTitle(R.string.app_menu_surelogout);
-		builder.setPositiveButton(R.string.sure,
-				new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.dismiss();
 						// 退出
 						AppManager.getAppManager().AppExit(cont);
 					}
 				});
-		builder.setNegativeButton(R.string.cancle,
-				new DialogInterface.OnClickListener() {
+		builder.setNegativeButton(R.string.cancle, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.dismiss();
 					}
@@ -1629,16 +1521,13 @@ public class UIHelper {
 	 * 添加截屏功能
 	 */
 	@SuppressLint("NewApi")
-	public static void addScreenShot(Activity context,
-			OnScreenShotListener mScreenShotListener) {
+	public static void addScreenShot(Activity context, OnScreenShotListener mScreenShotListener) {
 		BaseActivity cxt = null;
 		if (context instanceof BaseActivity) {
 			cxt = (BaseActivity) context;
 			cxt.setAllowFullScreen(false);
-			ScreenShotView screenShot = new ScreenShotView(cxt,
-					mScreenShotListener);
-			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
-					LayoutParams.MATCH_PARENT);
+			ScreenShotView screenShot = new ScreenShotView(cxt, mScreenShotListener);
+			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 			context.getWindow().addContentView(screenShot, lp);
 		}
 	}

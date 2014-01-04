@@ -9,11 +9,23 @@
     android:paddingTop="10dip"
     android:paddingBottom="9dip">   
 
-    <ImageView 
-    	android:id="@+id/zhuanti_listitem_userface"
-      	style="@style/user_face_image"/>
-
-	<LinearLayout
+    <TextView android:id="@+id/zhuanti_listitem_title" 
+        android:layout_width="fill_parent" 
+     	android:layout_height="wrap_content"
+     	android:layout_weight="1"
+     	android:textSize="@dimen/text_size_15"
+     	android:textColor="@color/listitem_black"
+     	android:textStyle="bold"
+     	android:singleLine="true"/>
+    
+    <TextView android:id="@+id/zhuanti_listitem_date"  
+	    		android:layout_width="wrap_content" 
+	           	android:layout_height="wrap_content"
+	           	android:layout_gravity="center_vertical" 
+	           	android:layout_marginRight="10dip"
+	           	android:textSize="@dimen/text_size_10"
+	            android:textColor="@color/listitem_gray"/>
+	<!--<LinearLayout
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content"
     	android:orientation="vertical"
@@ -43,12 +55,13 @@
 	       	
 	       	<TextView android:id="@+id/zhuanti_listitem_date"  
 	    		android:layout_width="wrap_content" 
-	           	android:layout_height="wrap_content" 
-	           	android:layout_marginLeft="10dip"
+	           	android:layout_height="wrap_content"
+	           	android:layout_gravity="center_vertical" 
+	           	android:layout_marginRight="10dip"
 	           	android:textSize="@dimen/text_size_10"
 	            android:textColor="@color/listitem_gray"/>
        	</LinearLayout>
        	
-    </LinearLayout>
+    </LinearLayout>-->
 
 </LinearLayout> 
