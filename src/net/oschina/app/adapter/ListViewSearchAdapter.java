@@ -3,32 +3,26 @@ package net.oschina.app.adapter;
 import java.util.List;
 
 import net.oschina.app.R;
-import net.oschina.app.bean.SearchList.Result;
+import net.oschina.app.bean.Base;
+import net.oschina.app.bean.BaseItem;
+import net.oschina.app.bean.SearchList.SearchResult;
 import net.oschina.app.common.StringUtils;
-
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
  * 搜索Adapter类
- * @author liux (http://my.oschina.net/liux)
+ * @author wyf (http://my.oschina.net/zgtjwyftc)
  * @version 1.0
- * @created 2012-3-21
+ * @created 2014-1-6
  */
-public class ListViewSearchAdapter extends BaseAdapter {
-	private Context 					context;//运行上下文
-	private List<Result> 				listItems;//数据集合
-	private LayoutInflater 				listContainer;//视图容器
-	private int 						itemViewResource;//自定义项视图源 
-	static class ListItemView{				//自定义控件集合  
-        public TextView title;  
-	    public TextView author;
-	    public TextView date;  
+public class ListViewSearchAdapter extends MyBaseAdapter {
+	
+	//列表item视图的控件集合，用于setTag保存
+	static class ListItemView extends MyBaseAdapter.ListItemView{
 	    public LinearLayout layout;
 	}  
 
@@ -38,23 +32,8 @@ public class ListViewSearchAdapter extends BaseAdapter {
 	 * @param data
 	 * @param resource
 	 */
-	public ListViewSearchAdapter(Context context, List<Result> data,int resource) {
-		this.context = context;			
-		this.listContainer = LayoutInflater.from(context);	//创建视图容器并设置上下文
-		this.itemViewResource = resource;
-		this.listItems = data;
-	}
-	
-	public int getCount() {
-		return listItems.size();
-	}
-
-	public Object getItem(int arg0) {
-		return null;
-	}
-
-	public long getItemId(int arg0) {
-		return 0;
+	public ListViewSearchAdapter(Context context, List<BaseItem> data,int resource) {
+		super(context,data,resource);
 	}
 	
 	/**
@@ -84,7 +63,7 @@ public class ListViewSearchAdapter extends BaseAdapter {
 		}	
 		
 		//设置文字和图片
-		Result res = listItems.get(position);
+		SearchResult res = (SearchResult)listItems.get(position);
 		
 		listItemView.title.setText(res.getTitle());
 		listItemView.title.setTag(res);//设置隐藏参数(实体类)

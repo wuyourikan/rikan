@@ -15,25 +15,23 @@
     <string name="main_menu_setting">系统设置</string>
     <string name="main_menu_exit">退出程序</string>
 
-    <string name="frame_title_news_lastest">时事</string>
-    <string name="frame_title_news_zatan">杂谈</string>
-    <string name="frame_title_news_recommend">推荐</string>
-    <string name="frame_title_news_all">全部</string>
+    <string name="frame_title_article_lastest">时事</string>
+    <string name="frame_title_article_zatan">杂谈</string>
+    <string name="frame_title_article_recommend">推荐</string>
+    <string name="frame_title_article_all">全部</string>
     
-    <string name="frame_title_question_ask">问答</string>
-    <string name="frame_title_question_share">分享</string>
-    <string name="frame_title_question_other">综合</string>
-    <string name="frame_title_question_job">职业</string>
-    <string name="frame_title_question_site">站务</string>
+    <string name="frame_title_topic_center">话题中心</string>
+    <string name="frame_title_topic_sixiang">思想</string>
+    <string name="frame_title_topic_zhengjing">政经</string>
+    <string name="frame_title_topic_wenshi">文史</string>
     
-    <string name="frame_title_zhuanti_particular">特别专题</string>
-    <string name="frame_title_zhuanti_hot">热门动弹</string>
-    <string name="frame_title_zhuanti_common">普通专题</string>
+    <string name="frame_title_special_latest">最新专题</string>
+    <string name="frame_title_special_important">重点专题</string>
     
-    <string name="frame_title_huati_center">话题中心</string>
-    <string name="frame_title_huati_sixiang">思想</string>
-    <string name="frame_title_huati_zhengjing">政经</string>
-    <string name="frame_title_huati_wenshi">文史</string>
+    
+    <string name="frame_title_search_article">文章</string>
+    <string name="frame_title_search_topic">话题</string>
+    <string name="frame_title_search_special">专题</string>
     
     <string name="frame_title_tweet_lastest">最新动弹</string>
     <string name="frame_title_tweet_hot">热门动弹</string>
@@ -69,8 +67,11 @@
     <string name="pull_to_refresh_tap_label">下拉可以刷新</string>
     <string name="pull_to_refresh_update">最近更新：</string>
     
-    <string name="news_detail_head_title">新闻正文</string>
-    <string name="news_detail_lable_pub">发布于</string>
+    <string name="article_detail_head_title">乌有文章</string>
+    <string name="article_detail_lable_author">作者：</string>
+    <string name="article_detail_lable_pubdate">发布时间：</string>
+    <string name="article_detail_lable_source">来源：</string>
+    
     <string name="question_detail_head_title">帖子正文</string>
     <string name="question_pub_head_title">我要发帖</string>
     <string name="blog_detail_head_title">博客正文</string>
@@ -80,14 +81,16 @@
     <string name="message_detail_head_title">我和%s的对话</string>
     <string name="user_center_head_title">用户空间</string>
     
-    <string name="huati_detail_head_title">乌有话题</string>
-    <string name="huati_detail_lable_pub">发布于</string>
-    <string name="huati_detail_lable_author">责任编辑：</string>
+    <string name="topic_detail_head_title">乌有话题</string>
+    <string name="topic_detail_lable_pub">发布于</string>
+    <string name="topic_detail_lable_author">责任编辑：</string>
+    
+    <string name="special_detail_head_title">乌有专题</string>
     
 	<string name="user_favorite_title">我的收藏夹</string>
-    <string name="user_favorite_news">新闻</string>
-    <string name="user_favorite_zhuanti">专题</string>
-    <string name="user_favorite_huati">话题</string>
+    <string name="user_favorite_article">文章</string>
+    <string name="user_favorite_special">专题</string>
+    <string name="user_favorite_topic">话题</string>
     <string name="user_favorite_old">往期</string>
     <string name="user_favorite_center">中心</string>
     

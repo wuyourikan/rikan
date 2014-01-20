@@ -5,7 +5,7 @@ import net.oschina.app.AppException;
 import net.oschina.app.R;
 import net.oschina.app.api.ApiClient;
 import net.oschina.app.bean.Result;
-import net.oschina.app.bean.User;
+//import net.oschina.app.bean.User;
 import net.oschina.app.common.StringUtils;
 import net.oschina.app.common.UIHelper;
 
@@ -95,8 +95,8 @@ public class LoginDialog extends BaseActivity{
 
         //是否显示登录信息
         AppContext ac = (AppContext)getApplication();
-        User user = ac.getLoginInfo();
-        if(user==null || !user.isRememberMe()) return;
+        //User user = ac.getLoginInfo();
+       /* if(user==null || !user.isRememberMe()) return;
         if(!StringUtils.isEmpty(user.getAccount())){
         	mAccount.setText(user.getAccount());
         	mAccount.selectAll();
@@ -104,7 +104,7 @@ public class LoginDialog extends BaseActivity{
         }
         if(!StringUtils.isEmpty(user.getPwd())){
         	mPwd.setText(user.getPwd());
-        }
+        }*/
     }
     
     //登录验证
@@ -112,8 +112,8 @@ public class LoginDialog extends BaseActivity{
 		final Handler handler = new Handler() {
 			public void handleMessage(Message msg) {
 				if(msg.what == 1){
-					User user = (User)msg.obj;
-					if(user != null){
+					//User user = (User)msg.obj;
+					/*if(user != null){
 						//清空原先cookie
 						ApiClient.cleanCookie();
 						//发送通知广播
@@ -132,7 +132,7 @@ public class LoginDialog extends BaseActivity{
 							startActivity(intent);
 						}
 						finish();
-					}
+					}*/
 				}else if(msg.what == 0){
 					mViewSwitcher.showPrevious();
 					btn_close.setVisibility(View.VISIBLE);
@@ -147,7 +147,7 @@ public class LoginDialog extends BaseActivity{
 		new Thread(){
 			public void run() {
 				Message msg =new Message();
-				try {
+				/*try {
 					AppContext ac = (AppContext)getApplication(); 
 	                User user = ac.loginVerify(account, pwd);
 	                user.setAccount(account);
@@ -167,7 +167,7 @@ public class LoginDialog extends BaseActivity{
 	            	e.printStackTrace();
 			    	msg.what = -1;
 			    	msg.obj = e;
-	            }
+	            }*/
 				handler.sendMessage(msg);
 			}
 		}.start();

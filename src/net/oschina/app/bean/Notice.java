@@ -18,11 +18,13 @@ import android.util.Xml;
  * @version 1.0
  * @created 2012-3-21
  */
-public class Notice implements Serializable {
+public class Notice extends Entity {
 	
-	public final static String UTF8 = "UTF-8";
-
-	public final static String NODE_ROOT = "wyzxwk";
+	public final static String NODE_START = "notice";
+	public final static String NODE_ATMECOUNT = "atmeCount";
+	public final static String NODE_MSGCOUNT = "msgCount";	
+	public final static String NODE_REVIEWCOUNT = "reviewCount";	
+	public final static String NODE_NEWFANSCOUNT = "newFansCount";	
 	
 	public final static int	TYPE_ATME = 1;
 	public final static int	TYPE_MESSAGE = 2;
@@ -59,8 +61,9 @@ public class Notice implements Serializable {
 		this.newFansCount = newFansCount;
 	}	
 	
-	public static Notice parse(InputStream inputStream) throws IOException, AppException {
-		Notice notice = null;
+	@Override
+	public void parse(InputStream inputStream) throws IOException, AppException {
+		boolean gotNodeStart = false;
         //获得XmlPullParser解析器
         XmlPullParser xmlParser = Xml.newPullParser();
         try {        	
@@ -73,32 +76,28 @@ public class Notice implements Serializable {
 			    switch(evtType){ 
 			    	case XmlPullParser.START_TAG:			    		
 			            //通知信息
-			            if(tag.equalsIgnoreCase("notice"))
-			    		{
-			            	notice = new Notice();
+			    		if(tag.equalsIgnoreCase(Notice.NODE_START)){
+			    			gotNodeStart = true;
 			    		}
-			            else if(notice != null)
-			    		{
-			    			if(tag.equalsIgnoreCase("atmeCount"))
-				            {			      
-			    				notice.setAtmeCount(StringUtils.toInt(xmlParser.nextText(),0));
+			            else if(gotNodeStart){
+			    			if(tag.equalsIgnoreCase(Notice.NODE_ATMECOUNT)){			      
+			    				this.setAtmeCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
-				            else if(tag.equalsIgnoreCase("msgCount"))
-				            {			            	
-				            	notice.setMsgCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            else if(tag.equalsIgnoreCase(Notice.NODE_MSGCOUNT)){			            	
+				            	this.setMsgCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
-				            else if(tag.equalsIgnoreCase("reviewCount"))
-				            {			            	
-				            	notice.setReviewCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            else if(tag.equalsIgnoreCase(Notice.NODE_REVIEWCOUNT)){			            	
+				            	this.setReviewCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
-				            else if(tag.equalsIgnoreCase("newFansCount"))
-				            {			            	
-				            	notice.setNewFansCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            else if(tag.equalsIgnoreCase(Notice.NODE_NEWFANSCOUNT)){			            	
+				            	this.setNewFansCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
 			    		}
 			    		break;
-			    	case XmlPullParser.END_TAG:		    		
-				       	break; 
+			    	case XmlPullParser.END_TAG:	
+			    		if(tag.equalsIgnoreCase(NODE_START))
+			    			return; //如果遇到结束符则停止遍历XML
+			    		break; 
 			    }
 			    //如果xml没有结束，则导航到下一个节点
 			    evtType=xmlParser.next();
@@ -108,6 +107,6 @@ public class Notice implements Serializable {
         } finally {
         	inputStream.close();	
         }      
-        return notice;       
+        //return notice;       
 	}
 }

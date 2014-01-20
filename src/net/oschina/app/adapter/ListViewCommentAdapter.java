@@ -3,6 +3,8 @@ package net.oschina.app.adapter;
 import java.util.List;
 
 import net.oschina.app.R;
+import net.oschina.app.bean.Base;
+import net.oschina.app.bean.BaseItem;
 import net.oschina.app.bean.Comment;
 import net.oschina.app.bean.Comment.Refer;
 import net.oschina.app.bean.Comment.Reply;
@@ -10,30 +12,26 @@ import net.oschina.app.common.BitmapManager;
 import net.oschina.app.common.StringUtils;
 import net.oschina.app.common.UIHelper;
 import net.oschina.app.widget.LinkView;
-
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
  * 用户评论Adapter类
- * @author liux (http://my.oschina.net/liux)
+ * @author wyf (http://my.oschina.net/zgtjwyftc)
  * @version 1.0
- * @created 2012-3-21
+ * @created 2014-1-6
  */
-public class ListViewCommentAdapter extends BaseAdapter {
-	private Context 					context;//运行上下文
-	private List<Comment> 				listItems;//数据集合
-	private LayoutInflater 				listContainer;//视图容器
-	private int 						itemViewResource;//自定义项视图源 
+public class ListViewCommentAdapter extends MyBaseAdapter {
+	
 	private BitmapManager 				bmpManager;
-	static class ListItemView{				//自定义控件集合
+	
+	//列表item视图的控件集合，用于setTag保存
+	static class ListItemView {
 			public ImageView face;
 	        public TextView name;  
 		    public TextView date;  
@@ -49,25 +47,11 @@ public class ListViewCommentAdapter extends BaseAdapter {
 	 * @param data
 	 * @param resource
 	 */
-	public ListViewCommentAdapter(Context context, List<Comment> data,int resource) {
-		this.context = context;			
-		this.listContainer = LayoutInflater.from(context);	//创建视图容器并设置上下文
-		this.itemViewResource = resource;
-		this.listItems = data;
+	public ListViewCommentAdapter(Context context, List<BaseItem> data,int resource) {
+		super(context,data,resource);
 		this.bmpManager = new BitmapManager(BitmapFactory.decodeResource(context.getResources(), R.drawable.widget_dface_loading));
 	}
 	
-	public int getCount() {
-		return listItems.size();
-	}
-
-	public Object getItem(int arg0) {
-		return null;
-	}
-
-	public long getItemId(int arg0) {
-		return 0;
-	}
 	
 	/**
 	 * ListView Item设置
@@ -99,7 +83,7 @@ public class ListViewCommentAdapter extends BaseAdapter {
 		}	
 		
 		//设置文字和图片
-		Comment comment = listItems.get(position);
+		Comment comment = (Comment)listItems.get(position);
 		String faceURL = comment.getFace();
 		if(faceURL.endsWith("portrait.gif") || StringUtils.isEmpty(faceURL)){
 			listItemView.face.setImageResource(R.drawable.widget_dface);
@@ -175,7 +159,7 @@ public class ListViewCommentAdapter extends BaseAdapter {
 	private View.OnClickListener faceClickListener = new View.OnClickListener(){
 		public void onClick(View v) {
 			Comment comment = (Comment)v.getTag();
-			UIHelper.showUserCenter(v.getContext(), comment.getAuthorId(), comment.getAuthor());
+			//UIHelper.showUserCenter(v.getContext(), comment.getAuthorId(), comment.getAuthor());
 		}
 	};
 }

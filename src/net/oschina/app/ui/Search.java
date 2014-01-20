@@ -1,18 +1,21 @@
 package net.oschina.app.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.oschina.app.AppContext;
 import net.oschina.app.AppException;
 import net.oschina.app.R;
 import net.oschina.app.adapter.ListViewSearchAdapter;
+import net.oschina.app.bean.BaseItem;
 import net.oschina.app.bean.SearchList;
 import net.oschina.app.bean.Notice;
-import net.oschina.app.bean.SearchList.Result;
+import net.oschina.app.bean.SearchList.SearchResult;
 import net.oschina.app.common.StringUtils;
+import net.oschina.app.common.TypeHelper;
 import net.oschina.app.common.UIHelper;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -38,22 +41,20 @@ public class Search extends BaseActivity{
 	private EditText mSearchEditer;
 	private ProgressBar mProgressbar;
 	
-	private Button search_catalog_software;
-	private Button search_catalog_post;
-	private Button search_catalog_code;
-	private Button search_catalog_blog;
-	private Button search_catalog_news;
+	private Button search_type_article;
+	private Button search_type_topic;
+	private Button search_type_special;
 	
 	private ListView mlvSearch;
 	private ListViewSearchAdapter lvSearchAdapter;
-	private List<Result> lvSearchData = new ArrayList<Result>();
+	private List<BaseItem> lvSearchData = new ArrayList<BaseItem>();
 	private View lvSearch_footer;
 	private TextView lvSearch_foot_more;
-	private ProgressBar lvSearch_foot_progress;
+	private ProgressBar lvSearch_foot_progress; 
     private Handler mSearchHandler;
     private int lvSumData;
 	
-	private String curSearchCatalog = SearchList.CATALOG_SOFTWARE;
+	private int curSearchType = TypeHelper.ARTICLE;
 	private int curLvDataState;
 	private String curSearchContent = "";
     
@@ -102,7 +103,7 @@ public class Search extends BaseActivity{
 			public void onClick(View view) {
 				mSearchEditer.clearFocus();
 				curSearchContent = mSearchEditer.getText().toString();
-				loadLvSearchData(curSearchCatalog, 0, mSearchHandler, UIHelper.LISTVIEW_ACTION_INIT);
+				loadLvSearchData(curSearchType, 0, mSearchHandler, UIHelper.LISTVIEW_ACTION_INIT);
 			}
 		});
     	mSearchEditer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -122,7 +123,7 @@ public class Search extends BaseActivity{
 						v.setTag(1);
 						mSearchEditer.clearFocus();
 						curSearchContent = mSearchEditer.getText().toString();
-						loadLvSearchData(curSearchCatalog, 0, mSearchHandler, UIHelper.LISTVIEW_ACTION_INIT);						
+						loadLvSearchData(curSearchType, 0, mSearchHandler, UIHelper.LISTVIEW_ACTION_INIT);						
 					}else{
 						v.setTag(null);
 					}
@@ -132,19 +133,15 @@ public class Search extends BaseActivity{
 			}
 		});
     	
-    	search_catalog_software = (Button)findViewById(R.id.search_catalog_software);
-    	search_catalog_post = (Button)findViewById(R.id.search_catalog_post);
-    	search_catalog_code = (Button)findViewById(R.id.search_catalog_code);
-    	search_catalog_blog = (Button)findViewById(R.id.search_catalog_blog);
-    	search_catalog_news = (Button)findViewById(R.id.search_catalog_news);
+    	search_type_article = (Button)findViewById(R.id.search_type_article);
+    	search_type_topic = (Button)findViewById(R.id.search_type_topic);
+    	search_type_special = (Button)findViewById(R.id.search_type_special);
     	
-    	search_catalog_software.setOnClickListener(this.searchBtnClick(search_catalog_software,SearchList.CATALOG_SOFTWARE));
-    	search_catalog_post.setOnClickListener(this.searchBtnClick(search_catalog_post,SearchList.CATALOG_POST));
-    	search_catalog_code.setOnClickListener(this.searchBtnClick(search_catalog_code,SearchList.CATALOG_CODE));
-    	search_catalog_blog.setOnClickListener(this.searchBtnClick(search_catalog_blog,SearchList.CATALOG_BLOG));
-    	search_catalog_news.setOnClickListener(this.searchBtnClick(search_catalog_news,SearchList.CATALOG_NEWS));
-    	
-    	search_catalog_software.setEnabled(false);
+    	search_type_article.setOnClickListener(this.searchBtnClick(search_type_article,TypeHelper.ARTICLE));
+    	search_type_topic.setOnClickListener(this.searchBtnClick(search_type_topic,TypeHelper.TOPIC));
+    	search_type_special.setOnClickListener(this.searchBtnClick(search_type_special,TypeHelper.SPECIAL));
+    
+    	search_type_article.setEnabled(false);
     	
     	lvSearch_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
     	lvSearch_foot_more = (TextView)lvSearch_footer.findViewById(R.id.listview_foot_more);
@@ -160,13 +157,13 @@ public class Search extends BaseActivity{
         		//点击底部栏无效
         		if(view == lvSearch_footer) return;
         		
-        		Result res = null;
+        		SearchResult res = null;
         		//判断是否是TextView
         		if(view instanceof TextView){
-        			res = (Result)view.getTag();
+        			res = (SearchResult)view.getTag();
         		}else{
         			TextView title = (TextView)view.findViewById(R.id.search_listitem_title);
-        			res = (Result)title.getTag();
+        			res = (SearchResult)title.getTag();
         		} 
         		if(res == null) return;
         		
@@ -195,7 +192,7 @@ public class Search extends BaseActivity{
 					lvSearch_foot_progress.setVisibility(View.VISIBLE);
 					//当前pageIndex
 					int pageIndex = lvSumData/20;
-					loadLvSearchData(curSearchCatalog, pageIndex, mSearchHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
+					loadLvSearchData(curSearchType, pageIndex, mSearchHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
 				}
 			}
 			public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
@@ -222,15 +219,15 @@ public class Search extends BaseActivity{
 					case UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG:
 						lvSumData = msg.what;
 						lvSearchData.clear();//先清除原有数据
-						lvSearchData.addAll(list.getResultlist());
+						lvSearchData.addAll(list.getList());
 						break;
 					case UIHelper.LISTVIEW_ACTION_SCROLL:
 						lvSumData += msg.what;
 						if(lvSearchData.size() > 0){
-							for(Result res1 : list.getResultlist()){
+							for(BaseItem res1 : list.getList()){
 								boolean b = false;
-								for(Result res2 : lvSearchData){
-									if(res1.getObjid() == res2.getObjid()){
+								for(BaseItem res2 : lvSearchData){
+									if(res1.getId() == res2.getId()){
 										b = true;
 										break;
 									}
@@ -238,7 +235,7 @@ public class Search extends BaseActivity{
 								if(!b) lvSearchData.add(res1);
 							}
 						}else{
-							lvSearchData.addAll(list.getResultlist());
+							lvSearchData.addAll(list.getList());
 						}
 						break;
 					}	
@@ -277,12 +274,12 @@ public class Search extends BaseActivity{
   	
     /**
      * 线程加载收藏数据
-     * @param type 0:全部收藏 1:软件 2:话题 3:博客 4:新闻 5:代码
+     * @param type 0:全部收藏 1:文章 2:话题 3:专题
      * @param pageIndex 当前页数
      * @param handler 处理器
      * @param action 动作标识
      */
-	private void loadLvSearchData(final String catalog,final int pageIndex,final Handler handler,final int action){  
+	private void loadLvSearchData(final int type,final int pageIndex,final Handler handler,final int action){  
 		if(StringUtils.isEmpty(curSearchContent)){
 			UIHelper.ToastMessage(Search.this, "请输入搜索内容");
 			return;
@@ -295,7 +292,16 @@ public class Search extends BaseActivity{
 			public void run() {
 				Message msg = new Message();
 				try {
-					SearchList searchList = ((AppContext)getApplication()).getSearchList(catalog, curSearchContent, pageIndex, 20);
+					final SearchList searchList = new SearchList(); 
+					
+					Map<String, Object> httpPostPara = new HashMap<String, Object>(){{
+						put("type", type);
+						put("content", curSearchContent);
+						put("pageIndex", pageIndex);
+						put("pageSize", searchList.getMaxPageSize());
+					}};
+					
+					((AppContext)getApplication()).getList(searchList, httpPostPara, true, null, null);
 					msg.what = searchList.getPageSize();
 					msg.obj = searchList;
 	            } catch (AppException e) {
@@ -304,41 +310,33 @@ public class Search extends BaseActivity{
 	            	msg.obj = e;
 	            }
 				msg.arg1 = action;//告知handler当前action
-				if(curSearchCatalog.equals(catalog))
+				if(curSearchType == type)
 					handler.sendMessage(msg);
 			}
 		}.start();
 	} 
 	
-	private View.OnClickListener searchBtnClick(final Button btn,final String catalog){
+	private View.OnClickListener searchBtnClick(final Button btn,final int type){
     	return new View.OnClickListener() {
 			public void onClick(View v) {
-		    	if(btn == search_catalog_blog)
-		    		search_catalog_blog.setEnabled(false);
+		    	if(btn == search_type_article)
+		    		search_type_article.setEnabled(false);
 		    	else
-		    		search_catalog_blog.setEnabled(true);
-		    	if(btn == search_catalog_code)
-		    		search_catalog_code.setEnabled(false);
+		    		search_type_article.setEnabled(true);
+		    	if(btn == search_type_topic)
+		    		search_type_topic.setEnabled(false);
 		    	else
-		    		search_catalog_code.setEnabled(true);	
-		    	if(btn == search_catalog_news)
-		    		search_catalog_news.setEnabled(false);
+		    		search_type_topic.setEnabled(true);	
+		    	if(btn == search_type_special)
+		    		search_type_special.setEnabled(false);
 		    	else
-		    		search_catalog_news.setEnabled(true);
-		    	if(btn == search_catalog_post)
-		    		search_catalog_post.setEnabled(false);
-		    	else
-		    		search_catalog_post.setEnabled(true);
-		    	if(btn == search_catalog_software)
-		    		search_catalog_software.setEnabled(false);
-		    	else
-		    		search_catalog_software.setEnabled(true);
-				
+		    		search_type_special.setEnabled(true);
+
 				//开始搜索
 				mSearchEditer.clearFocus();
 				curSearchContent = mSearchEditer.getText().toString();
-				curSearchCatalog = catalog;
-				loadLvSearchData(catalog, 0, mSearchHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);		    	
+				curSearchType = type;
+				loadLvSearchData(type, 0, mSearchHandler, UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG);		    	
 			}
 		};
     }

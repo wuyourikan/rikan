@@ -1,26 +1,26 @@
 package net.oschina.app.bean;
 
-import java.io.Serializable;
+import java.util.Map;
 
-/**
- * 实体基类：实现序列化
- * @author liux (http://my.oschina.net/liux)
- * @version 1.0
- * @created 2012-3-21
- */
-public abstract class Base implements Serializable {
-
-	public final static String UTF8 = "UTF-8";
-	public final static String NODE_ROOT = "oschina";
+public abstract class Base extends EntityWithNotice{
 	
-	protected Notice notice;
-
-	public Notice getNotice() {
-		return notice;
+	/*public final String typeName = "Base";
+	public final int typeID = -1;*/
+	
+	protected String cacheKey;
+	
+	public String getCacheKey() {
+		return cacheKey;
 	}
 
-	public void setNotice(Notice notice) {
-		this.notice = notice;
+	public void setCacheKey(String cacheKey) {
+		this.cacheKey = cacheKey;
 	}
+
+	public abstract String getHttpGetUrl(Map<String, Object> map);
+	
+	public abstract String getHttpPostUrl();
+	
+	public abstract String getCacheKey(Map<String, Object> map);
 
 }

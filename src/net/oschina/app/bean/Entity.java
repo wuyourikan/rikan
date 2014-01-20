@@ -1,27 +1,16 @@
 package net.oschina.app.bean;
 
-/**
- * 实体类
- * @author liux (http://my.oschina.net/liux)
- * @version 1.0
- * @created 2012-3-21
- */
-public abstract class Entity extends Base {
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.Map;
 
-	protected int id;
+import net.oschina.app.AppException;
 
-	public int getId() {
-		return id;
-	}
-
-	protected String cacheKey;
-
-	public String getCacheKey() {
-		return cacheKey;
-	}
-
-	public void setCacheKey(String cacheKey) {
-		this.cacheKey = cacheKey;
-	}
-
+public abstract class Entity implements Serializable{
+	
+	public final static String UTF8 = "UTF-8";
+	public final static String NODE_ROOT = "wyzxwk";
+	
+	public abstract void parse(InputStream inputStream) throws IOException, AppException;
 }

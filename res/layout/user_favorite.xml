@@ -41,29 +41,19 @@
 	   		android:orientation="horizontal" 
 	   		android:gravity="center_vertical">
 			<Button 
-				android:id="@+id/favorite_catalog_news"
+				android:id="@+id/favorite_catalog_article"
 				style="@style/frame_button"
-	         	android:text="@string/user_favorite_news"/>
+	         	android:text="@string/user_favorite_article"/>
 			<ImageView android:layout_width="wrap_content" android:layout_height="fill_parent" android:background="@drawable/frame_button_cutline"/>
 			<Button 
-				android:id="@+id/favorite_catalog_zhuanti"
+				android:id="@+id/favorite_catalog_topic"
 				style="@style/frame_button"
-	         	android:text="@string/user_favorite_zhuanti"/>
+	         	android:text="@string/user_favorite_topic"/>
 			<ImageView android:layout_width="wrap_content" android:layout_height="fill_parent" android:background="@drawable/frame_button_cutline"/>
 			<Button 
-				android:id="@+id/favorite_catalog_huati"
+				android:id="@+id/favorite_catalog_special"
 				style="@style/frame_button"
-	         	android:text="@string/user_favorite_huati"/>
-			<ImageView android:layout_width="wrap_content" android:layout_height="fill_parent" android:background="@drawable/frame_button_cutline"/>
-			<Button 
-				android:id="@+id/favorite_catalog_old"
-				style="@style/frame_button"
-	         	android:text="@string/user_favorite_old"/>
-			<ImageView android:layout_width="wrap_content" android:layout_height="fill_parent" android:background="@drawable/frame_button_cutline"/>
-			<Button 
-				android:id="@+id/favorite_catalog_center"
-				style="@style/frame_button"
-	         	android:text="@string/user_favorite_center"/>
+	         	android:text="@string/user_favorite_special"/>
 		</LinearLayout>
 		
 		<net.oschina.app.widget.PullToRefreshListView

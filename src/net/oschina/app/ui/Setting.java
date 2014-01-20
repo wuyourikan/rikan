@@ -83,7 +83,7 @@ public class Setting extends PreferenceActivity {
 		myinfo = (Preference) findPreference("myinfo");
 		myinfo.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference preference) {
-				UIHelper.showUserInfo(Setting.this);
+				//UIHelper.showUserInfo(Setting.this);
 				return true;
 			}
 		});

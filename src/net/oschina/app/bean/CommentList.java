@@ -2,13 +2,16 @@ package net.oschina.app.bean;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+
+
+import java.util.Map;
 
 import net.oschina.app.AppException;
+import net.oschina.app.api.ApiClient;
 import net.oschina.app.bean.Comment.Refer;
 import net.oschina.app.bean.Comment.Reply;
 import net.oschina.app.common.StringUtils;
+import net.oschina.app.common.TypeHelper;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -17,34 +20,39 @@ import android.util.Xml;
 
 /**
  * 评论列表实体类
- * @author liux (http://my.oschina.net/liux)
+ * @author wyf (http://my.oschina.net/zgtjwyftc)
  * @version 1.0
- * @created 2012-3-21
+ * @created 2014-1-6
  */
-public class CommentList extends Entity{
+public class CommentList extends BaseList{
 
-	public final static int CATALOG_NEWS = 1;
-	public final static int CATALOG_HUATI = 2;
-	public final static int CATALOG_TWEET = 3;
+	public final static int CATALOG_ARTICAL = 1;
+	public final static int CATALOG_TOPIC = 2;
+	public final static int CATALOG_ZHUANTI = 3;
 	public final static int CATALOG_ACTIVE = 4;
-	public final static int CATALOG_MESSAGE = 4;//动态与留言都属于消息中心
-	
-	private int pageSize;
-	private int allCount;
-	private List<Comment> commentlist = new ArrayList<Comment>();
-	
-	public int getPageSize() {
-		return pageSize;
-	}
-	public int getAllCount() {
-		return allCount;
-	}
-	public List<Comment> getCommentlist() {
-		return commentlist;
-	}
+	public final static int CATALOG_MESSAGE = 5;//动态与留言都属于消息中心
 
-	public static CommentList parse(InputStream inputStream) throws IOException, AppException {
-		CommentList commlist = new CommentList();
+	@Override
+	public int getMaxPageSize(){
+		return 20;
+	}
+	@Override
+	public String getCacheKey(Map<String, Object> map) {
+		return "commentlist_" + map.get("catalog")+
+				"_" + map.get("pageIndex");
+	}
+	@Override
+	public String getHttpGetUrl(Map<String, Object> map) {
+		map.put("type", TypeHelper.COMMENT);
+		//return ApiClient.makeURL(URLs.GET_LIST, map);
+		return ApiClient.makeStaticURL(URLs.GET_STATIC_LIST, map);	
+	}
+	@Override
+	public String getHttpPostUrl() {
+		return URLs.GET_LIST;
+	}
+	@Override
+	public void parse(InputStream inputStream) throws IOException, AppException {
 		Comment comm = null;
 		Reply reply = null;
 		Refer refer = null;
@@ -59,113 +67,93 @@ public class CommentList extends Entity{
 	    		String tag = xmlParser.getName(); 
 			    switch(evtType){ 
 			    	case XmlPullParser.START_TAG:
-			    		if(tag.equalsIgnoreCase("allCount")) 
-			    		{
-			    			commlist.allCount = StringUtils.toInt(xmlParser.nextText(),0);
+			    		if(tag.equalsIgnoreCase("allCount")) {
+			    			this.allCount = StringUtils.toInt(xmlParser.nextText(),0);
 			    		}
-			    		else if(tag.equalsIgnoreCase("pageSize")) 
-			    		{
-			    			commlist.pageSize = StringUtils.toInt(xmlParser.nextText(),0);
+			    		else if(tag.equalsIgnoreCase(BaseList.NODE_PAGESIZE)) {
+			    			this.pageSize = StringUtils.toInt(xmlParser.nextText(),0);
 			    		}
-			    		else if (tag.equalsIgnoreCase("comment")) 
-			    		{ 
+			    		else if (tag.equalsIgnoreCase(Comment.NODE_START)) { 
 			    			comm = new Comment();
 			    		}
-			    		else if(comm != null)
-			    		{	
-				            if(tag.equalsIgnoreCase("id"))
-				            {			      
+			    		else if(comm != null){	
+				            if(tag.equalsIgnoreCase(BaseItem.NODE_ID)){			      
 				            	comm.id = StringUtils.toInt(xmlParser.nextText(),0);
 				            }
-				            else if(tag.equalsIgnoreCase("portrait"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(Comment.NODE_FACE)){			            	
 				            	comm.setFace(xmlParser.nextText());
 				            }
-				            else if(tag.equalsIgnoreCase("author"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(Comment.NODE_AUTHOR)){			            	
 				            	comm.setAuthor(xmlParser.nextText());		            	
 				            }
-				            else if(tag.equalsIgnoreCase("authorid"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(Comment.NODE_AUTHORID)){			            	
 				            	comm.setAuthorId(StringUtils.toInt(xmlParser.nextText(),0));		            	
 				            }
-				            else if(tag.equalsIgnoreCase("content"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(Comment.NODE_CONTENT)){			            	
 				            	comm.setContent(xmlParser.nextText());
 				            }
-				            else if(tag.equalsIgnoreCase("pubDate"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(Comment.NODE_PUBDATE)){			            	
 				            	comm.setPubDate(xmlParser.nextText());		            	
 				            }
-				            else if(tag.equalsIgnoreCase("appclient"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(Comment.NODE_APPCLIENT)){			            	
 				            	comm.setAppClient(StringUtils.toInt(xmlParser.nextText(),0));			            	
 				            }
-				            else if(tag.equalsIgnoreCase("reply"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(Reply.NODE_START)){			            	
 				            	reply = new Reply();         	
 				            }
-				            else if(reply!=null && tag.equalsIgnoreCase("rauthor"))
-				            {
-				            	reply.rauthor = xmlParser.nextText();
+				            else if(reply!=null){
+				            	if(tag.equalsIgnoreCase(Reply.NODE_AUTHOR)){
+					            	reply.rauthor = xmlParser.nextText();
+					            }
+					            else if(tag.equalsIgnoreCase(Reply.NODE_PUBDATE)){
+					            	reply.rpubDate = xmlParser.nextText();
+					            }
+					            else if(tag.equalsIgnoreCase(Reply.NODE_CONTENT)){
+					            	reply.rcontent = xmlParser.nextText();
+					            }
 				            }
-				            else if(reply!=null && tag.equalsIgnoreCase("rpubDate"))
-				            {
-				            	reply.rpubDate = xmlParser.nextText();
-				            }
-				            else if(reply!=null && tag.equalsIgnoreCase("rcontent"))
-				            {
-				            	reply.rcontent = xmlParser.nextText();
-				            }
-				            else if(tag.equalsIgnoreCase("refer"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(Refer.NODE_START)){			            	
 				            	refer = new Refer();         	
 				            }
-				            else if(refer!=null && tag.equalsIgnoreCase("refertitle"))
-				            {
-				            	refer.refertitle = xmlParser.nextText();
-				            }
-				            else if(refer!=null && tag.equalsIgnoreCase("referbody"))
-				            {
-				            	refer.referbody = xmlParser.nextText();
+				            else if(refer!=null){
+				            	if(tag.equalsIgnoreCase(Refer.NODE_TITLE)){
+					            	refer.refertitle = xmlParser.nextText();
+					            }
+					            else if(tag.equalsIgnoreCase(Refer.NODE_BODY)){
+					            	refer.referbody = xmlParser.nextText();
+					            }
 				            }
 			    		}
-			            //通知信息
-			            else if(tag.equalsIgnoreCase("notice"))
-			    		{
-			            	commlist.setNotice(new Notice());
+			    		//通知信息
+			            else if(tag.equalsIgnoreCase(Notice.NODE_START)){
+			            	this.setNotice(new Notice());
 			    		}
-			            else if(commlist.getNotice() != null)
-			    		{
-			    			if(tag.equalsIgnoreCase("atmeCount"))
-				            {			      
-			    				commlist.getNotice().setAtmeCount(StringUtils.toInt(xmlParser.nextText(),0));
+			            else if(this.getNotice() != null){
+			    			if(tag.equalsIgnoreCase(Notice.NODE_ATMECOUNT)){			      
+			    				this.getNotice().setAtmeCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
-				            else if(tag.equalsIgnoreCase("msgCount"))
-				            {			            	
-				            	commlist.getNotice().setMsgCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            else if(tag.equalsIgnoreCase(Notice.NODE_MSGCOUNT)){			            	
+				            	this.getNotice().setMsgCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
-				            else if(tag.equalsIgnoreCase("reviewCount"))
-				            {			            	
-				            	commlist.getNotice().setReviewCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            else if(tag.equalsIgnoreCase(Notice.NODE_REVIEWCOUNT)){			            	
+				            	this.getNotice().setReviewCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
-				            else if(tag.equalsIgnoreCase("newFansCount"))
-				            {			            	
-				            	commlist.getNotice().setNewFansCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            else if(tag.equalsIgnoreCase(Notice.NODE_NEWFANSCOUNT)){			            	
+				            	this.getNotice().setNewFansCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
 			    		}
 			    		break;
 			    	case XmlPullParser.END_TAG:	
 					   	//如果遇到标签结束，则把对象添加进集合中
-				       	if (tag.equalsIgnoreCase("comment") && comm != null) { 
-				       		commlist.getCommentlist().add(comm); 
+				       	if (tag.equalsIgnoreCase(Comment.NODE_START) && comm != null) { 
+				       		this.getList().add(comm); 
 				       		comm = null; 
 				       	}
-				       	else if (tag.equalsIgnoreCase("reply") && comm!=null && reply!=null) { 
+				       	else if (tag.equalsIgnoreCase(Reply.NODE_START) && comm!=null && reply!=null) { 
 				       		comm.getReplies().add(reply);
 				       		reply = null; 
 				       	}
-				       	else if(tag.equalsIgnoreCase("refer") && comm!=null && refer!=null) {
+				       	else if(tag.equalsIgnoreCase(Refer.NODE_START) && comm!=null && refer!=null) {
 				       		comm.getRefers().add(refer);
 				       		refer = null;
 				       	}
@@ -179,6 +167,5 @@ public class CommentList extends Entity{
         } finally {
         	inputStream.close();	
         }      
-        return commlist;       
 	}
 }

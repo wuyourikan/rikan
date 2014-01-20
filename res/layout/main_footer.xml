@@ -14,14 +14,14 @@
 		style="@style/main_footbar_cutline"
 		android:src="@drawable/widget_bar_cut_off"/>
 	<RadioButton 
-		android:id="@+id/main_footbar_huati"
+		android:id="@+id/main_footbar_topic"
 		style="@style/main_footbar_radio"
-		android:drawableTop="@drawable/widget_bar_huati"/>
+		android:drawableTop="@drawable/widget_bar_topic"/>
 	<ImageView
 		style="@style/main_footbar_cutline"
 		android:src="@drawable/widget_bar_cut_off"/>
 	<RadioButton 
-		android:id="@+id/main_footbar_zhuanti"
+		android:id="@+id/main_footbar_special"
 		style="@style/main_footbar_radio"
 		android:drawableTop="@drawable/widget_bar_tweet"/>
 	<ImageView

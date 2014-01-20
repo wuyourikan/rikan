@@ -35,9 +35,9 @@
         <item>站务</item>
     </string-array>
     <string-array name="head_titles">
-        <item>文章</item>
-        <item>话题</item>
-        <item>专题</item>
+        <item>乌有文章</item>
+        <item>乌有话题</item>
+        <item>乌有专题</item>
         <item>我的空间</item>
         <item>留言</item>
     </string-array>

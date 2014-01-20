@@ -16,40 +16,25 @@ import net.oschina.app.R;
 import net.oschina.app.adapter.GridViewFaceAdapter;
 import net.oschina.app.api.ApiClient;
 import net.oschina.app.bean.AccessInfo;
-import net.oschina.app.bean.Active;
-import net.oschina.app.bean.All;
 import net.oschina.app.bean.Comment;
 import net.oschina.app.bean.CommentList;
-import net.oschina.app.bean.Messages;
-import net.oschina.app.bean.News;
 import net.oschina.app.bean.Notice;
-import net.oschina.app.bean.Result;
-import net.oschina.app.bean.Tweet;
 import net.oschina.app.bean.URLs;
 import net.oschina.app.ui.About;
 import net.oschina.app.ui.BaseActivity;
 import net.oschina.app.ui.CommentPub;
 import net.oschina.app.ui.FeedBack;
-import net.oschina.app.ui.HuatiDetail;
+import net.oschina.app.ui.SpecialDetail;
+import net.oschina.app.ui.TopicDetail;
 import net.oschina.app.ui.ImageDialog;
 import net.oschina.app.ui.ImageZoomDialog;
 import net.oschina.app.ui.LoginDialog;
 import net.oschina.app.ui.Main;
-import net.oschina.app.ui.MessageDetail;
-import net.oschina.app.ui.MessageForward;
-import net.oschina.app.ui.MessagePub;
-import net.oschina.app.ui.NewsDetail;
-import net.oschina.app.ui.RecommendDetail;
+import net.oschina.app.ui.ArticleDetail;
 import net.oschina.app.ui.ScreenShotShare;
 import net.oschina.app.ui.Search;
 import net.oschina.app.ui.Setting;
-import net.oschina.app.ui.SoftwareDetail;
-import net.oschina.app.ui.SoftwareLib;
-import net.oschina.app.ui.UserCenter;
 import net.oschina.app.ui.UserFavorite;
-import net.oschina.app.ui.UserFriend;
-import net.oschina.app.ui.UserInfo;
-import net.oschina.app.ui.ZatanDetail;
 import net.oschina.app.widget.LinkView;
 import net.oschina.app.widget.PathChooseDialog;
 import net.oschina.app.widget.LinkView.MyURLSpan;
@@ -114,20 +99,13 @@ public class UIHelper {
 
 	/*public final static int LISTVIEW_DATATYPE_NEWS = 0x01;
 	public final static int LISTVIEW_DATATYPE_BLOG = 0x02;
-	public final static int LISTVIEW_DATATYPE_HUATI = 0x03;
+	public final static int LISTVIEW_DATATYPE_TOPIC = 0x03;
 	public final static int LISTVIEW_DATATYPE_TWEET = 0x04;
 	public final static int LISTVIEW_DATATYPE_ACTIVE = 0x05;
 	public final static int LISTVIEW_DATATYPE_MESSAGE = 0x06;
 	public final static int LISTVIEW_DATATYPE_COMMENT = 0x07;
 	*/
-	public final static int LISTVIEW_DATATYPE_NEWS = 0x01;
-	public final static int LISTVIEW_DATATYPE_ZATAN = 0x02;
-	public final static int LISTVIEW_DATATYPE_RECOMMEND = 0x03;
-	public final static int LISTVIEW_DATATYPE_ALL = 0x04;
-	public final static int LISTVIEW_DATATYPE_HUATI = 0x05;                                                                                //次数有改动
-	public final static int LISTVIEW_DATATYPE_ZHUANTI = 0x06;
-	public final static int LISTVIEW_DATATYPE_COMMENT = 0x07;
-
+	
 	public final static int REQUEST_CODE_FOR_RESULT = 0x01;
 	public final static int REQUEST_CODE_FOR_REPLY = 0x02;
 
@@ -173,54 +151,38 @@ public class UIHelper {
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 	}
-
 	
 	/**
-	 * 显示推荐详情
+	 * 显示dataType详情（统一API）
 	 * @param context
 	 * @param newsId
 	 */
-	public static void showRecommendDetail(Context context, int recommendId)
+	public static void showDetail(Context context, int objId, int dataType)
 	{
-		Intent intent = new Intent(context, RecommendDetail.class);
-		intent.putExtra("recommend_id", recommendId);
-		context.startActivity(intent);
+		switch (dataType) {
+		case TypeHelper.ARTICLE:
+			showArticleDetail(context,objId);
+			break;
+		case TypeHelper.TOPIC:
+			showTopicDetail(context,objId);
+			break;
+		case TypeHelper.SPECIAL:
+			showSpecialDetail(context,objId);
+			break;
+		default:
+			break;
+		}
 	}
 	
 	/**
-	 * 显示新闻详情
+	 * 显示文章详情
 	 * @param context
 	 * @param newsId
 	 */
-	public static void showNewsDetail(Context context, int newsId)
+	public static void showArticleDetail(Context context, int articleId)
 	{
-		Intent intent = new Intent(context, NewsDetail.class);
-		intent.putExtra("news_id", newsId);
-		context.startActivity(intent);
-	}
-	
-	/**
-	 * 显示杂谈详情
-	 * @param context
-	 * @param blogId
-	 */
-	public static void showZatanDetail(Context context, int zatanId)
-	{
-		Intent intent = new Intent(context, ZatanDetail.class);
-		intent.putExtra("zatan_id", zatanId);
-		context.startActivity(intent);
-	}
-	
-
-	/**
-	 * 显示话题详情
-	 * 
-	 * @param context
-	 * @param huatiId
-	 */
-	public static void showHuatiDetail(Context context, int huatiId) {
-		Intent intent = new Intent(context, HuatiDetail.class);
-		intent.putExtra("huati_id", huatiId);
+		Intent intent = new Intent(context, ArticleDetail.class);
+		intent.putExtra("article_id", articleId);
 		context.startActivity(intent);
 	}
 	
@@ -228,13 +190,25 @@ public class UIHelper {
 	 * 显示话题详情
 	 * 
 	 * @param context
-	 * @param huatiId
+	 * @param topicId
 	 */
-/*	public static void showHuatiDetail(Context context, int huatiId) {
-		Intent intent = new Intent(context, HuatiDetail.class);
-		intent.putExtra("huati_id", huatiId);
+	public static void showTopicDetail(Context context, int topicId) {
+		Intent intent = new Intent(context, TopicDetail.class);
+		intent.putExtra("topic_id", topicId);
 		context.startActivity(intent);
-	}*/
+	}
+	
+	/**
+	 * 显示专题详情
+	 * 
+	 * @param context
+	 * @param topicId
+	 */
+	public static void showSpecialDetail(Context context, int specialId) {
+		Intent intent = new Intent(context, SpecialDetail.class);
+		intent.putExtra("special_id", specialId);
+		context.startActivity(intent);
+	}
 	
 	/**
 	 * 显示相关Tag话题列表
@@ -242,9 +216,9 @@ public class UIHelper {
 	 * @param context
 	 * @param tag
 	 */
-/*	public static void showHuatiListByTag(Context context, String tag) {
-		Intent intent = new Intent(context, HuatiTag.class);
-		intent.putExtra("huati_tag", tag);
+/*	public static void showTopicListByTag(Context context, String tag) {
+		Intent intent = new Intent(context, TopicTag.class);
+		intent.putExtra("topic_tag", tag);
 		context.startActivity(intent);
 	}*/
 
@@ -253,8 +227,8 @@ public class UIHelper {
 	 * 
 	 * @param context
 	 */
-/*	public static void showHuatiPub(Context context) {
-		Intent intent = new Intent(context, HuatiPub.class);
+/*	public static void showTopicPub(Context context) {
+		Intent intent = new Intent(context, TopicPub.class);
 		context.startActivity(intent);
 	}*/
 
@@ -278,68 +252,38 @@ public class UIHelper {
 
 	/**
 	 * 显示软件详情
-	 * 
 	 * @param context
 	 * @param ident
 	 */
-	public static void showSoftwareDetail(Context context, String ident) {
-		Intent intent = new Intent(context, SoftwareDetail.class);
-		intent.putExtra("ident", ident);
-		context.startActivity(intent);
-	}
+
 
 	/**
-	 * 新闻超链接点击跳转
+	 * 文章超链接点击跳转
 	 * @param context
 	 * @param newsId
 	 * @param newsType
 	 * @param objId
 	 */
-	public static void showNewsRedirect(Context context, News news)
+/*	public static void showArticleRedirect(Context context, Article article)
 	{
-		String url = news.getUrl();
+		String url = article.getUrl();
 		//url为空-旧方法
 		if(StringUtils.isEmpty(url)) {
-			int newsId = news.getId();
-			int newsType = news.getNewType().type;
-			String objId = news.getNewType().attachment;                                                                              //此处有改动
+			int Id = article.getId();
+			int articleType = article.getNewType().type;
+			String objId = article.getNewType().attachment;                                                                              //此处有改动
 			switch (newsType) {
-				case News.NEWSTYPE_NEWS:
+				case Article.NEWSTYPE_NEWS:
 					showNewsDetail(context, newsId);
 					break;
 				case News.NEWSTYPE_ZATAN:
-					showZatanDetail(context, StringUtils.toInt(objId));
+					showArticleDetail(context, StringUtils.toInt(objId));
 					break;
 			}
 		} else {
 			showUrlRedirect(context, url);
 		}
-	}
-	/**
-	 * 全部超链接点击跳转
-	 * @param context
-	 * @param allId
-	 * @param allType
-	 * @param objId
-	 */
-	public static void showAllRedirect(Context context, All all)
-	{
-		String url = all.getUrl();
-		if(StringUtils.isEmpty(url)) {
-			int allType = all.getAllType().type;
-			String objId = all.getAllType().attachment;
-			switch (allType) {
-			case All.ALLTYPE_RECOMMEND:
-				showRecommendDetail(context, StringUtils.toInt(objId));
-			case All.ALLTYPE_NEWS:
-			    showNewsDetail(context, StringUtils.toInt(objId));
-			case All.ALLTYPE_ZATAN:
-				showZatanDetail(context, StringUtils.toInt(objId));
-			}
-			
-		}
-	}
-
+	}*/
 
 	/**
 	 * 动态点击跳转到相关新闻、帖子等
@@ -349,7 +293,7 @@ public class UIHelper {
 	 * @param catalog
 	 *            0其他 1新闻 2帖子 3动弹 4博客
 	 */
-	public static void showActiveRedirect(Context context, Active active) {
+	/*public static void showActiveRedirect(Context context, Active active) {
 		String url = active.getUrl();
 		// url为空-旧方法
 		if (StringUtils.isEmpty(url)) {
@@ -359,23 +303,23 @@ public class UIHelper {
 			case Active.CATALOG_OTHER:
 				// 其他-无跳转
 				break;
-			case Active.CATALOG_NEWS:
-				showNewsDetail(context, id);
+			case Active.CATALOG_ACTI:
+				showArticleDetail(context, id);
 				break;
-			case Active.CATALOG_HUATI:
-				showHuatiDetail(context, id);
+			case Active.CATALOG_TOPIC:
+				showTopicDetail(context, id);
 				break;
-			/*case Active.CATALOG_TWEET:
+			case Active.CATALOG_TWEET:
 				showTweetDetail(context, id);
 				break;
 			case Active.CATALOG_BLOG:
 				showBlogDetail(context, id);
-				break;*/
+				break;
 			}
 		} else {
 			showUrlRedirect(context, url);
 		}
-	}
+	}*/
 
 	/**
 	 * 显示评论发表页面
@@ -411,7 +355,7 @@ public class UIHelper {
 		intent.putExtra("author_id", authorid);
 		intent.putExtra("author", author);
 		intent.putExtra("content", content);
-		if (catalog == CommentList.CATALOG_HUATI)
+		if (catalog == CommentList.CATALOG_TOPIC)
 			context.startActivityForResult(intent, REQUEST_CODE_FOR_REPLY);
 		else
 			context.startActivityForResult(intent, REQUEST_CODE_FOR_RESULT);
@@ -424,13 +368,13 @@ public class UIHelper {
 	 * @param catalog
 	 * @param friendid
 	 */
-	public static void showMessageDetail(Context context, int friendid,
+	/*public static void showMessageDetail(Context context, int friendid,
 			String friendname) {
 		Intent intent = new Intent(context, MessageDetail.class);
 		intent.putExtra("friend_name", friendname);
 		intent.putExtra("friend_id", friendid);
 		context.startActivity(intent);
-	}
+	}*/
 
 	/**
 	 * 显示留言回复界面
@@ -441,7 +385,7 @@ public class UIHelper {
 	 * @param friendName
 	 *            对方名称
 	 */
-	public static void showMessagePub(Activity context, int friendId,
+	/*public static void showMessagePub(Activity context, int friendId,
 			String friendName) {
 		Intent intent = new Intent();
 		intent.putExtra("user_id",
@@ -450,7 +394,7 @@ public class UIHelper {
 		intent.putExtra("friend_name", friendName);
 		intent.setClass(context, MessagePub.class);
 		context.startActivityForResult(intent, REQUEST_CODE_FOR_RESULT);
-	}
+	}*/
 
 	/**
 	 * 显示转发留言界面
@@ -461,7 +405,7 @@ public class UIHelper {
 	 * @param messageContent
 	 *            留言内容
 	 */
-	public static void showMessageForward(Activity context, String friendName,
+	/*public static void showMessageForward(Activity context, String friendName,
 			String messageContent) {
 		Intent intent = new Intent();
 		intent.putExtra("user_id",
@@ -470,7 +414,7 @@ public class UIHelper {
 		intent.putExtra("message_content", messageContent);
 		intent.setClass(context, MessageForward.class);
 		context.startActivity(intent);
-	}
+	}*/
 
 	/**
 	 * 调用系统安装了的应用分享
@@ -605,7 +549,7 @@ public class UIHelper {
 	 * @param msg
 	 * @param thread
 	 */
-	public static void showMessageListOptionDialog(final Activity context,
+	/*public static void showMessageListOptionDialog(final Activity context,
 			final Messages msg, final Thread thread) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setIcon(R.drawable.ic_dialog_menu);
@@ -629,7 +573,7 @@ public class UIHelper {
 					}
 				});
 		builder.create().show();
-	}
+	}*/
 
 	/**
 	 * 消息详情操作选择框
@@ -638,7 +582,7 @@ public class UIHelper {
 	 * @param msg
 	 * @param thread
 	 */
-	public static void showMessageDetailOptionDialog(final Activity context,
+	/*public static void showMessageDetailOptionDialog(final Activity context,
 			final Comment msg, final Thread thread) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setIcon(R.drawable.ic_dialog_menu);
@@ -658,7 +602,7 @@ public class UIHelper {
 					}
 				});
 		builder.create().show();
-	}
+	}*/
 
 	/**
 	 * 评论操作选择框
@@ -853,17 +797,14 @@ public class UIHelper {
 	 * 
 	 * @param context
 	 */
-	public static void showSoftware(Context context) {
-		Intent intent = new Intent(context, SoftwareLib.class);
-		context.startActivity(intent);
-	}
+
 
 	/**
 	 * 显示我的资料
 	 * 
 	 * @param context
 	 */
-	public static void showUserInfo(Activity context) {
+	/*public static void showUserInfo(Activity context) {
 		AppContext ac = (AppContext) context.getApplicationContext();
 		if (!ac.isLogin()) {
 			showLoginDialog(context);
@@ -871,7 +812,7 @@ public class UIHelper {
 			Intent intent = new Intent(context, UserInfo.class);
 			context.startActivity(intent);
 		}
-	}
+	}*/
 
 	/**
 	 * 显示路径选择对话框
@@ -891,13 +832,13 @@ public class UIHelper {
 	 * @param hisuid
 	 * @param hisname
 	 */
-	public static void showUserCenter(Context context, int hisuid,
+	/*public static void showUserCenter(Context context, int hisuid,
 			String hisname) {
 		Intent intent = new Intent(context, UserCenter.class);
 		intent.putExtra("his_id", hisuid);
 		intent.putExtra("his_name", hisname);
 		context.startActivity(intent);
-	}
+	}*/
 
 	/**
 	 * 显示用户收藏夹
@@ -914,14 +855,14 @@ public class UIHelper {
 	 * 
 	 * @param context
 	 */
-	public static void showUserFriend(Context context, int friendType,
+	/*public static void showUserFriend(Context context, int friendType,
 			int followers, int fans) {
 		Intent intent = new Intent(context, UserFriend.class);
 		intent.putExtra("friend_type", friendType);
 		intent.putExtra("friend_followers", followers);
 		intent.putExtra("friend_fans", fans);
 		context.startActivity(intent);
-	}
+	}*/
 
 	/**
 	 * 加载显示用户头像
@@ -1022,32 +963,23 @@ public class UIHelper {
 	public static void showLinkRedirect(Context context, int objType,
 			int objId, String objKey) {
 		switch (objType) {
-		case URLs.URL_OBJ_TYPE_NEWS:
-			showNewsDetail(context, objId);//读取这片资讯
+		case URLs.URL_OBJ_TYPE_ARTICLE:
+			showArticleDetail(context, objId);
 			break;
-		case URLs.URL_OBJ_TYPE_RECOMMEND:
-			showRecommendDetail(context, objId);
+		case URLs.URL_OBJ_TYPE_TOPIC:
+			showTopicDetail(context, objId);
 			break;
-		case URLs.URL_OBJ_TYPE_HUATI:
-			showHuatiDetail(context, objId);
+		case URLs.URL_OBJ_TYPE_SPECIAL:
+			showSpecialDetail(context, objId);
 			break;
-		case URLs.URL_OBJ_TYPE_ZATAN:
-			showZatanDetail(context, objId);
-			break;
-		/*case URLs.URL_OBJ_TYPE_HUATI_TAG:
-			showHuatiListByTag(context, objKey);
+		/*case URLs.URL_OBJ_TYPE_TOPIC_TAG:
+			showTopicListByTag(context, objKey);
 			break;*/
-		/*case URLs.URL_OBJ_TYPE_SOFTWARE:
-			showSoftwareDetail(context, objKey);
-			break;*/
-		case URLs.URL_OBJ_TYPE_ZONE:
+		/*case URLs.URL_OBJ_TYPE_ZONE:
 			showUserCenter(context, objId, objKey);
-			break;
+			break;*/
 		/*case URLs.URL_OBJ_TYPE_TWEET:
 			showTweetDetail(context, objId);
-			break;*/
-		/*case URLs.URL_OBJ_TYPE_BLOG:
-			showBlogDetail(context, objId);
 			break;*/
 		case URLs.URL_OBJ_TYPE_OTHER:
 			openBrowser(context, objKey);
@@ -1215,7 +1147,7 @@ public class UIHelper {
 	 * @param context
 	 * @param notice
 	 */
-	public static void sendBroadCastTweet(Context context, int what,
+	/*public static void sendBroadCastTweet(Context context, int what,
 			Result res, Tweet tweet) {
 		if (res == null && tweet == null)
 			return;
@@ -1226,7 +1158,7 @@ public class UIHelper {
 		else
 			intent.putExtra("TWEET", tweet);
 		context.sendBroadcast(intent);
-	}
+	}*/
 
 	/**
 	 * 组合动态的动作文本

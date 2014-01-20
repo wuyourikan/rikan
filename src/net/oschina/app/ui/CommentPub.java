@@ -72,9 +72,9 @@ public class CommentPub extends BaseActivity{
     	mPublish = (Button)findViewById(R.id.comment_pub_publish);
     	mContent = (EditText)findViewById(R.id.comment_pub_content);
     	mZone = (CheckBox)findViewById(R.id.comment_pub_zone);
-    	if(_catalog == CommentList.CATALOG_TWEET){
+    	/*if(_catalog == CommentList.CATALOG_TWEET){
     		mZone.setVisibility(View.VISIBLE);
-    	}
+    	}*/
     	
     	mBack.setOnClickListener(UIHelper.finish(this));
     	mPublish.setOnClickListener(publishClickListener);    	
@@ -133,16 +133,17 @@ public class CommentPub extends BaseActivity{
 				public void run() {
 					Message msg = new Message();
 					Result res = new Result();
-					try {
+					//TODO:回复接口
+					/*try {
 						//发表评论
 						if(_replyid == 0){
 							res = ac.pubComment(_catalog, _id, _uid, _content, _isPostToMyZone);
 						}
 						//对评论进行回复
 						else if(_replyid > 0){
-							/*if(_catalog == CATALOG_BLOG)
+							if(_catalog == CATALOG_BLOG)
 								//res = ac.replyBlogComment(_id, _uid, _content, _replyid, _authorid);
-							else*/
+							else
 								res = ac.replyComment(_id, _catalog, _replyid, _authorid, _uid, _content);
 						}
 						msg.what = 1;
@@ -151,7 +152,7 @@ public class CommentPub extends BaseActivity{
 		            	e.printStackTrace();
 						msg.what = -1;
 						msg.obj = e;
-		            }
+		            }*/
 					handler.sendMessage(msg);
 				}
 			}.start();

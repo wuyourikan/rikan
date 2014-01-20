@@ -10,7 +10,7 @@
     	android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_centerVertical="true"
-		android:layout_marginLeft="120.0dip"
+		android:layout_marginLeft="100.0dip"
 		android:background="@drawable/main_head_up"/>
     
     <TextView 
@@ -19,7 +19,7 @@
 		android:layout_toRightOf="@id/main_head_logo"
 		android:layout_centerVertical="true"
 		android:layout_marginLeft="0.0dip"
-		android:text="文章"/>
+		android:text="乌有文章"/>
 	
    	<ProgressBar 
 		android:id="@+id/main_head_progress" 

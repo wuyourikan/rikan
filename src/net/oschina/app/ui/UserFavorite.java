@@ -2,19 +2,22 @@ package net.oschina.app.ui;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.oschina.app.AppContext;
 import net.oschina.app.AppException;
 import net.oschina.app.R;
 import net.oschina.app.adapter.ListViewFavoriteAdapter;
+import net.oschina.app.bean.BaseItem;
 import net.oschina.app.bean.FavoriteList;
 import net.oschina.app.bean.Notice;
 import net.oschina.app.bean.Result;
 import net.oschina.app.bean.FavoriteList.Favorite;
+import net.oschina.app.common.TypeHelper;
 import net.oschina.app.common.UIHelper;
 import net.oschina.app.widget.PullToRefreshListView;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -36,15 +39,13 @@ public class UserFavorite extends BaseActivity {
 
 	private ImageView mBack;
 	private ProgressBar mProgressbar;
-	private Button favorite_catalog_software;
-	private Button favorite_catalog_huati;
-	private Button favorite_catalog_code;
-	private Button favorite_catalog_blog;
-	private Button favorite_catalog_news;
+	private Button favorite_catalog_article;
+	private Button favorite_catalog_topic;
+	private Button favorite_catalog_special;
 	
 	private PullToRefreshListView mlvFavorite;
 	private ListViewFavoriteAdapter lvFavoriteAdapter;
-	private List<Favorite> lvFavoriteData = new ArrayList<Favorite>();
+	private List<BaseItem> lvFavoriteData = new ArrayList<BaseItem>();
 	private View lvFavorite_footer;
 	private TextView lvFavorite_foot_more;
 	private ProgressBar lvFavorite_foot_progress;
@@ -89,18 +90,16 @@ public class UserFavorite extends BaseActivity {
     	mBack.setOnClickListener(UIHelper.finish(this));
     	mProgressbar = (ProgressBar)findViewById(R.id.favorite_head_progress);
     	
-    	favorite_catalog_software = (Button)findViewById(R.id.favorite_catalog_news);
-    	favorite_catalog_huati = (Button)findViewById(R.id.favorite_catalog_zhuanti);
-    	favorite_catalog_code = (Button)findViewById(R.id.favorite_catalog_huati);
-    	favorite_catalog_blog = (Button)findViewById(R.id.favorite_catalog_old);
-    	favorite_catalog_news = (Button)findViewById(R.id.favorite_catalog_center);
+    	favorite_catalog_article = (Button)findViewById(R.id.favorite_catalog_article);
+    	favorite_catalog_topic = (Button)findViewById(R.id.favorite_catalog_topic);
+    	favorite_catalog_special = (Button)findViewById(R.id.favorite_catalog_special);
     	
-    	favorite_catalog_news.setOnClickListener(this.favoriteBtnClick(favorite_catalog_news,FavoriteList.TYPE_NEWS));
-    	favorite_catalog_huati.setOnClickListener(this.favoriteBtnClick(favorite_catalog_huati,FavoriteList.TYPE_HUATI));
-    	favorite_catalog_code.setOnClickListener(this.favoriteBtnClick(favorite_catalog_code,FavoriteList.TYPE_ZHUANTI));    	
+    	favorite_catalog_article.setOnClickListener(this.favoriteBtnClick(favorite_catalog_article,TypeHelper.ARTICLE));
+    	favorite_catalog_topic.setOnClickListener(this.favoriteBtnClick(favorite_catalog_topic,TypeHelper.TOPIC));
+    	favorite_catalog_special.setOnClickListener(this.favoriteBtnClick(favorite_catalog_special,TypeHelper.SPECIAL));    	
     	
-    	favorite_catalog_software.setEnabled(false);
-    	curFavoriteCatalog = FavoriteList.TYPE_NEWS;
+    	favorite_catalog_article.setEnabled(false);
+    	curFavoriteCatalog = TypeHelper.ARTICLE;
     	
     	lvFavorite_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
     	lvFavorite_foot_more = (TextView)lvFavorite_footer.findViewById(R.id.listview_foot_more);
@@ -126,8 +125,8 @@ public class UserFavorite extends BaseActivity {
         		} 
         		if(fav == null) return;
         		
-        		//跳转
-        		UIHelper.showUrlRedirect(view.getContext(), fav.url);
+        		//TODO:跳转
+        		//UIHelper.showUrlRedirect(view.getContext(), fav.url);
         	}
 		});
     	mlvFavorite.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -199,7 +198,8 @@ public class UserFavorite extends BaseActivity {
 					public void run() {
 						Message msg = new Message();
 						try {
-							Result res = ac.delFavorite(uid, fav.objid, fav.type);
+							//Result res = ac.delFavorite(uid, fav.objid, fav.type);
+							boolean res = ac.delFavorite(fav.type, fav.getId());
 							msg.what = 1;
 							msg.obj = res;
 			            } catch (AppException e) {
@@ -241,15 +241,15 @@ public class UserFavorite extends BaseActivity {
 					case UIHelper.LISTVIEW_ACTION_CHANGE_CATALOG:
 						lvSumData = msg.what;
 						lvFavoriteData.clear();//先清除原有数据
-						lvFavoriteData.addAll(list.getFavoritelist());
+						lvFavoriteData.addAll(list.getList());
 						break;
 					case UIHelper.LISTVIEW_ACTION_SCROLL:
 						lvSumData += msg.what;
 						if(lvFavoriteData.size() > 0){
-							for(Favorite fav1 : list.getFavoritelist()){
+							for(BaseItem fav1 : list.getList()){
 								boolean b = false;
-								for(Favorite fav2 : lvFavoriteData){
-									if(fav1.objid == fav2.objid){
+								for(BaseItem fav2 : lvFavoriteData){
+									if(fav1.getId() == fav2.getId()){
 										b = true;
 										break;
 									}
@@ -257,7 +257,7 @@ public class UserFavorite extends BaseActivity {
 								if(!b) lvFavoriteData.add(fav1);
 							}
 						}else{
-							lvFavoriteData.addAll(list.getFavoritelist());
+							lvFavoriteData.addAll(list.getList());
 						}
 						break;
 					}	
@@ -315,7 +315,14 @@ public class UserFavorite extends BaseActivity {
 				if(action == UIHelper.LISTVIEW_ACTION_REFRESH || action == UIHelper.LISTVIEW_ACTION_SCROLL)
 					isRefresh = true;
 				try {
-					FavoriteList favoriteList = ((AppContext)getApplication()).getFavoriteList(type, pageIndex, isRefresh);
+					final FavoriteList favoriteList = new FavoriteList();
+					Map<String, Object> httpGetPara = new HashMap<String, Object>(){{
+						//put("uid",id);
+						put("type", type);
+						put("pageIndex", pageIndex);
+						put("pageSize", favoriteList.getMaxPageSize());
+					}};
+					((AppContext)getApplication()).getList(favoriteList, httpGetPara, isRefresh);
 					msg.what = favoriteList.getPageSize();
 					msg.obj = favoriteList;
 	            } catch (AppException e) {
@@ -333,26 +340,18 @@ public class UserFavorite extends BaseActivity {
 	private View.OnClickListener favoriteBtnClick(final Button btn,final int catalog){
     	return new View.OnClickListener() {
 			public void onClick(View v) {
-		    	if(btn == favorite_catalog_blog)
-		    		favorite_catalog_blog.setEnabled(false);
+		    	if(btn == favorite_catalog_article)
+		    		favorite_catalog_article.setEnabled(false);
 		    	else
-		    		favorite_catalog_blog.setEnabled(true);
-		    	if(btn == favorite_catalog_code)
-		    		favorite_catalog_code.setEnabled(false);
+		    		favorite_catalog_article.setEnabled(true);
+		    	if(btn == favorite_catalog_topic)
+		    		favorite_catalog_topic.setEnabled(false);
 		    	else
-		    		favorite_catalog_code.setEnabled(true);	
-		    	if(btn == favorite_catalog_news)
-		    		favorite_catalog_news.setEnabled(false);
+		    		favorite_catalog_topic.setEnabled(true);	
+		    	if(btn == favorite_catalog_special)
+		    		favorite_catalog_special.setEnabled(false);
 		    	else
-		    		favorite_catalog_news.setEnabled(true);
-		    	if(btn == favorite_catalog_huati)
-		    		favorite_catalog_huati.setEnabled(false);
-		    	else
-		    		favorite_catalog_huati.setEnabled(true);
-		    	if(btn == favorite_catalog_software)
-		    		favorite_catalog_software.setEnabled(false);
-		    	else
-		    		favorite_catalog_software.setEnabled(true);		    	
+		    		favorite_catalog_special.setEnabled(true);	    	
 		    	
 				lvFavorite_foot_more.setText(R.string.load_more);
 				lvFavorite_foot_progress.setVisibility(View.GONE);

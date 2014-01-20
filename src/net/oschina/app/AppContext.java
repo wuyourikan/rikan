@@ -1,50 +1,28 @@
 package net.oschina.app;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
-import java.net.URLEncoder;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
 import net.oschina.app.api.ApiClient;
-import net.oschina.app.bean.ActiveList;
-import net.oschina.app.bean.Zatan;
-import net.oschina.app.bean.ZatanList;
-import net.oschina.app.bean.Recommend;
-import net.oschina.app.bean.RecommendList;
-import net.oschina.app.bean.All;
-import net.oschina.app.bean.AllList;
-import net.oschina.app.bean.Zhuanti;
-import net.oschina.app.bean.ZhuantiList;
-import net.oschina.app.bean.CommentList;
-import net.oschina.app.bean.FavoriteList;
-import net.oschina.app.bean.FriendList;
-import net.oschina.app.bean.MessageList;
-import net.oschina.app.bean.MyInformation;
-import net.oschina.app.bean.News;
-import net.oschina.app.bean.NewsList;
+import net.oschina.app.bean.BaseItem;
+import net.oschina.app.bean.BaseList;
 import net.oschina.app.bean.Notice;
-import net.oschina.app.bean.Huati;
-import net.oschina.app.bean.HuatiList;
 import net.oschina.app.bean.Result;
-import net.oschina.app.bean.SearchList;
-import net.oschina.app.bean.Software;
-import net.oschina.app.bean.SoftwareCatalogList;
-import net.oschina.app.bean.SoftwareList;
-import net.oschina.app.bean.Tweet;
-import net.oschina.app.bean.TweetList;
-import net.oschina.app.bean.User;
-import net.oschina.app.bean.UserInformation;
-import net.oschina.app.common.CyptoUtils;
-import net.oschina.app.common.FileUtils;
 import net.oschina.app.common.ImageUtils;
 import net.oschina.app.common.MethodsCompat;
 import net.oschina.app.common.StringUtils;
@@ -242,7 +220,7 @@ public class AppContext extends Application {
 	/**
 	 * 初始化用户登录信息
 	 */
-	public void initLoginInfo() {
+	/*public void initLoginInfo() {
 		User loginUser = getLoginInfo();
 		if(loginUser!=null && loginUser.getUid()>0 && loginUser.isRememberMe()){
 			this.loginUid = loginUser.getUid();
@@ -250,7 +228,7 @@ public class AppContext extends Application {
 		}else{
 			this.Logout();
 		}
-	}
+	}*/
 	
 	/**
 	 * 用户登录验证
@@ -259,9 +237,9 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public User loginVerify(String account, String pwd) throws AppException {
+	/*public User loginVerify(String account, String pwd) throws AppException {
 		return ApiClient.login(this, account, pwd);
-	}
+	}*/
 	
 	/**
 	 * 我的个人资料
@@ -269,7 +247,7 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public MyInformation getMyInformation(boolean isRefresh) throws AppException {
+	/*public MyInformation getMyInformation(boolean isRefresh) throws AppException {
 		MyInformation myinfo = null;
 		String key = "myinfo_"+loginUid;
 		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {
@@ -293,7 +271,7 @@ public class AppContext extends Application {
 				myinfo = new MyInformation();
 		}
 		return myinfo;
-	}	
+	}	*/
 	
 	/**
 	 * 获取用户信息个人专页（包含该用户的动态信息以及个人信息）
@@ -304,7 +282,7 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public UserInformation getInformation(int uid, int hisuid, String hisname, int pageIndex, boolean isRefresh) throws AppException {
+	/*public UserInformation getInformation(int uid, int hisuid, String hisname, int pageIndex, boolean isRefresh) throws AppException {
 		String _hisname = ""; 
 		if(!StringUtils.isEmpty(hisname)){
 			_hisname = hisname;
@@ -332,7 +310,7 @@ public class AppContext extends Application {
 				userinfo = new UserInformation();
 		}
 		return userinfo;
-	}
+	}*/
 	
 	/**
 	 * 更新用户之间关系（加关注、取消关注）
@@ -342,9 +320,9 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public Result updateRelation(int uid, int hisuid, int newrelation) throws AppException {
+	/*public Result updateRelation(int uid, int hisuid, int newrelation) throws AppException {
 		return ApiClient.updateRelation(this, uid, hisuid, newrelation);
-	}
+	}*/
 	
 	/**
 	 * 更新用户头像
@@ -352,9 +330,9 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public Result updatePortrait(File portrait) throws AppException {
+/*	public Result updatePortrait(File portrait) throws AppException {
 		return ApiClient.updatePortrait(this, loginUid, portrait);
-	}
+	}*/
 	
 	/**
 	 * 清空通知消息
@@ -363,9 +341,9 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public Result noticeClear(int uid, int type) throws AppException {
+	/*public Result noticeClear(int uid, int type) throws AppException {
 		return ApiClient.noticeClear(this, uid, type);
-	}
+	}*/
 	
 	/**
 	 * 获取用户通知信息
@@ -373,9 +351,9 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public Notice getUserNotice(int uid) throws AppException {
+	/*public Notice getUserNotice(int uid) throws AppException {
 		return ApiClient.getUserNotice(this, uid);
-	}
+	}*/
 	
 	/**
 	 * 用户收藏列表
@@ -384,7 +362,7 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public FavoriteList getFavoriteList(int type, int pageIndex, boolean isRefresh) throws AppException {
+	/*public FavoriteList getFavoriteList(int type, int pageIndex, boolean isRefresh) throws AppException {
 		FavoriteList list = null;
 		String key = "favoritelist_"+loginUid+"_"+type+"_"+pageIndex+"_"+PAGE_SIZE; 
 		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {
@@ -408,7 +386,7 @@ public class AppContext extends Application {
 				list = new FavoriteList();
 		}
 		return list;
-	}
+	}*/
 	
 	/**
 	 * 用户粉丝、关注人列表
@@ -417,7 +395,7 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public FriendList getFriendList(int relation, int pageIndex, boolean isRefresh) throws AppException {
+	/*public FriendList getFriendList(int relation, int pageIndex, boolean isRefresh) throws AppException {
 		FriendList list = null;
 		String key = "friendlist_"+loginUid+"_"+relation+"_"+pageIndex+"_"+PAGE_SIZE; 
 		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {
@@ -442,136 +420,144 @@ public class AppContext extends Application {
 		}
 		return list;
 	}
+	*/
 	
 	/**
-	 * 推荐列表
+	 * 获取列表（从网络或缓存）	GET方法
 	 * @param catalog
 	 * @param pageIndex
 	 * @param pageSize
 	 * @return
-	 * @throws ApiException
+	 * @throws AppException
 	 */
-	public RecommendList getRecommendList(int catalog, int pageIndex, boolean isRefresh) throws AppException {                                  //此处注意
-		RecommendList list = null;
-		String key = "recommendlist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
+	public BaseList getList(BaseList list, Map<String, Object> map, boolean isRefresh) throws AppException {                                  
+		String key = list.getCacheKey(map);
 		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
 			try{
-				list = ApiClient.getRecommendList(this, catalog, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
+				ApiClient.httpGet(list, this, map);		
+				if(false == list.getList().isEmpty() && StringUtils.toInt(map.get("pageIndex")) == 0){	
+					//通过这行可以推测出：只有当请求首页数据的时候，server才会在答复的XML附加Notice
+					Notice notice = list.getNotice();	//取出list中的Notice
 					list.setNotice(null);
-					saveObject(list, key);
+					saveObject(list, key); //存入缓存的list无Notice
 					list.setNotice(notice);
 				}
-			}catch(AppException e){
-				list = (RecommendList)readObject(key);
-				if(list == null)
+				
+			}catch(AppException e){ //发生异常则取缓存
+				list = (BaseList)readObject(key);
+				if(list.getList().isEmpty())
 					throw e;
 			}		
-		} else {
-			list = (RecommendList)readObject(key);
-			if(list == null)
-				list = new RecommendList();
+		} else { //不满足更新条件则取缓存
+			list = (BaseList)readObject(key);
 		}
 		return list;
 	}
 	
-	/**
-	 * 推荐详情
-	 * @param news_id
-	 * @return
-	 * @throws ApiException
-	 */
-	public Recommend getRecommend(int recommend_id, boolean isRefresh) throws AppException {		
-		Recommend recommend = null;
-		String key = "recommend_"+recommend_id;
-		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
-			try{
-				recommend = ApiClient.getRecommendDetail(this, recommend_id);
-				if(recommend != null){
-					Notice notice = recommend.getNotice();
-					recommend.setNotice(null);
-					saveObject(recommend, key);
-					recommend.setNotice(notice);
-				}
-			}catch(AppException e){
-				recommend = (Recommend)readObject(key);
-				if(recommend == null)
-					throw e;
-			}
-		} else {
-			recommend = (Recommend)readObject(key);
-			if(recommend == null)
-				recommend = new Recommend();
-		}
-		return recommend;		
-	}
-	
-	/**
-	 * 新闻列表
+	/** 重载
+	 * 获取列表（从网络或缓存）	POST方法
 	 * @param catalog
 	 * @param pageIndex
 	 * @param pageSize
 	 * @return
-	 * @throws ApiException
+	 * @throws AppException
 	 */
-	public NewsList getNewsList(int catalog, int pageIndex, boolean isRefresh) throws AppException {                                  //此处注意
-		NewsList list = null;
-		String key = "newslist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
+	public BaseList getList(BaseList list, Map<String, Object> map, boolean isRefresh, 
+						Map<String, File> file, String postUrl) throws AppException {                                  
+		String key = list.getCacheKey(map);
 		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
-			try{
-				list = ApiClient.getNewsList(this, catalog, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
+			try{			
+				ApiClient.httpPost(list, this, map, file, postUrl);		
+				if(	false == list.getList().isEmpty() && StringUtils.toInt(map.get("pageIndex")) == 0){	
+					//通过这行可以推测出：只有当请求首页数据的时候，server才会在答复的XML附加Notice
+					Notice notice = list.getNotice();	//取出list中的Notice
 					list.setNotice(null);
-					saveObject(list, key);
+					saveObject(list, key); //存入缓存的list无Notice
 					list.setNotice(notice);
 				}
-			}catch(AppException e){
-				list = (NewsList)readObject(key);
-				if(list == null)
+			}catch(AppException e){ //发生异常则取缓存
+				list = (BaseList)readObject(key);
+				if(list.getList().isEmpty())
 					throw e;
 			}		
-		} else {
-			list = (NewsList)readObject(key);
-			if(list == null)
-				list = new NewsList();
+		} else { //不满足更新条件则取缓存
+			list = (BaseList)readObject(key);
 		}
 		return list;
-	}
-	
-	/**
-	 * 新闻详情
-	 * @param news_id
-	 * @return
-	 * @throws ApiException
-	 */
-	public News getNews(int news_id, boolean isRefresh) throws AppException {		
-		News news = null;
-		String key = "news_"+news_id;
-		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
-			try{
-				news = ApiClient.getNewsDetail(this, news_id);
-				if(news != null){
-					Notice notice = news.getNotice();
-					news.setNotice(null);
-					saveObject(news, key);
-					news.setNotice(notice);
-				}
-			}catch(AppException e){
-				news = (News)readObject(key);
-				if(news == null)
-					throw e;
-			}
-		} else {
-			news = (News)readObject(key);
-			if(news == null)
-				news = new News();
-		}
-		return news;		
 	}
 
 	
+	/**
+	 * 获取详情（从网络或缓存）	GET方法
+	 * @param news_id
+	 * @return
+	 * @throws AppException
+	 */
+	public BaseItem getItem(BaseItem item, Map<String, Object> map, boolean isRefresh) throws AppException {		
+		String key = item.getCacheKey(map);
+		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
+			try{
+				ApiClient.httpGet(item, this, map);
+				if(item.getId() != 0){
+					Notice notice = item.getNotice();
+					item.setNotice(null);
+					saveObject(item, key);
+					item.setNotice(notice);
+				}
+			}catch(AppException e){
+				item = (BaseItem)readObject(key);
+				if(item.getId() == 0)
+					throw e;
+			}
+		} else {
+			item = (BaseItem)readObject(key);
+		}
+		return item;
+	}
+	
+	/** 重载
+	 * 获取详情（从网络或缓存）	POST方法
+	 * @param news_id
+	 * @return
+	 * @throws AppException
+	 */
+	public BaseItem getItem(BaseItem item, Map<String, Object> map, boolean isRefresh, Map<String, File> file, String postUrl) throws AppException {		
+		String key = item.getCacheKey(map);
+		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
+			try{
+				ApiClient.httpPost(item, this, map, file, postUrl);
+				if(item.getId() != 0){
+					Notice notice = item.getNotice();
+					item.setNotice(null);
+					saveObject(item, key);
+					item.setNotice(notice);
+				}
+			}catch(AppException e){
+				item = (BaseItem)readObject(key);
+				if(item.getId() == 0)
+					throw e;
+			}
+		} else {
+			item = (BaseItem)readObject(key);
+		}
+		return item;
+	}
+	
+	/** 
+	 * 获取详情（从网络或缓存）	POST方法
+	 * @param news_id
+	 * @return
+	 * @throws AppException
+	 */
+	public Result getPostResult(Map<String, Object> map, Map<String, File> file, String postUrl) throws AppException {		
+		try{
+			Result res = new Result();
+			ApiClient.httpPost(res, this, map, file, postUrl);
+			return res;
+		}catch(AppException e){
+			throw e;
+		}
+	}
 	/**
 	 * 软件列表
 	 * @param searchTag 软件分类  推荐:recommend 最新:time 热门:view 国产:list_cn
@@ -579,31 +565,7 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public SoftwareList getSoftwareList(String searchTag, int pageIndex, boolean isRefresh) throws AppException {
-		SoftwareList list = null;
-		String key = "softwarelist_"+searchTag+"_"+pageIndex+"_"+PAGE_SIZE;
-		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {
-			try{
-				list = ApiClient.getSoftwareList(this, searchTag, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
-					list.setNotice(null);
-					list.setCacheKey(key);
-					saveObject(list, key);
-					list.setNotice(notice);
-				}
-			}catch(AppException e){
-				list = (SoftwareList)readObject(key);
-				if(list == null)
-					throw e;
-			}
-		} else {
-			list = (SoftwareList)readObject(key);
-			if(list == null)
-				list = new SoftwareList();
-		}
-		return list;
-	}
+
 	
 	/**
 	 * 软件分类的软件列表
@@ -612,31 +574,7 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public SoftwareList getSoftwareTagList(int searchTag, int pageIndex, boolean isRefresh) throws AppException {
-		SoftwareList list = null;
-		String key = "softwaretaglist_"+searchTag+"_"+pageIndex+"_"+PAGE_SIZE;
-		if(isNetworkConnected() && (isCacheDataFailure(key) || isRefresh)) {
-			try{
-				list = ApiClient.getSoftwareTagList(this, searchTag, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
-					list.setNotice(null);
-					list.setCacheKey(key);
-					saveObject(list, key);
-					list.setNotice(notice);
-				}
-			}catch(AppException e){
-				list = (SoftwareList)readObject(key);
-				if(list == null)
-					throw e;
-			}
-		} else {
-			list = (SoftwareList)readObject(key);
-			if(list == null)
-				list = new SoftwareList();
-		}
-		return list;
-	}
+
 	
 	/**
 	 * 软件分类列表
@@ -644,31 +582,7 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public SoftwareCatalogList getSoftwareCatalogList(int tag) throws AppException {
-		SoftwareCatalogList list = null;
-		String key = "softwarecataloglist_"+tag;
-		if(isNetworkConnected() && isCacheDataFailure(key)) {
-			try{
-				list = ApiClient.getSoftwareCatalogList(this, tag);
-				if(list != null){
-					Notice notice = list.getNotice();
-					list.setNotice(null);
-					list.setCacheKey(key);
-					saveObject(list, key);
-					list.setNotice(notice);
-				}
-			}catch(AppException e){
-				list = (SoftwareCatalogList)readObject(key);
-				if(list == null)
-					throw e;
-			}
-		} else {
-			list = (SoftwareCatalogList)readObject(key);
-			if(list == null)
-				list = new SoftwareCatalogList();
-		}
-		return list;
-	}
+
 	
 	/**
 	 * 软件详情
@@ -676,191 +590,14 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public Software getSoftware(String ident, boolean isRefresh) throws AppException {
-		Software soft = null;
-		String key = "software_"+(URLEncoder.encode(ident));
-		if(isNetworkConnected() && (isCacheDataFailure(key) || isRefresh)) {
-			try{
-				soft = ApiClient.getSoftwareDetail(this, ident);
-				if(soft != null){
-					Notice notice = soft.getNotice();
-					soft.setNotice(null);
-					soft.setCacheKey(key);
-					saveObject(soft, key);
-					soft.setNotice(notice);
-				}
-			}catch(AppException e){
-				soft = (Software)readObject(key);
-				if(soft == null)
-					throw e;
-			}
-		} else {
-			soft = (Software)readObject(key);
-			if(soft == null)
-				soft = new Software();
-		}
-		return soft;
-	}
-	
-	/**
-	 * 杂谈列表
-	 * @param type 全部：all 最新：latest
-	 * @param pageIndex
-	 * @return
-	 * @throws AppException
-	 */
-	public ZatanList getZatanList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
-		ZatanList list = null;
-		String key = "zatanlist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
-		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
-			try{
-				list = ApiClient.getZatanList(this, catalog, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
-					list.setNotice(null);
-					saveObject(list, key);
-					list.setNotice(notice);
-				}
-			}catch(AppException e){
-				list = (ZatanList)readObject(key);
-				if(list == null)
-					throw e;
-			}
-		} else {
-			list = (ZatanList)readObject(key);
-			if(list == null)
-				list = new ZatanList();
-		}
-		return list;
-	}
-	
-	/**
-	 * 杂谈详情
-	 * @param blog_id
-	 * @return
-	 * @throws AppException
-	 */
-	public Zatan getZatan(int zatan_id, boolean isRefresh) throws AppException {
-		Zatan zatan = null;
-		String key = "zatan_"+zatan_id;
-		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
-			try{
-				zatan = ApiClient.getZatanDetail(this, zatan_id);
-				if(zatan != null){
-					Notice notice = zatan.getNotice();
-					zatan.setNotice(null);
-					saveObject(zatan, key);
-					zatan.setNotice(notice);
-				}
-			}catch(AppException e){
-				zatan = (Zatan)readObject(key);
-				if(zatan == null)
-					throw e;
-			}
-		} else {
-			zatan = (Zatan)readObject(key);
-			if(zatan == null)
-				zatan = new Zatan();
-		}
-		return zatan;
-	}
-	
-	/**
-	 * 全部列表
-	 * @param catalog
-	 * @param pageIndex
-	 * @param pageSize
-	 * @return
-	 * @throws ApiException
-	 */
-	public AllList getAllList(int catalog, int pageIndex, boolean isRefresh) throws AppException {                                  //此处注意
-		AllList list = null;
-		String key = "alllist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
-		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
-			try{
-				list = ApiClient.getAllList(this, catalog, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
-					list.setNotice(null);
-					saveObject(list, key);
-					list.setNotice(notice);
-				}
-			}catch(AppException e){
-				list = (AllList)readObject(key);
-				if(list == null)
-					throw e;
-			}		
-		} else {
-			list = (AllList)readObject(key);
-			if(list == null)
-				list = new AllList();
-		}
-		return list;
-	}
-	
-	/**
-	 * 全部详情
-	 * @param news_id
-	 * @return
-	 * @throws ApiException
-	 */
-	public All getAll(int all_id, boolean isRefresh) throws AppException {		
-		All all = null;
-		String key = "all_"+all_id;
-		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {
-			try{
-				all = ApiClient.getAllDetail(this, all_id);
-				if(all != null){
-					Notice notice = all.getNotice();
-					all.setNotice(null);
-					saveObject(all, key);
-					all.setNotice(notice);
-				}
-			}catch(AppException e){
-				all = (All)readObject(key);
-				if(all == null)
-					throw e;
-			}
-		} else {
-			all = (All)readObject(key);
-			if(all == null)
-				all = new All();
-		}
-		return all;		
-	}
+
 	
 	/**
 	 * 话题列表
 	 * @param catalog
 	 * @param pageIndex
-	 * @return
-	 * @throws ApiException
+	 * @return getTopicList
 	 */
-	public HuatiList getHuatiList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
-		HuatiList list = null;
-		String key = "huatilist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
-		if(isNetworkConnected() && (isNeedUpdate(key) || isRefresh)) {		
-			try{
-				list = ApiClient.getHuatiList(this, catalog, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
-					list.setNotice(null);
-					list.setCacheKey(key);
-					saveObject(list, key);
-					list.setNotice(notice);
-				}
-			}catch(AppException e){
-				list = (HuatiList)readObject(key);
-				if(list == null)
-					throw e;
-			}
-		} else {
-			list = (HuatiList)readObject(key);
-			if(list == null)
-				list = new HuatiList();
-		}
-		return list;
-	}
 	
 	
 	/**
@@ -870,64 +607,15 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws ApiException
 	 */
-	public HuatiList getHuatiListByTag(String tag, int pageIndex, boolean isRefresh) throws AppException {
-		HuatiList list = null;
-		String key = "huatilist_"+(URLEncoder.encode(tag))+"_"+pageIndex+"_"+PAGE_SIZE;
-		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {		
-			try{
-				list = ApiClient.getHuatiListByTag(this, tag, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
-					list.setNotice(null);
-					list.setCacheKey(key);
-					saveObject(list, key);
-					list.setNotice(notice);
-				}
-			}catch(AppException e){
-				list = (HuatiList)readObject(key);
-				if(list == null)
-					throw e;
-			}
-		} else {
-			list = (HuatiList)readObject(key);
-			if(list == null)
-				list = new HuatiList();
-		}
-		return list;
-	}
+
 	
 	/**
 	 * 专题列表
 	 * @param catalog
 	 * @param pageIndex
-	 * @return
-	 * @throws ApiException
+	 * @return SpecialList
 	 */
-	public ZhuantiList getZhuantiList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
-		ZhuantiList list = null;
-		String key = "postlist_"+catalog+"_"+pageIndex+"_"+PAGE_SIZE;
-		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {		
-			try{
-				list = ApiClient.getZhuantiList(this, catalog, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
-					list.setNotice(null);
-					saveObject(list, key);
-					list.setNotice(notice);
-				}
-			}catch(AppException e){
-				list = (ZhuantiList)readObject(key);
-				if(list == null)
-					throw e;
-			}
-		} else {
-			list = (ZhuantiList)readObject(key);
-			if(list == null)
-				list = new ZhuantiList();
-		}
-		return list;
-	}
-	
+
 	/**
 	 * Tag相关专题列表
 	 * @param tag
@@ -935,94 +623,22 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws ApiException
 	 */
-	public ZhuantiList getZhuantiListByTag(String tag, int pageIndex, boolean isRefresh) throws AppException {
-		ZhuantiList list = null;
-		String key = "postlist_"+(URLEncoder.encode(tag))+"_"+pageIndex+"_"+PAGE_SIZE;
-		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {		
-			try{
-				list = ApiClient.getZhuantiListByTag(this, tag, pageIndex, PAGE_SIZE);
-				if(list != null && pageIndex == 0){
-					Notice notice = list.getNotice();
-					list.setNotice(null);
-					saveObject(list, key);
-					list.setNotice(notice);
-				}
-			}catch(AppException e){
-				list = (ZhuantiList)readObject(key);
-				if(list == null)
-					throw e;
-			}
-		} else {
-			list = (ZhuantiList)readObject(key);
-			if(list == null)
-				list = new ZhuantiList();
-		}
-		return list;
-	}
-	
+
 	/**
 	 * 读取专题详情
 	 * @param post_id
 	 * @return
 	 * @throws ApiException
 	 */
-	public Zhuanti getZhuanti(int post_id, boolean isRefresh) throws AppException {		
-		Zhuanti zhuanti = null;
-		String key = "post_"+post_id;
-		if(isNetworkConnected() && (!isExistDataCache(key) || isRefresh)) {	
-			try{
-				zhuanti = ApiClient.getZhuantiDetail(this, post_id);
-				if(zhuanti != null){
-					Notice notice = zhuanti.getNotice();
-					zhuanti.setNotice(null);
-					saveObject(zhuanti, key);
-					zhuanti.setNotice(notice);
-				}
-			}catch(AppException e){
-				zhuanti = (Zhuanti)readObject(key);
-				if(zhuanti == null)
-					throw e;
-			}
-		} else {
-			zhuanti = (Zhuanti)readObject(key);
-			if(zhuanti == null)
-				zhuanti = new Zhuanti();
-		}
-		return zhuanti;		
-	}
 	
 	
 	/**
 	 * 读取话题详情
-	 * @param huati_id
+	 * @param topic_id
 	 * @return
 	 * @throws ApiException
 	 */
-	public Huati getHuati(int huati_id, boolean isRefresh) throws AppException {		
-		Huati huati = null;
-		String key = "huati_"+huati_id;
-		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {	
-			try{
-				huati = ApiClient.getHuatiDetail(this, huati_id);
-				if(huati != null){
-					Notice notice = huati.getNotice();
-					huati.setNotice(null);
-					huati.setCacheKey(key);
-					saveObject(huati, key);
-					huati.setNotice(notice);
-				}
-			}catch(AppException e){
-				huati = (Huati)readObject(key);
-				if(huati == null)
-					throw e;
-			}
-		} else {
-			huati = (Huati)readObject(key);
-			if(huati == null)
-				huati = new Huati();
-		}
-		return huati;		
-	}
+
 /*	
 	*//**
 	 * 动弹列表
@@ -1129,7 +745,7 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public MessageList getMessageList(int pageIndex, boolean isRefresh) throws AppException {
+	/*public MessageList getMessageList(int pageIndex, boolean isRefresh) throws AppException {
 		MessageList list = null;
 		String key = "messagelist_"+loginUid+"_"+pageIndex+"_"+PAGE_SIZE;
 		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {
@@ -1154,7 +770,7 @@ public class AppContext extends Application {
 		}
 		return list;
 	}
-	
+	*/
 	/**
 	 * 评论列表
 	 * @param catalog 1新闻 2话题 3动弹 4动态
@@ -1163,7 +779,7 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public CommentList getCommentList(int catalog, int id, int pageIndex, boolean isRefresh) throws AppException {
+	/*public CommentList getCommentList(int catalog, int id, int pageIndex, boolean isRefresh) throws AppException {
 		CommentList list = null;
 		String key = "commentlist_"+catalog+"_"+id+"_"+pageIndex+"_"+PAGE_SIZE;		
 		if(isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {
@@ -1187,29 +803,29 @@ public class AppContext extends Application {
 				list = new CommentList();
 		}
 		return list;
-	}
+	}*/
 	
 	/**
 	 * 获取搜索列表
-	 * @param catalog 全部:all 新闻:news  问答:huati 软件:software 博客:blog 代码:code
+	 * @param catalog 全部:all 新闻:news  问答:topic 软件:software 博客:blog 代码:code
 	 * @param content 搜索的内容
 	 * @param pageIndex
 	 * @param pageSize
 	 * @return
 	 * @throws AppException
 	 */
-	public SearchList getSearchList(String catalog, String content, int pageIndex, int pageSize) throws AppException {
+	/*public SearchList getSearchList(String catalog, String content, int pageIndex, int pageSize) throws AppException {
 		return ApiClient.getSearchList(this, catalog, content, pageIndex, pageSize);
-	}
+	}*/
 	
 	/**
 	 * 发话题
-	 * @param huati （uid、title、catalog、content、isNoticeMe）
+	 * @param topic （uid、title、catalog、content、isNoticeMe）
 	 * @return
 	 * @throws AppException
 	 */
-	/*public Result pubHuati(Huati huati) throws AppException {
-		return ApiClient.pubHuati(this, huati);
+	/*public Result pubTopic(Topic topic) throws AppException {
+		return ApiClient.pubTopic(this, topic);
 	}*/
 	
 	/**
@@ -1274,13 +890,13 @@ public class AppContext extends Application {
 	 * @param id 某条新闻，话题，动弹的id
 	 * @param uid 用户uid
 	 * @param content 发表评论的内容
-	 * @param isHuatiToMyZone 是否转发到我的空间  0不转发  1转发
+	 * @param isTopicToMyZone 是否转发到我的空间  0不转发  1转发
 	 * @return
 	 * @throws AppException
 	 */
-	public Result pubComment(int catalog, int id, int uid, String content, int isHuatiToMyZone) throws AppException {
-		return ApiClient.pubComment(this, catalog, id, uid, content, isHuatiToMyZone);
-	}
+/*	public Result pubComment(int catalog, int id, int uid, String content, int isTopicToMyZone) throws AppException {
+		return ApiClient.pubComment(this, catalog, id, uid, content, isTopicToMyZone);
+	}*/
 	
 	/**
 	 * 
@@ -1293,9 +909,9 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public Result replyComment(int id, int catalog, int replyid, int authorid, int uid, String content) throws AppException {
+/*	public Result replyComment(int id, int catalog, int replyid, int authorid, int uid, String content) throws AppException {
 		return ApiClient.replyComment(this, id, catalog, replyid, authorid, uid, content);
-	}
+	}*/
 	
 	/**
 	 * 删除评论
@@ -1306,32 +922,123 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public Result delComment(int id, int catalog, int replyid, int authorid) throws AppException {
+/*	public Result delComment(int id, int catalog, int replyid, int authorid) throws AppException {
 		return ApiClient.delComment(this, id, catalog, replyid, authorid);
-	}
+	}*/
 	
 	/**
 	 * 用户添加收藏
 	 * @param uid 用户UID
-	 * @param objid 比如是新闻ID 或者问答ID 或者动弹ID
-	 * @param type 1:软件 2:话题 3:博客 4:新闻 5:代码
+	 * @param id 比如是文章ID 或者话题ID 或者专题ID
+	 * @param type 1:文章 2:话题 3:专题
 	 * @return
 	 * @throws AppException
 	 */
-	public Result addFavorite(int uid, int objid, int type) throws AppException {
+/*	public Result addFavorite(int uid, int objid, int type) throws AppException {
 		return ApiClient.addFavorite(this, uid, objid, type);
+	}*/
+	
+	/**
+	 * 用户添加收藏(本地版)
+	 * @param uid 用户UID
+	 * @param id 比如是文章ID 或者话题ID 或者专题ID
+	 * @param type 1:文章 2:话题 3:专题
+	 * @return
+	 * @throws AppException
+	 */
+	public boolean addFavoriteFile(int type ,int objid, String title) throws AppException {
+
+		String file = "favorite";
+
+		try {
+			FileReader ifr = new FileReader(file);
+        	FileWriter writer;
+        	
+	        // Create Buffered/PrintWriter Objects
+	        BufferedReader inputStream   = new BufferedReader(ifr);     
+	        
+	        String inLine = null;
+	        int typeRead = 0, idRead = 0;
+	        boolean hasSame = false;
+	        
+	        while ((inLine = inputStream.readLine()) != null) {
+	        	typeRead = Integer.parseInt(inLine.split("_")[0]);
+	        	idRead = Integer.parseInt(inLine.split("_")[1]);
+	            if(typeRead == type && idRead == objid){
+	            	hasSame = true;
+	            	break;
+	            }
+	        }
+	        inputStream.close();
+	        
+	        if(!hasSame){
+	        	writer = new FileWriter(file, true);
+		        writer.write(type + "_" + objid + "_"+ title + "\n");
+		        writer.close();
+	        }
+	        
+	        return !hasSame;
+		} catch (IOException  e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}	
 	}
 	
 	/**
 	 * 用户删除收藏
 	 * @param uid 用户UID
-	 * @param objid 比如是新闻ID 或者问答ID 或者动弹ID
-	 * @param type 1:软件 2:话题 3:博客 4:新闻 5:代码
+	 * @param id 比如是文章ID 或者话题ID 或者专题ID
+	 * @param type 1:文章 2:话题 3:专题
 	 * @return
 	 * @throws AppException
 	 */
-	public Result delFavorite(int uid, int objid, int type) throws AppException { 	
+/*	public Result delFavorite(int uid, int objid, int type) throws AppException { 	
 		return ApiClient.delFavorite(this, uid, objid, type);
+	}*/
+	
+	/**
+	 * 用户删除收藏(本地版)
+	 * @param uid 用户UID
+	 * @param id 比如是文章ID 或者话题ID 或者专题ID
+	 * @param type 1:文章 2:话题 3:专题
+	 * @return
+	 * @throws AppException
+	 */
+	public boolean delFavorite(int type, int objid) throws AppException { 	
+		String file = "favorite";
+
+		try {
+			FileReader fr = new FileReader(file);
+        	FileWriter wr = new FileWriter(file);
+        	
+	        // Create Buffered/PrintWriter Objects
+	        BufferedReader inputStream   = new BufferedReader(fr);     
+	        PrintWriter    outputStream  = new PrintWriter(wr);
+
+	        String inLine = null;
+	        int typeRead = 0, idRead = 0;
+	        boolean isGot = false;
+	        
+	        while ((inLine = inputStream.readLine()) != null) {
+	        	typeRead = Integer.parseInt(inLine.split("_")[0]);
+	        	idRead = Integer.parseInt(inLine.split("_")[1]);
+	        	
+	            if(typeRead == type && idRead == objid){
+	            	isGot = true;
+	            	continue;
+	            }
+	            outputStream.println(inLine);
+	        }
+	        
+	        inputStream.close();
+	        outputStream.close();
+	        return isGot;
+		} catch (IOException  e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}	
 	}
 	
 	/**
@@ -1339,7 +1046,7 @@ public class AppContext extends Application {
 	 * @param username
 	 * @param pwd
 	 */
-	public void saveLoginInfo(final User user) {
+	/*public void saveLoginInfo(final User user) {
 		this.loginUid = user.getUid();
 		this.login = true;
 		setProperties(new Properties(){{
@@ -1354,7 +1061,7 @@ public class AppContext extends Application {
 			setProperty("user.score", String.valueOf(user.getScore()));
 			setProperty("user.isRememberMe", String.valueOf(user.isRememberMe()));//是否记住我的信息
 		}});		
-	}
+	}*/
 	
 	/**
 	 * 清除登录信息
@@ -1370,7 +1077,7 @@ public class AppContext extends Application {
 	 * 获取登录信息
 	 * @return
 	 */
-	public User getLoginInfo() {		
+	/*public User getLoginInfo() {		
 		User lu = new User();		
 		lu.setUid(StringUtils.toInt(getProperty("user.uid"), 0));
 		lu.setName(getProperty("user.name"));
@@ -1383,7 +1090,7 @@ public class AppContext extends Application {
 		lu.setScore(StringUtils.toInt(getProperty("user.score"), 0));
 		lu.setRememberMe(StringUtils.toBool(getProperty("user.isRememberMe")));
 		return lu;
-	}
+	}*/
 	
 	/**
 	 * 保存用户头像

@@ -2,12 +2,12 @@ package net.oschina.app.bean;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import net.oschina.app.AppException;
+import net.oschina.app.api.ApiClient;
 import net.oschina.app.common.StringUtils;
+import net.oschina.app.common.TypeHelper;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -20,44 +20,49 @@ import android.util.Xml;
  * @version 1.0
  * @created 2012-3-21
  */
-public class FavoriteList extends Entity{
-	
-	public final static int TYPE_ALL = 0x00;
-	public final static int TYPE_RECOMMEND = 0x01;
-	public final static int TYPE_HUATI = 0x02;
-	public final static int TYPE_BLOG = 0x03;
-	public final static int TYPE_NEWS = 0x04;
-	public final static int TYPE_ZHUANTI = 0x05;
-	public final static int TYPE_SOFTWARE = 0x06;
-	
-	private int pageSize;
-	private List<Favorite> favoritelist = new ArrayList<Favorite>();
-	
+public class FavoriteList extends BaseList{
+
 	/**
 	 * 收藏实体类
 	 */
-	public static class Favorite implements Serializable {
-		public int objid;
+	public static class Favorite extends BaseItem {
+		public final static String NODE_START = "favorite";		
+		public final static String NODE_TYPE = "type";	//模型类型(0-Artical 1-Huati ...)
+		public final static String NODE_TITLE = "title";	//标题
+		//public final static String NODE_URL = "url";	//url链接
+		
 		public int type;
 		public String title;
-		public String url;
-	}
-
-	public int getPageSize() {
-		return pageSize;
-	}
-	public void setPageSize(int pagesize) {
-		this.pageSize = pagesize;
-	}
-	public List<Favorite> getFavoritelist() {
-		return favoritelist;
-	}
-	public void setFavoritelist(List<Favorite> favoritelist) {
-		this.favoritelist = favoritelist;
+		//public String url;
+		
+		@Override
+		public String getCacheKey(Map<String, Object> map) {return null;}
+		public String getHttpGetUrl(Map<String, Object> map){return null;}
+		public String getHttpPostUrl(){return null;}
+		public void parse(InputStream inputStream) throws IOException, AppException {}
 	}
 	
-	public static FavoriteList parse(InputStream inputStream) throws IOException, AppException {
-		FavoriteList favoritelist = new FavoriteList();
+	@Override
+	public int getMaxPageSize(){
+		return 20;
+	}
+	@Override
+	public String getCacheKey(Map<String, Object> map) {
+		return "favoritelist_" + map.get("catalog")+
+				"_" + map.get("pageIndex");
+	}
+	@Override
+	public String getHttpGetUrl(Map<String, Object> map) {
+		map.put("type", TypeHelper.FAVORITE);
+		//return ApiClient.makeURL(URLs.GET_LIST, map);
+		return ApiClient.makeStaticURL(URLs.GET_STATIC_LIST, map);	
+	}
+	@Override
+	public String getHttpPostUrl() {
+		return URLs.GET_LIST;
+	}
+	@Override
+	public void parse(InputStream inputStream) throws IOException, AppException {
 		Favorite favorite = null;
         //获得XmlPullParser解析器
         XmlPullParser xmlParser = Xml.newPullParser();
@@ -70,63 +75,49 @@ public class FavoriteList extends Entity{
 	    		String tag = xmlParser.getName(); 
 			    switch(evtType){ 
 			    	case XmlPullParser.START_TAG:
-			    		if(tag.equalsIgnoreCase("pagesize")) 
-			    		{
-			    			favoritelist.setPageSize(StringUtils.toInt(xmlParser.nextText(),0));
+			    		if(tag.equalsIgnoreCase(BaseList.NODE_PAGESIZE)) {
+			    			this.pageSize = StringUtils.toInt(xmlParser.nextText(),0);
 			    		}
-			    		else if (tag.equalsIgnoreCase("favorite")) 
-			    		{ 
+			    		else if (tag.equalsIgnoreCase(Favorite.NODE_START)) { 
 			    			favorite = new Favorite();
 			    		}
-			    		else if(favorite != null)
-			    		{	
-				            if(tag.equalsIgnoreCase("objid"))
-				            {			      
-				            	favorite.objid = StringUtils.toInt(xmlParser.nextText(),0);
+			    		else if(favorite != null){	
+				            if(tag.equalsIgnoreCase(BaseItem.NODE_ID)){			      
+				            	favorite.id = StringUtils.toInt(xmlParser.nextText(),0);
 				            }
-				            else if(tag.equalsIgnoreCase("type"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(Favorite.NODE_TYPE)){			            	
 				            	favorite.type = StringUtils.toInt(xmlParser.nextText(),0);
 				            }
-				            else if(tag.equalsIgnoreCase("title"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(Favorite.NODE_TITLE)){			            	
 				            	favorite.title = xmlParser.nextText();		            	
 				            }
-				            else if(tag.equalsIgnoreCase("url"))
-				            {			            	
+				            /*else if(tag.equalsIgnoreCase((Favorite.NODE_URL)){			            	
 				            	favorite.url = xmlParser.nextText();		            	
-				            }
-				            
+				            } */
 			    		}
-			            //通知信息
-			            else if(tag.equalsIgnoreCase("notice"))
-			    		{
-			            	favoritelist.setNotice(new Notice());
+			    		//通知信息
+			    		else if(tag.equalsIgnoreCase(Notice.NODE_START)){
+			            	this.setNotice(new Notice());
 			    		}
-			            else if(favoritelist.getNotice() != null)
-			    		{
-			    			if(tag.equalsIgnoreCase("atmeCount"))
-				            {			      
-			    				favoritelist.getNotice().setAtmeCount(StringUtils.toInt(xmlParser.nextText(),0));
+			            else if(this.getNotice() != null){
+			    			if(tag.equalsIgnoreCase(Notice.NODE_ATMECOUNT)){			      
+			    				this.getNotice().setAtmeCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
-				            else if(tag.equalsIgnoreCase("msgCount"))
-				            {			            	
-				            	favoritelist.getNotice().setMsgCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            else if(tag.equalsIgnoreCase(Notice.NODE_MSGCOUNT)){			            	
+				            	this.getNotice().setMsgCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
-				            else if(tag.equalsIgnoreCase("reviewCount"))
-				            {			            	
-				            	favoritelist.getNotice().setReviewCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            else if(tag.equalsIgnoreCase(Notice.NODE_REVIEWCOUNT)){			            	
+				            	this.getNotice().setReviewCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
-				            else if(tag.equalsIgnoreCase("newFansCount"))
-				            {			            	
-				            	favoritelist.getNotice().setNewFansCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            else if(tag.equalsIgnoreCase(Notice.NODE_NEWFANSCOUNT)){			            	
+				            	this.getNotice().setNewFansCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
 			    		}
 			    		break;
 			    	case XmlPullParser.END_TAG:	
 					   	//如果遇到标签结束，则把对象添加进集合中
-				       	if (tag.equalsIgnoreCase("favorite") && favorite != null) { 
-				       		favoritelist.getFavoritelist().add(favorite); 
+				       	if (tag.equalsIgnoreCase(Favorite.NODE_START) && favorite != null) { 
+				       		this.getList().add(favorite); 
 				       		favorite = null; 
 				       	}
 				       	break; 
@@ -138,7 +129,6 @@ public class FavoriteList extends Entity{
 			throw AppException.xml(e);
         } finally {
         	inputStream.close();	
-        }      
-        return favoritelist;       
+        }          
 	}
 }

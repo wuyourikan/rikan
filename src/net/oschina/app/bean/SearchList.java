@@ -2,12 +2,12 @@ package net.oschina.app.bean;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import net.oschina.app.AppException;
+import net.oschina.app.api.ApiClient;
 import net.oschina.app.common.StringUtils;
+import net.oschina.app.common.TypeHelper;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -16,34 +16,28 @@ import android.util.Xml;
 
 /**
  * 搜索列表实体类
- * @author liux (http://my.oschina.net/liux)
+ * @author wyf (http://my.oschina.net/zgtjwyftc)
  * @version 1.0
- * @created 2012-3-21
+ * @created 2014-1-6
  */
-public class SearchList extends Entity{
+public class SearchList extends BaseList{
 
-	public final static String CATALOG_ALL = "all";
-	public final static String CATALOG_NEWS = "news";
-	public final static String CATALOG_POST = "post";
-	public final static String CATALOG_SOFTWARE = "software";
-	public final static String CATALOG_BLOG = "blog";
-	public final static String CATALOG_CODE = "code";
-	
-	private int pageSize;
-	private List<Result> resultlist = new ArrayList<Result>();
-	
 	/**
 	 * 搜索结果实体类
 	 */
-	public static class Result implements Serializable {
-		private int objid;
+	public static class SearchResult extends BaseItem {
+		public final static String NODE_START = "searchResult";	//XML开始标签
+		public final static String NODE_TYPE = "type";	
+		public final static String NODE_TITLE = "title";	
+		public final static String NODE_URL = "url";
+		public final static String NODE_PUBDATE = "pubDate";	
+		public final static String NODE_AUTHOR = "author";	
+		
 		private int type;
 		private String title;
-		private String url;
+		private String url;	//用来跳转到详情
 		private String pubDate;
 		private String author;
-		public int getObjid() {return objid;}
-		public void setObjid(int objid) {this.objid = objid;}
 		public int getType() {return type;}
 		public void setType(int type) {this.type = type;}
 		public String getTitle() {return title;}
@@ -54,21 +48,35 @@ public class SearchList extends Entity{
 		public void setPubDate(String pubDate) {this.pubDate = pubDate;}
 		public String getAuthor() {return author;}
 		public void setAuthor(String author) {this.author = author;}
+		@Override
+		public String getCacheKey(Map<String, Object> map) {return null;}
+		public String getHttpGetUrl(Map<String, Object> map){return null;}
+		public String getHttpPostUrl(){return null;}
+		public void parse(InputStream inputStream) throws IOException, AppException {}
 	}
 
-	public int getPageSize() {
-		return pageSize;
+	@Override
+	public int getMaxPageSize(){
+		return 20;
 	}
-	public List<Result> getResultlist() {
-		return resultlist;
+	@Override
+	public String getCacheKey(Map<String, Object> map) {
+		return "searchlist_" + map.get("catalog")+
+				"_" + map.get("pageIndex");
 	}
-	public void setResultlist(List<Result> resultlist) {
-		this.resultlist = resultlist;
+	@Override
+	public String getHttpGetUrl(Map<String, Object> map) {
+		map.put("type", TypeHelper.SEARCH);
+		//return ApiClient.makeURL(URLs.GET_LIST, map);
+		return ApiClient.makeStaticURL(URLs.GET_STATIC_LIST, map);	
 	}
-	
-	public static SearchList parse(InputStream inputStream) throws IOException, AppException {
-		SearchList searchList = new SearchList();
-		Result res = null;
+	@Override
+	public String getHttpPostUrl() {
+		return URLs.SEARCH_LIST;
+	}
+	@Override
+	public void parse(InputStream inputStream) throws IOException, AppException {
+		SearchResult res = null;
         //获得XmlPullParser解析器
         XmlPullParser xmlParser = Xml.newPullParser();
         try {        	
@@ -80,70 +88,55 @@ public class SearchList extends Entity{
 	    		String tag = xmlParser.getName(); 
 			    switch(evtType){ 
 			    	case XmlPullParser.START_TAG:
-			    		if(tag.equalsIgnoreCase("pageSize")) 
-			    		{
-			    			searchList.pageSize = StringUtils.toInt(xmlParser.nextText(),0);
+			    		if(tag.equalsIgnoreCase(BaseList.NODE_PAGESIZE)) {
+			    			this.pageSize = StringUtils.toInt(xmlParser.nextText(),0);
 			    		}
-			    		else if (tag.equalsIgnoreCase("result")) 
-			    		{ 
-			    			res = new Result();
+			    		else if (tag.equalsIgnoreCase(SearchResult.NODE_START)) { 
+			    			res = new SearchResult();
 			    		}
-			    		else if(res != null)
-			    		{	
-				            if(tag.equalsIgnoreCase("objid"))
-				            {			      
-				            	res.objid = StringUtils.toInt(xmlParser.nextText(),0);
+			    		else if(res != null){	
+				            if(tag.equalsIgnoreCase(BaseItem.NODE_ID)){			      
+				            	res.id = StringUtils.toInt(xmlParser.nextText(),0);
 				            }
-				            else if(tag.equalsIgnoreCase("type"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(SearchResult.NODE_TYPE)){			            	
 				            	res.type = StringUtils.toInt(xmlParser.nextText(),0);
 				            }
-				            else if(tag.equalsIgnoreCase("title"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(SearchResult.NODE_TITLE)){			            	
 				            	res.title = xmlParser.nextText();		            	
 				            }
-				            else if(tag.equalsIgnoreCase("url"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(SearchResult.NODE_URL)){			            	
 				            	res.url = xmlParser.nextText();		            	
 				            }
-				            else if(tag.equalsIgnoreCase("pubDate"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(SearchResult.NODE_PUBDATE)){			            	
 				            	res.pubDate = xmlParser.nextText();		            	
 				            }
-				            else if(tag.equalsIgnoreCase("author"))
-				            {			            	
+				            else if(tag.equalsIgnoreCase(SearchResult.NODE_AUTHOR)){			            	
 				            	res.author = xmlParser.nextText();		            	
 				            }
 			    		}
-			            //通知信息
-			            else if(tag.equalsIgnoreCase("notice"))
-			    		{
-			            	searchList.setNotice(new Notice());
+			    		//通知信息
+			            else if(tag.equalsIgnoreCase(Notice.NODE_START)){
+			            	this.setNotice(new Notice());
 			    		}
-			            else if(searchList.getNotice() != null)
-			    		{
-			    			if(tag.equalsIgnoreCase("atmeCount"))
-				            {			      
-			    				searchList.getNotice().setAtmeCount(StringUtils.toInt(xmlParser.nextText(),0));
+			            else if(this.getNotice() != null){
+			    			if(tag.equalsIgnoreCase(Notice.NODE_ATMECOUNT)){			      
+			    				this.getNotice().setAtmeCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
-				            else if(tag.equalsIgnoreCase("msgCount"))
-				            {			            	
-				            	searchList.getNotice().setMsgCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            else if(tag.equalsIgnoreCase(Notice.NODE_MSGCOUNT)){			            	
+				            	this.getNotice().setMsgCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
-				            else if(tag.equalsIgnoreCase("reviewCount"))
-				            {			            	
-				            	searchList.getNotice().setReviewCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            else if(tag.equalsIgnoreCase(Notice.NODE_REVIEWCOUNT)){			            	
+				            	this.getNotice().setReviewCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
-				            else if(tag.equalsIgnoreCase("newFansCount"))
-				            {			            	
-				            	searchList.getNotice().setNewFansCount(StringUtils.toInt(xmlParser.nextText(),0));
+				            else if(tag.equalsIgnoreCase(Notice.NODE_NEWFANSCOUNT)){			            	
+				            	this.getNotice().setNewFansCount(StringUtils.toInt(xmlParser.nextText(),0));
 				            }
 			    		}
 			    		break;
 			    	case XmlPullParser.END_TAG:	
 					   	//如果遇到标签结束，则把对象添加进集合中
-				       	if (tag.equalsIgnoreCase("result") && res != null) { 
-				       		searchList.getResultlist().add(res); 
+				       	if (tag.equalsIgnoreCase(SearchResult.NODE_START) && res != null) { 
+				       		this.getList().add(res); 
 				       		res = null; 
 				       	}
 				       	break; 
@@ -156,6 +149,5 @@ public class SearchList extends Entity{
         } finally {
         	inputStream.close();	
         }      
-        return searchList;       
 	}
 }

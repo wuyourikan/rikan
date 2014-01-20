@@ -223,7 +223,7 @@
 		<item name="android:src">@drawable/widget_dface_loading</item>
     </style> 
     
-    <style name="huati_image">
+    <style name="topic_image">
 		<item name="android:layout_width">100.0dip</item>
 		<item name="android:layout_height">70.0dip</item>
 		<item name="android:scaleType">fitXY</item>
@@ -232,6 +232,16 @@
 		<item name="android:background">@drawable/widget_dface_border</item>
 		<item name="android:src">@drawable/widget_dface_loading</item>
     </style> 
+    
+    <style name="special_image">
+		<item name="android:layout_width">100.0dip</item>
+		<item name="android:layout_height">70.0dip</item>
+		<item name="android:scaleType">fitXY</item>
+		<item name="android:padding">1.0dip</item>
+		<item name="android:clickable">true</item>
+		<item name="android:background">@drawable/widget_dface_border</item>
+		<item name="android:src">@drawable/widget_dface_loading</item>
+    </style>
     
     <style name="tab_button">
         <item name="android:layout_width">fill_parent</item>
